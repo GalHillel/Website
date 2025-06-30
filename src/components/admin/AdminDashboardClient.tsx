@@ -66,7 +66,7 @@ const AdminDashboardClient = () => {
     metadata: siteContentData.metadata,
   };
   const [content, setContent] = useState<SiteContentAdmin | null>(null); // Initialize as null
-  const [isLoading, setIsLoading] = useState(true);
+  const [isContentLoading, setIsContentLoading] = useState(true); // Renamed from isLoading
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
 
   const localStorageKey = "adminSiteContent";
@@ -84,7 +84,7 @@ const AdminDashboardClient = () => {
       console.error("Error loading content from localStorage:", error);
       setContent(initialContent);
     }
-    setIsLoading(false);
+    setIsContentLoading(false); // Use renamed state setter
   }, []);
 
   // Generic input handler for nested properties (e.g., content.user.name)
@@ -130,9 +130,11 @@ const AdminDashboardClient = () => {
   const handleSave = async () => {
     if (!content) return;
     setSaveStatus('saving');
-    setIsLoading(true); // Use general loading state for button feedback
+    // setIsLoading(true); // No longer using component-wide isLoading for save operation
     try {
       localStorage.setItem(localStorageKey, JSON.stringify(content));
+      // Simulate network delay for better UX on save
+      await new Promise(resolve => setTimeout(resolve, 700));
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 3000); // Reset status after 3s
     } catch (error) {
@@ -140,10 +142,10 @@ const AdminDashboardClient = () => {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 5000); // Reset status after 5s
     }
-    setIsLoading(false);
+    // setIsLoading(false); // No longer using component-wide isLoading for save operation
   };
 
-  if (isLoading || !content) { // Updated loading check
+  if (isContentLoading || !content) { // Use renamed state and updated loading check
     return <p className="text-center py-10">{t('Loading content editor...')}</p>;
   }
 
@@ -332,14 +334,13 @@ const AdminDashboardClient = () => {
       <div className="mt-8 flex justify-end">
         <button
           onClick={handleSave}
-          disabled={saveStatus === 'saving' || isLoading}
+          disabled={saveStatus === 'saving'} // Button is disabled only when 'saving'
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {saveStatus === 'saving' && t('Saving...')}
           {saveStatus === 'success' && t('Saved Successfully!')}
           {saveStatus === 'error' && t('Save Error!')}
-          {saveStatus === 'idle' && !isLoading && t('Save Local Changes')}
-          {saveStatus === 'idle' && isLoading && t('Loading...')} {/* Should not happen if button is disabled by isLoading */}
+          {saveStatus === 'idle' && t('Save Local Changes')}
         </button>
       </div>
       {saveStatus === 'error' && (

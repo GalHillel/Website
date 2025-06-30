@@ -13,22 +13,28 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Keep one
   const { t, i18n } = useTranslation(); // Keep this one as it includes i18n instance
   // const [isAuthenticated, setIsAuthenticated] = useState(false); // Removed duplicate state
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // This will track overall page readiness
 
   useEffect(() => {
+    // Check session storage for authentication
     const sessionAuth = sessionStorage.getItem('adminAuthenticated');
     if (sessionAuth === 'true') {
       setIsAuthenticated(true);
     }
-    // setIsLoading(false); // Defer this until i18n is also ready or checked
-  }, []);
-
-  // New useEffect to handle combined loading state based on mount and i18n readiness
-  useEffect(() => {
+    // Component has mounted, initial auth check done.
+    // If i18n is already initialized, we can set loading to false.
+    // Otherwise, the second useEffect will handle it.
     if (i18n.isInitialized) {
       setIsLoading(false);
     }
-  }, [i18n.isInitialized]);
+  }, [i18n.isInitialized]); // Add i18n.isInitialized here to re-run if it changes
+
+  // This effect ensures that if i18n initializes later, loading is still turned off.
+  useEffect(() => {
+    if (i18n.isInitialized && isLoading) { // Only run if still loading
+      setIsLoading(false);
+    }
+  }, [i18n.isInitialized, isLoading]);
 
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

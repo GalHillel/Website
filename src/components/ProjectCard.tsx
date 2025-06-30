@@ -31,14 +31,23 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{ scale: 1.03, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)", transition: { duration: 0.2 } }}
-      className="bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300"
+      className="group bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300" // Added "group"
     >
       {imageUrl ? (
-        <div className="relative w-full h-48 sm:h-56">
-          <Image src={imageUrl} alt={title} layout="fill" objectFit="cover" />
+        <div className="relative w-full h-48 sm:h-56 overflow-hidden"> {/* Added overflow-hidden for image scale effect */}
+          <Image
+            src={imageUrl}
+            alt={title || t('Project image')}
+            layout="fill"
+            objectFit="cover"
+            className="transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:brightness-110" // Added group-hover effects
+          />
         </div>
       ) : (
-        <div className="w-full h-48 sm:h-56 bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-colors duration-300">
+        <div
+          className="w-full h-48 sm:h-56 bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-colors duration-300"
+          aria-label={t('Placeholder for project image')}
+        >
           <span className="text-slate-500 dark:text-slate-400">{t('No Image')}</span>
         </div>
       )}
@@ -66,7 +75,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white py-2 px-4 rounded-md transition-colors duration-300"
+              className="text-sm bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
             >
               {t('GitHub Repo')}
             </Link>
@@ -76,7 +85,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               href={demoLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300"
+              className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
             >
               {t('Live Demo')}
             </Link>

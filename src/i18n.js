@@ -1,7 +1,7 @@
 // @/i18n.js
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+// import LanguageDetector from 'i18next-browser-languagedetector'; // Removed
 
 const bioTextKey = "A results-driven software developer with a strong foundation in Computer Science, Mathematics, and Software Engineering. Experienced in building scalable backend systems, intuitive frontends, and machine learning tools. Passionate about elegant architecture, real-world impact, and clean code.";
 const educationPlaceholderKey = "B.Sc. Computer Science & Mathematics - [University Name] (Year)";
@@ -124,21 +124,23 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
+  // .use(LanguageDetector) // Removed
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en', // Only English is now the fallback
-    supportedLngs: ['en'], // Explicitly support only English
+    lng: 'en', // Explicitly set language to English
+    fallbackLng: 'en',
+    supportedLngs: ['en'],
     interpolation: {
       escapeValue: false
     },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'], // Keep detection for potential future re-addition or user preference storage
-      caches: ['localStorage'],
-      lookupLocalStorage: 'i18nextLng',
-      lookupQuerystring: 'lng',
-    }
+    // Detection is no longer needed as language is fixed
+    // detection: {
+    //   order: ['localStorage', 'navigator', 'htmlTag'],
+    //   caches: ['localStorage'],
+    //   lookupLocalStorage: 'i18nextLng',
+    //   lookupQuerystring: 'lng',
+    // }
   });
 
 export default i18n;
