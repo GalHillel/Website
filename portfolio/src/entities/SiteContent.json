@@ -1,0 +1,87 @@
+{
+  "user": {
+    "name": "Gal Hillel",
+    "email": "galh2011@icloud.com",
+    "github": "https://github.com/GalHillel",
+    "linkedin": "https://linkedin.com/in/galhillel1",
+    "profileImage": "/placeholder-profile.jpg"
+  },
+  "hero": {
+    "tagline": {
+      "en": "Software Developer | Problem Solver | Tech Enthusiast",
+      "he": "מפתח תוכנה | פותר בעיות | חובב טכנולוגיה"
+    },
+    "intro": {
+      "en": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
+      "he": "אני בונה אפליקציות ווב מודרניות, סקיילביליות וידידותיות למשתמש. גלה את העבודות והכישורים שלי."
+    }
+  },
+  "about": {
+    "bio": {
+      "en": "A results-driven software developer with a strong foundation in Computer Science, Mathematics, and Software Engineering. Experienced in building scalable backend systems, intuitive frontends, and machine learning tools. Passionate about elegant architecture, real-world impact, and clean code.",
+      "he": "מפתח תוכנה מונחה תוצאות עם בסיס חזק במדעי המחשב, מתמטיקה והנדסת תוכנה. מנוסה בבניית מערכות backend סקיילביליות, פיתוח frontend אינטואיטיבי, וכלי למידת מכונה. נלהב מארכיטקטורה אלגנטית, השפעה בעולם האמיתי וקוד נקי."
+    },
+    "education": {
+      "en": "B.Sc. Computer Science & Mathematics - [University Name] (Year)",
+      "he": "תואר ראשון במדעי המחשב ומתמטיקה - [שם האוניברסיטה] (שנה)"
+    },
+    "csMathBackground": {
+      "en": "Deep understanding of algorithms, data structures, discrete mathematics, linear algebra, and calculus. Applied this knowledge in various academic and personal projects, focusing on efficient solutions and analytical problem-solving.",
+      "he": "הבנה מעמיקה של אלגוריתמים, מבני נתונים, מתמטיקה בדידה, אלגברה לינארית וחשבון אינפיניטסימלי. יישמתי ידע זה במגוון פרויקטים אקדמיים ואישיים, תוך התמקדות בפתרונות יעילים ופתרון בעיות אנליטי."
+    }
+  },
+  "projects": [
+    {
+      "id": "proj1",
+      "title": { "en": "Project Alpha", "he": "פרויקט אלפא" },
+      "description": {
+        "en": "A cool web application built with modern technologies to solve an interesting problem. Features X, Y, and Z.",
+        "he": "אפליקציית רשת מגניבה שנבנתה בטכנולוגיות מודרניות לפתרון בעיה מעניינת. כוללת X, Y, ו-Z."
+      },
+      "imageUrl": "/placeholder-project-1.jpg",
+      "tags": ["React", "Node.js", "TypeScript"],
+      "githubLink": "https://github.com/GalHillel/project-alpha-placeholder",
+      "demoLink": "#"
+    },
+    {
+      "id": "proj2",
+      "title": { "en": "Project Beta", "he": "פרויקט בטא" },
+      "description": {
+        "en": "An innovative mobile app that streamlines daily tasks. Focuses on user experience and performance.",
+        "he": "אפליקציה סלולרית חדשנית המייעלת משימות יומיות. מתמקדת בחווית משתמש וביצועים."
+      },
+      "imageUrl": "/placeholder-project-2.jpg",
+      "tags": ["React Native", "Firebase"],
+      "githubLink": "https://github.com/GalHillel/project-beta-placeholder",
+      "demoLink": "#"
+    }
+  ],
+  "skills": [
+    {
+      "category": { "en": "Frontend Development", "he": "פיתוח Frontend" },
+      "items": [
+        { "name": "HTML5", "proficiency": 95 },
+        { "name": "CSS3 & SCSS", "proficiency": 90 },
+        { "name": "JavaScript (ES6+)", "proficiency": 92 }
+      ]
+    },
+    {
+      "category": { "en": "Backend Development", "he": "פיתוח Backend" },
+      "items": [
+        { "name": "Node.js", "proficiency": 88 },
+        { "name": "Python", "proficiency": 90 }
+      ]
+    }
+  ],
+  "resumeUrl": "/resume/Gal_Hillel_Resume.pdf",
+  "metadata": {
+    "title": {
+      "en": "Gal Hillel - Software Developer",
+      "he": "גל הילל - מפתח תוכנה"
+    },
+    "description": {
+      "en": "Personal portfolio of Gal Hillel, showcasing projects and skills in software development.",
+      "he": "תיק עבודות אישי של גל הילל, המציג פרויקטים וכישורים בפיתוח תוכנה."
+    }
+  }
+}
