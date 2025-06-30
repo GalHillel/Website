@@ -15,13 +15,49 @@ const EmailIcon = () => <span className="text-2xl">✉️</span>;
 export default function ContactPage() {
   const { t } = useTranslation();
   const { user, resumeUrl } = siteContent;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Placeholders for EmailJS credentials - User needs to replace these
+  const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+  const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+  const EMAILJS_USER_ID = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY'; // Often called PublicKey or UserID
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log("Form data:", data);
-    alert(t("Form submission is not implemented yet."));
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    // Check if placeholder IDs are still being used
+    if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID' || EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID' || EMAILJS_USER_ID === 'YOUR_PUBLIC_KEY') {
+      alert(t('EmailJS is not configured. Please set up your EmailJS credentials.'));
+      setIsSubmitting(false);
+      setSubmitStatus('error'); // Or a specific 'not_configured' status
+      return;
+    }
+
+    // Dynamically import emailjs to avoid issues if the package isn't installed (for dev purposes)
+    // In a real scenario, you'd import it directly at the top.
+    import('emailjs-com').then(emailjs => {
+      emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, event.currentTarget, EMAILJS_USER_ID)
+        .then((result) => {
+            console.log('EmailJS success:', result.text);
+            setSubmitStatus('success');
+            (event.target as HTMLFormElement).reset(); // Reset form on success
+        }, (error) => {
+            console.error('EmailJS error:', error.text);
+            setSubmitStatus('error');
+        })
+        .finally(() => {
+            setIsSubmitting(false);
+            setTimeout(() => setSubmitStatus('idle'), 5000); // Reset status message after 5s
+        });
+    }).catch(err => {
+        console.error("Failed to load emailjs-com. Is it installed?", err);
+        alert(t("Error sending message. EmailJS library might be missing."));
+        setIsSubmitting(false);
+        setSubmitStatus('error');
+    });
   };
 
   return (
@@ -80,9 +116,15 @@ export default function ContactPage() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {t('Send Message')}
+                {isSubmitting ? t('Sending...') : t('Send Message')}
               </motion.button>
             </div>
+            {submitStatus === 'success' && (
+              <p className="mt-4 text-sm text-green-600 dark:text-green-400">{t('Message sent successfully! Thank you.')}</p>
+            )}
+            {submitStatus === 'error' && (
+              <p className="mt-4 text-sm text-red-600 dark:text-red-400">{t('Failed to send message. Please try again later or contact me directly via email.')}</p>
+            )}
           </form>
         </AnimatedSection>
 

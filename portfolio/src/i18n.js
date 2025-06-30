@@ -89,14 +89,33 @@ const resources = {
       "Profile Image Path": "Profile Image Path",
       "About Me Section": "About Me Section",
       "Saving...": "Saving...",
-      "Save Changes (Not Implemented)": "Save Changes (Not Implemented)",
-      "Save functionality is not implemented in this phase. Data is in SiteContent.json.": "Save functionality is not implemented in this phase. Data is in SiteContent.json.",
-      "Content saved successfully!": "Content saved successfully!",
-      "Error saving content.": "Error saving content.",
+      "Save Changes (Not Implemented)": "Save Changes (Not Implemented)", // Kept for reference, new key below
+      "Save Local Changes": "Save Local Changes", // New button text
+      "Saved Successfully!": "Saved Successfully!",
+      "Save Error!": "Save Error!",
+      "Failed to save changes to local storage.": "Failed to save changes to local storage.",
+      "Note": "Note",
+      "Changes made here are saved locally in your browser (using localStorage) and will not affect the live website data or other users. This is for demonstration purposes only.": "Changes made here are saved locally in your browser (using localStorage) and will not affect the live website data or other users. This is for demonstration purposes only.",
+      "Save functionality is not implemented in this phase. Data is in SiteContent.json.": "Save functionality is not implemented in this phase. Data is in SiteContent.json.", // Alert text, might be removed
+      "Content saved successfully!": "Content saved successfully!", // Old alert text, might be removed
+      "Error saving content.": "Error saving content.", // Old alert text, might be removed
       "Toggle navigation menu": "Toggle navigation menu",
+      // Admin - Skills Management
+      "Category Name": "Category Name",
+      "Skills in this category:": "Skills in this category:",
+      "Skill Name": "Skill Name",
+      "Proficiency (%)": "Proficiency (%)",
+      "Adding or deleting skills/categories requires more advanced state management and will be implemented later.": "Adding or deleting skills/categories requires more advanced state management and will be implemented later.",
+      "Adding or deleting projects requires more advanced state management and will be implemented later.": "Adding or deleting projects requires more advanced state management and will be implemented later.",
+      "Project": "Project",
+      // Contact Form EmailJS
+      "Sending...": "Sending...",
+      "Message sent successfully! Thank you.": "Message sent successfully! Thank you.",
+      "Failed to send message. Please try again later or contact me directly via email.": "Failed to send message. Please try again later or contact me directly via email.",
+      "EmailJS is not configured. Please set up your EmailJS credentials.": "EmailJS is not configured. Please set up your EmailJS credentials.",
+      "Error sending message. EmailJS library might be missing.": "Error sending message. EmailJS library might be missing."
     }
   }
-  // Removed 'he' (Hebrew) resources block entirely
 };
 
 i18n

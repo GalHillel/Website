@@ -4,10 +4,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-// import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // Ensure motion is imported
 
 interface ProjectCardProps {
-  title: string; // Changed from BilingualText
+  title: string;
   description: string; // Changed from BilingualText
   imageUrl?: string | null;
   tags: string[];
@@ -30,14 +30,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const displayDescription = description;
 
   return (
-    // <motion.div
-    //   initial={{ opacity: 0, y: 20 }}
-    //   animate={{ opacity: 1, y: 0 }}
-    //   transition={{ duration: 0.5 }}
-    //   whileHover={{ scale: 1.03 }}
-    //   className="bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden flex flex-col" // Updated dark bg
-    // >
-    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300"> {/* Updated dark bg & shadow */}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ scale: 1.03, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)", transition: { duration: 0.2 } }}
+      className="bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300" // Base shadow is shadow-xl
+    >
       {imageUrl ? (
         <div className="relative w-full h-48 sm:h-56">
           <Image src={imageUrl} alt={displayTitle} layout="fill" objectFit="cover" />
