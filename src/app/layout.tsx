@@ -23,23 +23,23 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: siteContent.metadata.title.en,
-    template: `%s | ${siteContent.metadata.title.en}`,
+    default: siteContent.metadata.title,
+    template: `%s | ${siteContent.metadata.title}`,
   },
-  description: siteContent.metadata.description.en,
+  description: siteContent.metadata.description,
   keywords: "Gal Hillel, portfolio, software developer, software engineer, web developer, full stack, backend, frontend, computer science, projects",
   robots: "index, follow",
   openGraph: {
-    title: siteContent.metadata.title.en,
-    description: siteContent.metadata.description.en,
+    title: siteContent.metadata.title,
+    description: siteContent.metadata.description,
     url: siteUrl,
-    siteName: siteContent.metadata.title.en,
+    siteName: siteContent.metadata.title,
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: `${siteContent.metadata.title.en} - Open Graph Image`,
+        alt: `${siteContent.metadata.title} - Open Graph Image`,
       },
     ],
     locale: 'en_US',
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: siteContent.metadata.title.en,
-    description: siteContent.metadata.description.en,
+    title: siteContent.metadata.title,
+    description: siteContent.metadata.description,
     images: [`${siteUrl}/og-image.png`],
   },
   icons: {

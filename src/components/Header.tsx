@@ -2,6 +2,7 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation'; // Added
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
@@ -30,6 +31,7 @@ const HamburgerIcon = ({ open }: { open: boolean }) => (
 const Header = () => {
   const { t, i18n } = useTranslation();
   const { theme, setTheme, resolvedTheme } = useTheme();
+  const pathname = usePathname(); // Added
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -77,7 +79,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center h-[68px]">
         <Link
           href="/"
-          className="text-2xl font-extrabold hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          className="text-2xl font-extrabold hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
           onClick={() => setIsMobileMenuOpen(false)}
           aria-label={t('Go to homepage')}
         >
@@ -90,7 +92,11 @@ const Header = () => {
             <Link
               key={href}
               href={href}
-              className="relative text-base font-medium text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2 py-1 border-b-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400"
+              className={`relative text-base font-medium transition-colors px-2 py-1 border-b-2
+                          ${pathname === href
+                            ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400'
+                            : 'text-slate-800 dark:text-slate-200 border-transparent hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500 dark:hover:border-blue-400'
+                          } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-sm`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t(labelKey)}
@@ -99,7 +105,7 @@ const Header = () => {
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}
-            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl"
+            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
             title={t('Toggle light/dark theme')}
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
@@ -111,7 +117,7 @@ const Header = () => {
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}
-            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl"
+            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
             title={t('Toggle light/dark theme')}
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
@@ -119,7 +125,7 @@ const Header = () => {
           <button
             onClick={toggleMobileMenu}
             aria-label={t('Toggle navigation menu')}
-            className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30"
+            className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
             title={t('Toggle navigation menu')}
           >
             <HamburgerIcon open={isMobileMenuOpen} />
@@ -143,7 +149,11 @@ const Header = () => {
                   key={href}
                   href={href}
                   onClick={toggleMobileMenu}
-                  className="w-full px-4 py-3 text-lg font-semibold text-slate-900 dark:text-slate-100 rounded-md hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  className={`w-full px-4 py-3 text-lg font-semibold rounded-md transition-colors
+                              ${pathname === href
+                                ? 'bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-300'
+                                : 'text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700'
+                              } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900`}
                 >
                   {t(labelKey)}
                 </Link>
