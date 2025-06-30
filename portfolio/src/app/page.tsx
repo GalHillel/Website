@@ -4,10 +4,11 @@
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import siteContent from '@/entities/SiteContent.json';
-import AnimatedSection from '@/components/AnimatedSection'; // Import the animation wrapper
+import AnimatedSection from '@/components/AnimatedSection';
+import TypewriterTagline from '@/components/TypewriterTagline'; // Import the new component
 
 export default function HomePage() {
-  const { t } = useTranslation(); // i18n instance no longer needed here for content
+  const { t } = useTranslation();
 
   // Directly use English content from the simplified SiteContent.json
   const heroTagline = siteContent.hero.tagline;
@@ -17,19 +18,21 @@ export default function HomePage() {
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-4 relative">
       {/* Hero Section */}
       <AnimatedSection delay={0.1} className="py-12 md:py-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-slate-800 dark:text-slate-100"> {/* Adjusted text color for new bg */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-slate-800 dark:text-slate-100">
           {t('Gal Hillel')}
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-6 text-slate-700 dark:text-slate-300 max-w-3xl mx-auto"> {/* Adjusted text color & margin */}
-          {heroTagline}
-        </p>
-        {/* Dynamic Skills Highlight Integration */}
-        <DynamicSkillsHighlight />
+        {/* Typewriter Tagline replaces static tagline and DynamicSkillsHighlight */}
+        <TypewriterTagline />
+        {/* <p className="text-lg sm:text-xl md:text-2xl mb-6 text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
+          {heroTagline} // This was the static tagline
+        </p> */}
+        {/* <DynamicSkillsHighlight /> // This is replaced by TypewriterTagline */}
       </AnimatedSection>
 
       {/* Short Intro Section */}
       <AnimatedSection delay={0.3} className="mb-12 md:mb-20 max-w-2xl">
-        <p className="text-md sm:text-lg md:text-xl text-gray-600 dark:text-gray-400">
+        {/* The heroIntro can remain or be integrated elsewhere if the typewriter makes it redundant */}
+        <p className="text-md sm:text-lg md:text-xl text-slate-600 dark:text-slate-400"> {/* Adjusted text color */}
           {heroIntro}
         </p>
       </AnimatedSection>

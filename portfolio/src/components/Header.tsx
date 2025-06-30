@@ -82,44 +82,41 @@ const Header = () => {
   }
 
   return (
-    // Updated header background for new theme
-    <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md shadow-md text-slate-700 dark:text-slate-200 transition-colors duration-300">
-      <nav className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center h-[60px]">
-        <Link href="/" className="text-xl font-semibold hover:text-blue-500 dark:hover:text-blue-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-          {t('Gal Hillel')}
+    <header className="sticky top-0 z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-lg shadow-sm text-slate-700 dark:text-slate-200 transition-colors duration-300">
+      <nav className="container mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center h-[64px]"> {/* Slightly taller header, adjusted padding */}
+        <Link href="/" className="text-2xl font-bold text-slate-900 dark:text-slate-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+          {t('Gal Hillel')} {/* Consider a distinct logo style if desired */}
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-6 items-center">
+        <div className="hidden md:flex space-x-7 items-center"> {/* Increased spacing */}
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} className="hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
+            <Link key={link.href} href={link.href} className="text-base hover:text-blue-600 dark:hover:text-blue-400 transition-colors pb-1 border-b-2 border-transparent hover:border-blue-500 dark:hover:border-blue-400">
               {t(link.labelKey)}
             </Link>
           ))}
-          {/* Language toggle button removed */}
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-lg" // Rounded full, larger icon if emoji
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
           </button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center space-x-2">
-           {/* Language toggle button removed */}
+        {/* Mobile Controls: Theme Toggle + Menu Button */}
+        <div className="md:hidden flex items-center space-x-3">
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-lg"
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
           </button>
           <button
             onClick={toggleMobileMenu}
             aria-label={t('Toggle navigation menu')}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors z-20" // z-20 to be above menu
+            className="p-2 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors z-20"
           >
             <HamburgerIcon open={isMobileMenuOpen} />
           </button>
@@ -130,28 +127,20 @@ const Header = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }} // Animate height for slide down
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden absolute top-[60px] left-0 right-0 bg-gray-100 dark:bg-gray-900 shadow-lg pb-4 z-10"
-            style={{
-              // Full viewport width for the menu background
-              width: '100vw',
-              // Position relative to viewport for full width
-              position: 'fixed',
-              // Correct left/right for fixed positioning
-              left: 0,
-              right: 0,
-            }}
+            className="md:hidden absolute top-[63px] left-0 right-0 bg-slate-100 dark:bg-slate-900 shadow-xl pb-6 z-10 border-t border-slate-200 dark:border-slate-800"
+            // Removed fixed positioning to allow content to push down if header is part of scroll
           >
-            <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center space-y-4 pt-4">
+            <div className="container mx-auto px-4 sm:px-6 flex flex-col items-start space-y-1 pt-4"> {/* Align items start */}
               {navLinks.map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={toggleMobileMenu} // Close menu on link click
-                  className="py-2 text-lg hover:text-blue-500 dark:hover:text-blue-400 transition-colors w-full text-center"
+                  onClick={toggleMobileMenu}
+                  className="py-3 px-3 text-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors w-full text-left rounded-md" // Full width, text-left
                 >
                   {t(link.labelKey)}
                 </Link>

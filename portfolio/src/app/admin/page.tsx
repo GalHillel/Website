@@ -9,11 +9,11 @@ import AdminDashboardClient from '@/components/admin/AdminDashboardClient'; // I
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
 
 export default function AdminPage() {
-  const { t } = useTranslation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { t, i18n } = useTranslation(); // Modified to get i18n instance
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // This will now also depend on i18n initialization
+  // const { t } = useTranslation(); // Removed duplicate
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Keep one
+  const { t, i18n } = useTranslation(); // Keep this one as it includes i18n instance
+  // const [isAuthenticated, setIsAuthenticated] = useState(false); // Removed duplicate state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const sessionAuth = sessionStorage.getItem('adminAuthenticated');

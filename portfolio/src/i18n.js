@@ -113,7 +113,12 @@ const resources = {
       "Message sent successfully! Thank you.": "Message sent successfully! Thank you.",
       "Failed to send message. Please try again later or contact me directly via email.": "Failed to send message. Please try again later or contact me directly via email.",
       "EmailJS is not configured. Please set up your EmailJS credentials.": "EmailJS is not configured. Please set up your EmailJS credentials.",
-      "Error sending message. EmailJS library might be missing.": "Error sending message. EmailJS library might be missing."
+      "Error sending message. EmailJS library might be missing.": "Error sending message. EmailJS library might be missing.",
+      // Typewriter Tagline
+      "Software Developer": "Software Developer",
+      "Problem Solver": "Problem Solver",
+      "Tech Enthusiast": "Tech Enthusiast",
+      "Creative Thinker": "Creative Thinker"
     }
   }
 };
