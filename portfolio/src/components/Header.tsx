@@ -34,21 +34,20 @@ const Header = () => {
 
   useEffect(() => {
     setMounted(true);
-    if (i18n.isInitialized) { // Ensure i18n is ready before using its properties
-        document.documentElement.lang = i18n.language;
-        document.documentElement.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
-    }
-  }, [i18n.language, i18n.isInitialized]); // Add i18n.isInitialized to dependencies
+    // Language is now fixed to 'en', dir to 'ltr'
+    document.documentElement.lang = 'en';
+    document.documentElement.dir = 'ltr';
+  }, []); // No longer depends on i18n.language
 
-  const changeLanguage = () => {
-    if (!i18n.isInitialized) return;
-    const newLang = i18n.language === 'en' ? 'he' : 'en';
-    i18n.changeLanguage(newLang);
-    setIsMobileMenuOpen(false);
-  };
+  // const changeLanguage = () => { // Removed
+  //   if (!i18n.isInitialized) return;
+  //   const newLang = i18n.language === 'en' ? 'he' : 'en';
+  //   i18n.changeLanguage(newLang);
+  //   setIsMobileMenuOpen(false);
+  // };
 
   const toggleTheme = () => {
-    if (!mounted) return; // Ensure mounted before using theme
+    if (!mounted) return;
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
@@ -68,13 +67,14 @@ const Header = () => {
   // This ensures all hooks are called unconditionally at the top.
   if (!mounted || !i18n.isInitialized) {
     return (
-      <header className="bg-gray-100 dark:bg-gray-900 shadow-md text-gray-700 dark:text-gray-200">
+      // Use consistent theming for placeholder
+      <header className="bg-slate-100 dark:bg-slate-900 shadow-md text-slate-700 dark:text-slate-200">
         <nav className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center h-[60px]">
            <div className="text-xl font-semibold animate-pulse">Gal Hillel</div>
            <div className="flex space-x-2">
-             <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-             <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
-             <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse md:hidden"></div> {/* Hamburger placeholder */}
+             <div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-md animate-pulse"></div>
+             <div className="w-8 h-8 bg-slate-300 dark:bg-slate-700 rounded-md animate-pulse"></div>
+             <div className="w-6 h-6 bg-slate-300 dark:bg-slate-700 rounded-md animate-pulse md:hidden"></div> {/* Hamburger placeholder */}
            </div>
         </nav>
       </header>
@@ -82,7 +82,8 @@ const Header = () => {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-gray-100/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md text-gray-700 dark:text-gray-200">
+    // Updated header background for new theme
+    <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-slate-900/80 backdrop-blur-md shadow-md text-slate-700 dark:text-slate-200 transition-colors duration-300">
       <nav className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center h-[60px]">
         <Link href="/" className="text-xl font-semibold hover:text-blue-500 dark:hover:text-blue-400 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
           {t('Gal Hillel')}
@@ -95,13 +96,7 @@ const Header = () => {
               {t(link.labelKey)}
             </Link>
           ))}
-          <button
-            onClick={changeLanguage}
-            aria-label={t('Change language')}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          >
-            {t('EN/HE')}
-          </button>
+          {/* Language toggle button removed */}
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}
@@ -113,13 +108,7 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
-           <button
-            onClick={changeLanguage}
-            aria-label={t('Change language')}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-          >
-            {t('EN/HE')}
-          </button>
+           {/* Language toggle button removed */}
           <button
             onClick={toggleTheme}
             aria-label={t('Toggle theme')}

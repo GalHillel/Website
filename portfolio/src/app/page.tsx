@@ -7,22 +7,24 @@ import siteContent from '@/entities/SiteContent.json';
 import AnimatedSection from '@/components/AnimatedSection'; // Import the animation wrapper
 
 export default function HomePage() {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as keyof typeof siteContent.hero.tagline;
+  const { t } = useTranslation(); // i18n instance no longer needed here for content
 
-  const heroTagline = siteContent.hero.tagline[currentLang] || siteContent.hero.tagline.en;
-  const heroIntro = siteContent.hero.intro[currentLang] || siteContent.hero.intro.en;
+  // Directly use English content from the simplified SiteContent.json
+  const heroTagline = siteContent.hero.tagline;
+  const heroIntro = siteContent.hero.intro;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-4 relative">
       {/* Hero Section */}
       <AnimatedSection delay={0.1} className="py-12 md:py-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-gray-900 dark:text-white">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-slate-800 dark:text-slate-100"> {/* Adjusted text color for new bg */}
           {t('Gal Hillel')}
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+        <p className="text-lg sm:text-xl md:text-2xl mb-6 text-slate-700 dark:text-slate-300 max-w-3xl mx-auto"> {/* Adjusted text color & margin */}
           {heroTagline}
         </p>
+        {/* Dynamic Skills Highlight Integration */}
+        <DynamicSkillsHighlight />
       </AnimatedSection>
 
       {/* Short Intro Section */}

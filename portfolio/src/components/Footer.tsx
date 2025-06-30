@@ -9,7 +9,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 py-8 text-center">
+    <footer className="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 py-8 text-center transition-colors duration-300">
       <div className="container mx-auto px-6">
         <div className="mb-4">
           <Link href="https://github.com/GalHillel" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 dark:hover:text-blue-400 mx-2">

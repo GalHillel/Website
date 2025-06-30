@@ -42,7 +42,8 @@ const resources = {
       // Footer
       "GitHub": "GitHub", "LinkedIn": "LinkedIn", "Email": "Email", "copyRight": "© {{year}} Gal Hillel. All rights reserved.",
       // General
-      "EN/HE": "HE", "Mode": "Mode", "Loading...": "Loading...",
+      // "EN/HE": "HE", // Removed
+      "Mode": "Mode", "Loading...": "Loading...",
       // HomePage
       "Software Developer | Problem Solver | Tech Enthusiast": "Software Developer | Problem Solver | Tech Enthusiast",
       "I build modern, scalable, and user-friendly web applications. Explore my work and skills.": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
@@ -82,79 +83,20 @@ const resources = {
       "Update Contact Info": "Update Contact Info", "Change email, social links.": "Change email, social links.",
       "Upload Resume": "Upload Resume", "Replace the downloadable resume PDF.": "Replace the downloadable resume PDF.",
       "Site Settings": "Site Settings", "Edit hero text, metadata, etc.": "Edit hero text, metadata, etc.",
-      // AdminDashboardClient specific (some might overlap with AdminPage overview if not careful)
+      // AdminDashboardClient specific
       "Loading content editor...": "Loading content editor...",
       "User Information": "User Information",
-      // Name, Email, GitHub Profile URL, LinkedIn Profile URL, Profile Image Path already have general keys like "Name", "Email", "GitHub", "LinkedIn"
-      // We can reuse them if the context is clear, or make them more specific if needed for admin forms.
-      // For now, let's assume general keys like "Name", "Email" are sufficient.
-      // "Profile Image Path" is specific enough.
-      "About Me Section": "About Me Section", // Title for this part of the form in admin
-      // Biography, Education, CS & Math Background are existing general keys
+      "Profile Image Path": "Profile Image Path",
+      "About Me Section": "About Me Section",
       "Saving...": "Saving...",
-      "Save Changes (Not Implemented)": "Save Changes (Not Implemented)", // Button text for save
+      "Save Changes (Not Implemented)": "Save Changes (Not Implemented)",
       "Save functionality is not implemented in this phase. Data is in SiteContent.json.": "Save functionality is not implemented in this phase. Data is in SiteContent.json.",
       "Content saved successfully!": "Content saved successfully!",
       "Error saving content.": "Error saving content.",
       "Toggle navigation menu": "Toggle navigation menu",
     }
-  },
-  he: {
-    translation: {
-      // Header
-      "Gal Hillel": "Gal Hillel", "Home": "בית", "About": "אודות", "Projects": "פרויקטים", "Skills": "כישורים", "Contact": "צור קשר",
-      // Footer
-      "GitHub": "גיטהאב", "LinkedIn": "לינקדאין", "Email": "אימייל", "copyRight": "© {{year}} גל הילל. כל הזכויות שמורות.",
-      // General
-      "EN/HE": "EN", "Mode": "מצב", "Loading...": "טוען...",
-      // HomePage
-      "Software Developer | Problem Solver | Tech Enthusiast": "מפתח תוכנה | פותר בעיות | חובב טכנולוגיה",
-      "I build modern, scalable, and user-friendly web applications. Explore my work and skills.": "אני בונה אפליקציות ווב מודרניות, סקיילביליות וידידותיות למשתמש. גלה את העבודות והכישורים שלי.",
-      "View Projects": "צפה בפרויקטים", "Get in Touch": "צור קשר", "Scroll to explore or go to About page": "גלול לגילוי או עבור לדף אודות",
-      // AboutPage
-      "About Me": "אודותיי", "Profile Photo": "תמונת פרופיל", "Profile Photo Alt": "גל הילל - תמונת פרופיל", "Biography": "ביוגרפיה",
-      [bioTextKey]: "מפתח תוכנה מונחה תוצאות עם בסיס חזק במדעי המחשב, מתמטיקה והנדסת תוכנה. מנוסה בבניית מערכות backend סקיילביליות, פיתוח frontend אינטואיטיבי, וכלי למידת מכונה. נלהב מארכיטקטורה אלגנטית, השפעה בעולם האמיתי וקוד נקי.",
-      "Education": "השכלה", [educationPlaceholderKey]: "תואר ראשון במדעי המחשב ומתמטיקה - [שם האוניברסיטה] (שנה)",
-      "CS & Math Background": "רקע במדעי המחשב ומתמטיקה", [csMathPlaceholderKey]: "הבנה מעמיקה של אלגוריתמים, מבני נתונים, מתמטיקה בדידה, אלגברה לינארית וחשבון אינפיניטסימלי. יישמתי ידע זה במגוון פרויקטים אקדמיים ואישיים, תוך התמקדות בפתרונות יעילים ופתרון בעיות אנליטי.",
-      // ProjectsPage & ProjectCard
-      "My Projects": "הפרויקטים שלי", "Filter by Technology": "סנן לפי טכנולוגיה", "Clear Filters": "נקה סינון",
-      "No projects match the selected filters.": "אין פרויקטים התואמים לסינון שנבחר.",
-      "No Image": "אין תמונה זמינה", "GitHub Repo": "מאגר גיטהאב", "Live Demo": "הדגמה חיה",
-      "React": "ריאקט", "Node.js": "Node.js", "TypeScript": "טייפסקריפט", "JavaScript": "ג'אווהסקריפט", "Python": "פייתון",
-      "React Native": "ריאקט נייטיב", "Firebase": "פיירבייס", "Next.js": "נקסט.ג'ייאס",
-      ...Object.fromEntries(Object.entries(techTags).map(([key, value]) => [key, techTags[key] || value])),
-      // SkillsPage
-      "My Skills": "הכישורים שלי",
-      "Frontend Development": "פיתוח Frontend", "Backend Development": "פיתוח Backend", "Databases & Storage": "מסדי נתונים ואחסון",
-      "DevOps & Tools": "DevOps וכלים", "Machine Learning": "למידת מכונה", "Other Skills": "כישורים נוספים",
-      "HTML5": "HTML5", "CSS3 & SCSS": "CSS3 ו-SCSS", "JavaScript (ES6+)": "JavaScript (ES6+)", "Express.js": "Express.js",
-      "RESTful APIs": "RESTful APIs", "GraphQL": "GraphQL", "PostgreSQL": "PostgreSQL", "MongoDB": "MongoDB", "SQL": "SQL",
-      "Git & GitHub": "Git ו-GitHub", "CI/CD (GitHub Actions)": "CI/CD (GitHub Actions)", "Vercel": "Vercel", "Netlify": "Netlify",
-      "Scikit-learn": "Scikit-learn", "Pandas & NumPy": "Pandas ו-NumPy", "TensorFlow (Basic)": "TensorFlow (בסיסי)",
-      "Agile Methodologies": "מתודולוגיות Agile", "Problem Solving": "פתרון בעיות", "UI/UX Design Principles": "עקרונות עיצוב UI/UX",
-      ...Object.fromEntries(Object.entries(individualSkills).map(([key, value]) => [key, individualSkills[key] || value])),
-      // ContactPage
-      "Send Me a Message": "שלח לי הודעה",
-      "Your Name": "השם שלך", "Enter your name": "הזן את שמך",
-      "Your Email": "האימייל שלך", "Enter your email address": "הזן את כתובת האימייל שלך",
-      "Your Message": "ההודעה שלך", "Write your message here...": "כתוב את הודעתך כאן...",
-      "Send Message": "שלח הודעה", "Contact Information": "פרטי התקשרות",
-      "Feel free to reach out through any of these platforms. I look forward to hearing from you!": "אל תהסס ליצור קשר דרך כל אחת מהפלטפורמות הללו. אני מצפה לשמוע ממך!",
-      "LinkedIn Profile": "פרופיל לינקדאין", "GitHub Profile": "פרופיל גיטהאב", "Send an Email": "שלח אימייל",
-      "Form submission is not implemented yet.": "שליחת הטופס עדיין לא מיושמת.",
-      "ResumeDownloadPrompt": "ניתן גם להוריד את קורות החיים שלי:", "Download Resume": "הורד קורות חיים",
-      // AdminPage
-      "Admin Login": "כניסת מנהל", "Password": "סיסמה", "Login": "התחבר", "Incorrect Password": "סיסמה שגויה",
-      "Admin Dashboard": "לוח בקרה למנהל",
-      "Welcome to the Admin Panel. Content editing features will be implemented here.": "ברוך הבא ללוח הבקרה. אפשרויות עריכת תוכן יתווספו כאן.",
-      "Edit About Me": "ערוך אודות", "Update your biography, photo, etc.": "עדכן ביוגרפיה, תמונה וכו'.",
-      "Manage Projects": "נהל פרויקטים", "Add, edit, or remove projects.": "הוסף, ערוך או הסר פרויקטים.",
-      "Manage Skills": "נהל כישורים", "Update skill categories and proficiency.": "עדכן קטגוריות כישורים ואחוזי שליטה.",
-      "Update Contact Info": "עדכן פרטי התקשרות", "Change email, social links.": "שנה אימייל, קישורים חברתיים.",
-      "Upload Resume": "העלה קורות חיים", "Replace the downloadable resume PDF.": "החלף את קובץ ה-PDF של קורות החיים.",
-      "Site Settings": "הגדרות אתר", "Edit hero text, metadata, etc.": "ערוך טקסט הירו, מטא-דאטה וכו'.",
-    }
   }
+  // Removed 'he' (Hebrew) resources block entirely
 };
 
 i18n
@@ -162,13 +104,16 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: 'en', // Only English is now the fallback
+    supportedLngs: ['en'], // Explicitly support only English
     interpolation: {
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'navigator', 'htmlTag'], // Keep detection for potential future re-addition or user preference storage
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
+      lookupQuerystring: 'lng',
     }
   });
 

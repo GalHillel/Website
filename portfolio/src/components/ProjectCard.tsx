@@ -6,34 +6,28 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 // import { motion } from 'framer-motion';
 
-// Define a type for the bilingual title and description
-interface BilingualText {
-  en: string;
-  he: string;
-}
-
 interface ProjectCardProps {
-  title: BilingualText;
-  description: BilingualText;
-  imageUrl?: string | null; // Can be null from JSON
+  title: string; // Changed from BilingualText
+  description: string; // Changed from BilingualText
+  imageUrl?: string | null;
   tags: string[];
   githubLink?: string;
   demoLink?: string;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
-  title,
-  description,
+  title, // Now a string
+  description, // Now a string
   imageUrl,
   tags,
   githubLink,
   demoLink,
 }) => {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as keyof BilingualText;
+  const { t } = useTranslation(); // i18n instance no longer needed for content selection
 
-  const displayTitle = title[currentLang] || title.en;
-  const displayDescription = description[currentLang] || description.en;
+  // title and description are now directly the English strings
+  const displayTitle = title;
+  const displayDescription = description;
 
   return (
     // <motion.div
@@ -41,16 +35,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     //   animate={{ opacity: 1, y: 0 }}
     //   transition={{ duration: 0.5 }}
     //   whileHover={{ scale: 1.03 }}
-    //   className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col"
+    //   className="bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden flex flex-col" // Updated dark bg
     // >
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex flex-col h-full"> {/* Added h-full for consistent card height if needed */}
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300"> {/* Updated dark bg & shadow */}
       {imageUrl ? (
         <div className="relative w-full h-48 sm:h-56">
           <Image src={imageUrl} alt={displayTitle} layout="fill" objectFit="cover" />
         </div>
       ) : (
-        <div className="w-full h-48 sm:h-56 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-          <span className="text-gray-500 dark:text-gray-400">{t('No Image')}</span>
+        <div className="w-full h-48 sm:h-56 bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-colors duration-300"> {/* Updated placeholder bg */}
+          <span className="text-slate-500 dark:text-slate-400">{t('No Image')}</span>
         </div>
       )}
       <div className="p-6 flex-grow flex flex-col justify-between">

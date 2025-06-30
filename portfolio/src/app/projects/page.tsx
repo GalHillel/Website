@@ -8,10 +8,11 @@ import AnimatedSection from '@/components/AnimatedSection';
 import { motion } from 'framer-motion';
 import { useState, useMemo } from 'react';
 
+// Type for project data from JSON, title and description are now strings
 interface ProjectData {
   id: string;
-  title: { en: string; he: string };
-  description: { en: string; he: string };
+  title: string; // Was bilingual: { en: string; he: string };
+  description: string; // Was bilingual: { en: string; he: string };
   imageUrl?: string | null;
   tags: string[];
   githubLink?: string;
@@ -22,7 +23,8 @@ export default function ProjectsPage() {
   const { t } = useTranslation();
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const projects: ProjectData[] = siteContent.projects as ProjectData[];
+  // Assert projects as ProjectData[] after simplification of SiteContent.json
+  const projects: ProjectData[] = siteContent.projects as unknown as ProjectData[];
 
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
@@ -52,7 +54,7 @@ export default function ProjectsPage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, // Stagger animation for each card
+        staggerChildren: 0.1,
       },
     },
   };
@@ -109,8 +111,8 @@ export default function ProjectsPage() {
           {filteredProjects.map((project) => (
             <motion.div key={project.id} variants={cardVariants}>
               <ProjectCard
-                title={project.title}
-                description={project.description}
+                title={project.title} // Now passing string directly
+                description={project.description} // Now passing string directly
                 imageUrl={project.imageUrl}
                 tags={project.tags}
                 githubLink={project.githubLink}

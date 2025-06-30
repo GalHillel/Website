@@ -11,15 +11,24 @@ const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
 export default function AdminPage() {
   const { t } = useTranslation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { t, i18n } = useTranslation(); // Modified to get i18n instance
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // This will now also depend on i18n initialization
 
   useEffect(() => {
     const sessionAuth = sessionStorage.getItem('adminAuthenticated');
     if (sessionAuth === 'true') {
       setIsAuthenticated(true);
     }
-    setIsLoading(false);
+    // setIsLoading(false); // Defer this until i18n is also ready or checked
   }, []);
+
+  // New useEffect to handle combined loading state based on mount and i18n readiness
+  useEffect(() => {
+    if (i18n.isInitialized) {
+      setIsLoading(false);
+    }
+  }, [i18n.isInitialized]);
 
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -32,7 +41,7 @@ export default function AdminPage() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !i18n.isInitialized) { // Combined check
     return <div className="flex justify-center items-center min-h-screen"><p>{t('Loading...')}</p></div>;
   }
 

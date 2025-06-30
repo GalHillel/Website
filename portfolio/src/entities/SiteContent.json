@@ -7,37 +7,19 @@
     "profileImage": "/placeholder-profile.jpg"
   },
   "hero": {
-    "tagline": {
-      "en": "Software Developer | Problem Solver | Tech Enthusiast",
-      "he": "מפתח תוכנה | פותר בעיות | חובב טכנולוגיה"
-    },
-    "intro": {
-      "en": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
-      "he": "אני בונה אפליקציות ווב מודרניות, סקיילביליות וידידותיות למשתמש. גלה את העבודות והכישורים שלי."
-    }
+    "tagline": "Software Developer | Problem Solver | Tech Enthusiast",
+    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work and skills."
   },
   "about": {
-    "bio": {
-      "en": "A results-driven software developer with a strong foundation in Computer Science, Mathematics, and Software Engineering. Experienced in building scalable backend systems, intuitive frontends, and machine learning tools. Passionate about elegant architecture, real-world impact, and clean code.",
-      "he": "מפתח תוכנה מונחה תוצאות עם בסיס חזק במדעי המחשב, מתמטיקה והנדסת תוכנה. מנוסה בבניית מערכות backend סקיילביליות, פיתוח frontend אינטואיטיבי, וכלי למידת מכונה. נלהב מארכיטקטורה אלגנטית, השפעה בעולם האמיתי וקוד נקי."
-    },
-    "education": {
-      "en": "B.Sc. Computer Science & Mathematics - [University Name] (Year)",
-      "he": "תואר ראשון במדעי המחשב ומתמטיקה - [שם האוניברסיטה] (שנה)"
-    },
-    "csMathBackground": {
-      "en": "Deep understanding of algorithms, data structures, discrete mathematics, linear algebra, and calculus. Applied this knowledge in various academic and personal projects, focusing on efficient solutions and analytical problem-solving.",
-      "he": "הבנה מעמיקה של אלגוריתמים, מבני נתונים, מתמטיקה בדידה, אלגברה לינארית וחשבון אינפיניטסימלי. יישמתי ידע זה במגוון פרויקטים אקדמיים ואישיים, תוך התמקדות בפתרונות יעילים ופתרון בעיות אנליטי."
-    }
+    "bio": "A results-driven software developer with a strong foundation in Computer Science, Mathematics, and Software Engineering. Experienced in building scalable backend systems, intuitive frontends, and machine learning tools. Passionate about elegant architecture, real-world impact, and clean code.",
+    "education": "B.Sc. Computer Science & Mathematics - [University Name] (Year)",
+    "csMathBackground": "Deep understanding of algorithms, data structures, discrete mathematics, linear algebra, and calculus. Applied this knowledge in various academic and personal projects, focusing on efficient solutions and analytical problem-solving."
   },
   "projects": [
     {
       "id": "proj1",
-      "title": { "en": "Project Alpha", "he": "פרויקט אלפא" },
-      "description": {
-        "en": "A cool web application built with modern technologies to solve an interesting problem. Features X, Y, and Z.",
-        "he": "אפליקציית רשת מגניבה שנבנתה בטכנולוגיות מודרניות לפתרון בעיה מעניינת. כוללת X, Y, ו-Z."
-      },
+      "title": "Project Alpha",
+      "description": "A cool web application built with modern technologies to solve an interesting problem. Features X, Y, and Z.",
       "imageUrl": "/placeholder-project-1.jpg",
       "tags": ["React", "Node.js", "TypeScript"],
       "githubLink": "https://github.com/GalHillel/project-alpha-placeholder",
@@ -45,43 +27,64 @@
     },
     {
       "id": "proj2",
-      "title": { "en": "Project Beta", "he": "פרויקט בטא" },
-      "description": {
-        "en": "An innovative mobile app that streamlines daily tasks. Focuses on user experience and performance.",
-        "he": "אפליקציה סלולרית חדשנית המייעלת משימות יומיות. מתמקדת בחווית משתמש וביצועים."
-      },
+      "title": "Project Beta",
+      "description": "An innovative mobile app that streamlines daily tasks. Focuses on user experience and performance.",
       "imageUrl": "/placeholder-project-2.jpg",
       "tags": ["React Native", "Firebase"],
       "githubLink": "https://github.com/GalHillel/project-beta-placeholder",
+      "demoLink": "#"
+    },
+    {
+      "id": "proj3",
+      "title": "Project Gamma",
+      "description": "A data visualization tool that provides insights from complex datasets. Utilizes D3.js and Python.",
+      "imageUrl": null,
+      "tags": ["Python", "D3.js", "Flask"],
+      "githubLink": "#"
+    },
+    {
+      "id": "proj4",
+      "title": "Project Delta",
+      "description": "An e-commerce platform with a custom CMS and payment gateway integration. Scalable and secure.",
+      "imageUrl": "/placeholder-project-4.jpg",
+      "tags": ["Next.js", "Stripe", "Tailwind CSS"],
       "demoLink": "#"
     }
   ],
   "skills": [
     {
-      "category": { "en": "Frontend Development", "he": "פיתוח Frontend" },
+      "category": "Frontend Development",
       "items": [
         { "name": "HTML5", "proficiency": 95 },
         { "name": "CSS3 & SCSS", "proficiency": 90 },
-        { "name": "JavaScript (ES6+)", "proficiency": 92 }
+        { "name": "JavaScript (ES6+)", "proficiency": 92 },
+        { "name": "TypeScript", "proficiency": 88 },
+        { "name": "React", "proficiency": 93 },
+        { "name": "Next.js", "proficiency": 85 },
+        { "name": "Tailwind CSS", "proficiency": 90 }
       ]
     },
     {
-      "category": { "en": "Backend Development", "he": "פיתוח Backend" },
+      "category": "Backend Development",
       "items": [
         { "name": "Node.js", "proficiency": 88 },
-        { "name": "Python", "proficiency": 90 }
+        { "name": "Express.js", "proficiency": 85 },
+        { "name": "Python", "proficiency": 90 },
+        { "name": "RESTful APIs", "proficiency": 92 }
+      ]
+    },
+    {
+      "category": "Databases & Storage",
+      "items": [
+        { "name": "PostgreSQL", "proficiency": 80 },
+        { "name": "MongoDB", "proficiency": 82 },
+        { "name": "Firebase", "proficiency": 78 }
       ]
     }
   ],
   "resumeUrl": "/resume/Gal_Hillel_Resume.pdf",
   "metadata": {
-    "title": {
-      "en": "Gal Hillel - Software Developer",
-      "he": "גל הילל - מפתח תוכנה"
-    },
-    "description": {
-      "en": "Personal portfolio of Gal Hillel, showcasing projects and skills in software development.",
-      "he": "תיק עבודות אישי של גל הילל, המציג פרויקטים וכישורים בפיתוח תוכנה."
-    }
+    "title": "Gal Hillel - Software Developer",
+    "description": "Personal portfolio of Gal Hillel, showcasing projects and skills in software development."
   }
 }

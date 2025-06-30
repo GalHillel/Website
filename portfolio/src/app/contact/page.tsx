@@ -31,11 +31,11 @@ export default function ContactPage() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
-        <AnimatedSection delay={0.2} className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-lg shadow-xl"> {/* Enhanced shadow */}
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">{t('Send Me a Message')}</h2>
+        <AnimatedSection delay={0.2} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl transition-colors duration-300"> {/* Updated dark bg */}
+          <h2 className="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-100">{t('Send Me a Message')}</h2> {/* Adjusted text color */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"> {/* Adjusted text color */}
                 {t('Your Name')}
               </label>
               <input
@@ -43,12 +43,12 @@ export default function ContactPage() {
                 name="name"
                 id="name"
                 required
-                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500 transition-colors duration-300" // Adjusted colors
                 placeholder={t('Enter your name')}
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"> {/* Adjusted text color */}
                 {t('Your Email')}
               </label>
               <input
@@ -56,12 +56,12 @@ export default function ContactPage() {
                 name="email"
                 id="email"
                 required
-                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500 transition-colors duration-300" // Adjusted colors
                 placeholder={t('Enter your email address')}
               />
             </div>
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="message" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"> {/* Adjusted text color */}
                 {t('Your Message')}
               </label>
               <textarea
@@ -69,7 +69,7 @@ export default function ContactPage() {
                 id="message"
                 required
                 rows={4}
-                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                className="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500 transition-colors duration-300" // Adjusted colors
                 placeholder={t('Write your message here...')}
               ></textarea>
             </div>
@@ -86,8 +86,8 @@ export default function ContactPage() {
           </form>
         </AnimatedSection>
 
-        <AnimatedSection delay={0.4} className="space-y-6 text-gray-700 dark:text-gray-300">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-100">{t('Contact Information')}</h2>
+        <AnimatedSection delay={0.4} className="space-y-6 text-slate-700 dark:text-slate-300"> {/* Adjusted text color */}
+          <h2 className="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-100">{t('Contact Information')}</h2> {/* Adjusted text color */}
           <p className="leading-relaxed">
             {t('Feel free to reach out through any of these platforms. I look forward to hearing from you!')}
           </p>
@@ -95,7 +95,7 @@ export default function ContactPage() {
             {user.linkedin && (
               <motion.a
                 href={user.linkedin} target="_blank" rel="noopener noreferrer"
-                className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/60 hover:bg-gray-100 dark:hover:bg-gray-600/60 rounded-lg transition-colors shadow-sm hover:shadow-md"
+                className="flex items-center p-3 bg-slate-50 dark:bg-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm hover:shadow-md" // Adjusted colors
                 whileHover={{ y: -2 }}
               >
                 <LinkedInIcon />
@@ -105,17 +105,17 @@ export default function ContactPage() {
             {user.github && (
               <motion.a
                 href={user.github} target="_blank" rel="noopener noreferrer"
-                className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/60 hover:bg-gray-100 dark:hover:bg-gray-600/60 rounded-lg transition-colors shadow-sm hover:shadow-md"
+                className="flex items-center p-3 bg-slate-50 dark:bg-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm hover:shadow-md" // Adjusted colors
                 whileHover={{ y: -2 }}
               >
                 <GitHubIcon />
-                <span className="ml-3 font-medium text-gray-800 dark:text-gray-200">{t('GitHub Profile')}</span>
+                <span className="ml-3 font-medium text-slate-800 dark:text-slate-200">{t('GitHub Profile')}</span>
               </motion.a>
             )}
             {user.email && (
               <motion.a
                 href={`mailto:${user.email}`}
-                className="flex items-center p-3 bg-gray-50 dark:bg-gray-700/60 hover:bg-gray-100 dark:hover:bg-gray-600/60 rounded-lg transition-colors shadow-sm hover:shadow-md"
+                className="flex items-center p-3 bg-slate-50 dark:bg-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-sm hover:shadow-md" // Adjusted colors
                 whileHover={{ y: -2 }}
               >
                 <EmailIcon />

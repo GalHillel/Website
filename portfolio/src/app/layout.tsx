@@ -73,13 +73,12 @@ export default function RootLayout({
   children: React.ReactNode;
   params?: { lang?: string };
 }>) {
-  // Initial lang and dir are static. Client-side i18n will update them.
-  // This avoids depending on i18nInstance on the server.
-  const initialLang = 'en';
-  const initialDir = 'ltr';
+  // Language is now fixed to English, direction to LTR.
+  const siteLang = 'en';
+  const siteDir = 'ltr';
 
   return (
-    <html lang={initialLang} dir={initialDir} suppressHydrationWarning>
+    <html lang={siteLang} dir={siteDir} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100`}
       >

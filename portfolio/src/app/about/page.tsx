@@ -7,14 +7,14 @@ import siteContent from '@/entities/SiteContent.json';
 import AnimatedSection from '@/components/AnimatedSection';
 
 export default function AboutPage() {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as keyof typeof siteContent.about.bio;
+  const { t } = useTranslation(); // i18n instance no longer needed for content selection
 
   const { user, about } = siteContent;
 
-  const bioText = about.bio[currentLang] || about.bio.en;
-  const educationText = about.education[currentLang] || about.education.en;
-  const csMathText = about.csMathBackground[currentLang] || about.csMathBackground.en;
+  // Directly use English content
+  const bioText = about.bio;
+  const educationText = about.education;
+  const csMathText = about.csMathBackground;
   const profileImageUrl = user.profileImage || "/placeholder-profile.jpg";
 
   return (
@@ -26,7 +26,7 @@ export default function AboutPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 items-start">
         {/* Profile Photo Section */}
         <AnimatedSection delay={0.2} className="md:col-span-1 flex flex-col items-center">
-          <div className="w-48 h-48 md:w-64 md:h-64 relative rounded-full overflow-hidden shadow-lg mb-4 bg-gray-200 dark:bg-gray-700">
+          <div className="w-48 h-48 md:w-64 md:h-64 relative rounded-full overflow-hidden shadow-lg mb-4 bg-slate-200 dark:bg-slate-700">
             <Image
               src={profileImageUrl}
               alt={t('Profile Photo Alt', { name: user.name }) || `${user.name} - Profile Photo`}

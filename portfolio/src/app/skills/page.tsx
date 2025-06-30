@@ -12,10 +12,7 @@ interface SkillItem {
 }
 
 interface SkillCategory {
-  category: {
-    en: string;
-    he: string;
-  };
+  category: string; // Was bilingual { en: string; he: string; };
   items: SkillItem[];
 }
 
@@ -51,10 +48,9 @@ const SkillBar: React.FC<{ name: string; proficiency: number }> = ({ name, profi
 
 
 export default function SkillsPage() {
-  const { t, i18n } = useTranslation();
-  const currentLang = i18n.language as keyof SkillCategory['category'];
+  const { t } = useTranslation(); // i18n instance no longer needed for category name selection
 
-  const skillsData: SkillCategory[] = siteContent.skills as SkillCategory[];
+  const skillsData: SkillCategory[] = siteContent.skills as unknown as SkillCategory[]; // Assert type after JSON change
 
   return (
     <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
@@ -64,14 +60,14 @@ export default function SkillsPage() {
 
       <div className="space-y-12">
         {skillsData.map((categoryGroup, index) => {
-          const categoryName = categoryGroup.category[currentLang] || categoryGroup.category.en;
+          const categoryName = categoryGroup.category; // Now directly the English string
           return (
             <AnimatedSection
               key={categoryName + index}
               delay={0.2 + index * 0.1} // Stagger category appearance
-              className="p-6 md:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-xl"
+              className="p-6 md:p-8 bg-white dark:bg-slate-800 rounded-xl shadow-xl transition-colors duration-300" // Updated dark bg
             >
-              <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-gray-800 dark:text-gray-200 border-b-2 border-blue-500 dark:border-blue-400 pb-3">
+              <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-slate-800 dark:text-slate-100 border-b-2 border-blue-500 dark:border-blue-400 pb-3"> {/* Adjusted text colors */}
                 {categoryName}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
