@@ -34,17 +34,21 @@ const Header = () => {
 
   useEffect(() => {
     setMounted(true);
-    document.documentElement.lang = i18n.language;
-    document.documentElement.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
-  }, [i18n.language]);
+    if (i18n.isInitialized) { // Ensure i18n is ready before using its properties
+        document.documentElement.lang = i18n.language;
+        document.documentElement.dir = i18n.language === 'he' ? 'rtl' : 'ltr';
+    }
+  }, [i18n.language, i18n.isInitialized]); // Add i18n.isInitialized to dependencies
 
   const changeLanguage = () => {
+    if (!i18n.isInitialized) return;
     const newLang = i18n.language === 'en' ? 'he' : 'en';
     i18n.changeLanguage(newLang);
-    setIsMobileMenuOpen(false); // Close menu on language change
+    setIsMobileMenuOpen(false);
   };
 
   const toggleTheme = () => {
+    if (!mounted) return; // Ensure mounted before using theme
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
@@ -60,13 +64,18 @@ const Header = () => {
     { href: "/contact", labelKey: "Contact" },
   ];
 
-  if (!mounted) {
-    // To prevent hydration mismatch and show a basic layout structure
+  // Placeholder to prevent errors if hooks aren't ready or component not mounted
+  // This ensures all hooks are called unconditionally at the top.
+  if (!mounted || !i18n.isInitialized) {
     return (
       <header className="bg-gray-100 dark:bg-gray-900 shadow-md text-gray-700 dark:text-gray-200">
-        <nav className="container mx-auto px-6 py-3 flex justify-between items-center h-[60px]"> {/* Fixed height */}
-           <div className="text-xl font-semibold">Gal Hillel</div>
-           <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 rounded"></div> {/* Placeholder for menu button */}
+        <nav className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center h-[60px]">
+           <div className="text-xl font-semibold animate-pulse">Gal Hillel</div>
+           <div className="flex space-x-2">
+             <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
+             <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse"></div>
+             <div className="w-6 h-6 bg-gray-300 dark:bg-gray-700 rounded-md animate-pulse md:hidden"></div> {/* Hamburger placeholder */}
+           </div>
         </nav>
       </header>
     );
@@ -152,8 +161,8 @@ const Header = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="py-2 text-lg hover:text-blue-500 dark:hover:text-blue-400 transition-colors w-full text-center"
                   onClick={toggleMobileMenu} // Close menu on link click
+                  className="py-2 text-lg hover:text-blue-500 dark:hover:text-blue-400 transition-colors w-full text-center"
                 >
                   {t(link.labelKey)}
                 </Link>

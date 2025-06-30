@@ -72,17 +72,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
         <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700"> {/* Added top border for separation */}
           {githubLink && (
-            <Link href={githubLink} target="_blank" rel="noopener noreferrer" legacyBehavior>
-              <a className="text-sm bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white py-2 px-4 rounded-md transition-colors duration-300">
-                {t('GitHub Repo')}
-              </a>
+            <Link href={githubLink} target="_blank" rel="noopener noreferrer" className="text-sm bg-gray-700 hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 text-white py-2 px-4 rounded-md transition-colors duration-300">
+              {t('GitHub Repo')}
             </Link>
           )}
           {demoLink && (
-            <Link href={demoLink} target="_blank" rel="noopener noreferrer" legacyBehavior>
-              <a className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300">
-                {t('Live Demo')}
-              </a>
+            <Link href={demoLink} target="_blank" rel="noopener noreferrer" className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300">
+              {t('Live Demo')}
             </Link>
           )}
         </div>

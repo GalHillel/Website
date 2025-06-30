@@ -35,15 +35,11 @@ export default function HomePage() {
       {/* CTA Buttons Section */}
       <AnimatedSection delay={0.5} className="mb-16 md:mb-20"> {/* Added margin to prevent overlap with scroll icon */}
         <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row items-center">
-          <Link href="/projects" legacyBehavior>
-            <a className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 text-lg">
-              {t('View Projects')}
-            </a>
+          <Link href="/projects" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 text-lg">
+            {t('View Projects')}
           </Link>
-          <Link href="/contact" legacyBehavior>
-            <a className="w-full sm:w-auto bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold py-3 px-8 rounded-lg border-2 border-blue-600 dark:border-blue-400 transition-colors duration-300 text-lg">
-              {t('Get in Touch')}
-            </a>
+          <Link href="/contact" className="w-full sm:w-auto bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold py-3 px-8 rounded-lg border-2 border-blue-600 dark:border-blue-400 transition-colors duration-300 text-lg">
+            {t('Get in Touch')}
           </Link>
         </div>
       </AnimatedSection>

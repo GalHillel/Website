@@ -126,8 +126,8 @@ export default function ContactPage() {
           {resumeUrl && (
             <p className="mt-6 text-sm">
               {t('ResumeDownloadPrompt')}
-              <Link href={resumeUrl} target="_blank" legacyBehavior download>
-                <a className="text-blue-600 dark:text-blue-400 hover:underline font-semibold ml-1">{t('Download Resume')}</a>
+                <Link href={resumeUrl} target="_blank" download className="text-blue-600 dark:text-blue-400 hover:underline font-semibold ml-1">
+                  {t('Download Resume')}
               </Link>
             </p>
           )}
