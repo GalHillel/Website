@@ -4,7 +4,7 @@ import "./globals.css";
 import Layout from "@/components/Layout";
 // Removed: import I18nProviderClientComponent from "@/components/I18nProviderClientComponent";
 // Removed: import i18nInstance from '@/i18n';
-import LoadI18n from "@/components/LoadI18n"; // Added
+// import LoadI18n from "@/components/LoadI18n"; // Removed
 import { ThemeProviderComponent } from "@/components/ThemeProviderComponent";
 import siteContent from '@/entities/SiteContent.json';
 
@@ -82,7 +82,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100`}
       >
-        <LoadI18n /> {/* Load i18n setup on client */}
+        {/* <LoadI18n /> // Removed */}
         <ThemeProviderComponent
           attribute="class"
           defaultTheme="system"

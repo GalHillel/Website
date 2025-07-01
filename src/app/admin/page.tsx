@@ -2,39 +2,25 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import AdminDashboardClient from '@/components/admin/AdminDashboardClient'; // Import the new component
+// import { useTranslation } from 'react-i18next'; // Removed
+import AdminDashboardClient from '@/components/admin/AdminDashboardClient';
 
 // This would ideally be a more secure server-side check
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123";
 
 export default function AdminPage() {
-  // const { t } = useTranslation(); // Removed duplicate
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Keep one
-  const { t, i18n } = useTranslation(); // Keep this one as it includes i18n instance
-  // const [isAuthenticated, setIsAuthenticated] = useState(false); // Removed duplicate state
-  const [isLoading, setIsLoading] = useState(true); // This will track overall page readiness
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const { t, i18n } = useTranslation(); // Removed
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check session storage for authentication
     const sessionAuth = sessionStorage.getItem('adminAuthenticated');
     if (sessionAuth === 'true') {
       setIsAuthenticated(true);
     }
-    // Component has mounted, initial auth check done.
-    // If i18n is already initialized, we can set loading to false.
-    // Otherwise, the second useEffect will handle it.
-    if (i18n.isInitialized) {
-      setIsLoading(false);
-    }
-  }, [i18n.isInitialized]); // Add i18n.isInitialized here to re-run if it changes
+    setIsLoading(false); // Simplified loading, set to false after initial check
+  }, []);
 
-  // This effect ensures that if i18n initializes later, loading is still turned off.
-  useEffect(() => {
-    if (i18n.isInitialized && isLoading) { // Only run if still loading
-      setIsLoading(false);
-    }
-  }, [i18n.isInitialized, isLoading]);
 
   const handlePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,23 +29,23 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       sessionStorage.setItem('adminAuthenticated', 'true');
     } else {
-      alert(t('Incorrect Password'));
+      alert('Incorrect Password'); // Replaced t()
     }
   };
 
-  if (isLoading || !i18n.isInitialized) { // Combined check
-    return <div className="flex justify-center items-center min-h-screen"><p>{t('Loading...')}</p></div>;
+  if (isLoading) { // Simplified check
+    return <div className="flex justify-center items-center min-h-screen"><p>Loading...</p></div>; // Replaced t()
   }
 
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
         <div className="w-full max-w-xs p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">{t('Admin Login')}</h1>
+          <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Admin Login</h1> {/* Replaced t() */}
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('Password')}
+                Password {/* Replaced t() */}
               </label>
               <input
                 type="password"
@@ -73,7 +59,7 @@ export default function AdminPage() {
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              {t('Login')}
+              Login {/* Replaced t() */}
             </button>
           </form>
         </div>
@@ -85,12 +71,9 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
-        {t('Admin Dashboard')}
+        Admin Dashboard {/* Replaced t() */}
       </h1>
       <AdminDashboardClient />
     </div>
   );
 }
-
-// Translation keys used here are for the login part.
-// AdminDashboardClient will manage its own text and potentially use its own t() scope or passed t().

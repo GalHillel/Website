@@ -1,7 +1,7 @@
 // @/app/projects/page.tsx
 "use client";
 
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed
 import ProjectCard from '@/components/ProjectCard';
 import siteContent from '@/entities/SiteContent.json';
 import AnimatedSection from '@/components/AnimatedSection';
@@ -20,7 +20,7 @@ interface ProjectData {
 }
 
 export default function ProjectsPage() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Assert projects as ProjectData[] after simplification of SiteContent.json
@@ -67,12 +67,12 @@ export default function ProjectsPage() {
   return (
     <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
-        {t('My Projects')}
+        My Projects {/* Replaced t() */}
       </h1>
 
       {allTags.length > 0 && (
         <AnimatedSection delay={0.2} className="mb-8 md:mb-12 text-center">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">{t('Filter by Technology')}</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Filter by Technology</h2> {/* Replaced t() */}
           <div className="flex flex-wrap justify-center gap-2">
             {allTags.map(tag => (
               <motion.button
@@ -86,7 +86,7 @@ export default function ProjectsPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {t(tag) || tag}
+                {tag} {/* Replaced t() */}
               </motion.button>
             ))}
           </div>
@@ -95,7 +95,7 @@ export default function ProjectsPage() {
               onClick={() => setSelectedTags([])}
               className="mt-6 text-sm text-blue-600 dark:text-blue-400 hover:underline"
             >
-              {t('Clear Filters')}
+              Clear Filters {/* Replaced t() */}
             </button>
           )}
         </AnimatedSection>
@@ -111,8 +111,8 @@ export default function ProjectsPage() {
           {filteredProjects.map((project) => (
             <motion.div key={project.id} variants={cardVariants}>
               <ProjectCard
-                title={project.title} // Now passing string directly
-                description={project.description} // Now passing string directly
+                title={project.title}
+                description={project.description}
                 imageUrl={project.imageUrl}
                 tags={project.tags}
                 githubLink={project.githubLink}
@@ -124,8 +124,8 @@ export default function ProjectsPage() {
       ) : (
         <p className="text-center text-gray-600 dark:text-gray-400 text-lg mt-8">
           {selectedTags.length > 0
-            ? t('No projects match the selected filters.')
-            : t('No projects available at the moment. Please check back later!')}
+            ? 'No projects match the selected filters.' // Replaced t()
+            : 'No projects available at the moment. Please check back later!'} {/* Replaced t() */}
         </p>
       )}
     </AnimatedSection>

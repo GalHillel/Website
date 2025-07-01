@@ -2,8 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'; // Added
-import { useTranslation } from 'react-i18next';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,16 +28,15 @@ const HamburgerIcon = ({ open }: { open: boolean }) => (
 );
 
 const Header = () => {
-  const { t, i18n } = useTranslation();
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const pathname = usePathname(); // Added
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    document.documentElement.lang = 'en';
-    document.documentElement.dir = 'ltr';
+    // document.documentElement.lang = 'en'; // Removed, handled in RootLayout
+    // document.documentElement.dir = 'ltr'; // Removed, handled in RootLayout
   }, []);
 
   const toggleTheme = () => {
@@ -58,8 +56,9 @@ const Header = () => {
     { href: "/contact", labelKey: "Contact" },
   ];
 
-  if (!mounted || !i18n.isInitialized) {
-    // Placeholder while loading translation or theme
+  // Simplified loading state: only depends on mounted state for theme readiness
+  if (!mounted) {
+    // Placeholder while loading theme
     return (
       <header className="bg-slate-100 dark:bg-slate-900 shadow-md text-slate-700 dark:text-slate-200">
         <nav className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center h-[60px]">
@@ -81,7 +80,7 @@ const Header = () => {
           href="/"
           className="text-2xl font-extrabold hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
           onClick={() => setIsMobileMenuOpen(false)}
-          aria-label={t('Go to homepage')}
+          aria-label="Go to homepage" // Replaced t()
         >
           Gal Hillel
         </Link>
@@ -99,14 +98,14 @@ const Header = () => {
                           } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-sm`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t(labelKey)}
+              {labelKey} {/* Replaced t() */}
             </Link>
           ))}
           <button
             onClick={toggleTheme}
-            aria-label={t('Toggle theme')}
+            aria-label="Toggle theme" // Replaced t()
             className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title={t('Toggle light/dark theme')}
+            title="Toggle light/dark theme" // Replaced t()
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
           </button>
@@ -116,17 +115,17 @@ const Header = () => {
         <div className="md:hidden flex items-center space-x-3">
           <button
             onClick={toggleTheme}
-            aria-label={t('Toggle theme')}
+            aria-label="Toggle theme" // Replaced t()
             className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title={t('Toggle light/dark theme')}
+            title="Toggle light/dark theme" // Replaced t()
           >
             {resolvedTheme === 'dark' ? '☀️' : '🌙'}
           </button>
           <button
             onClick={toggleMobileMenu}
-            aria-label={t('Toggle navigation menu')}
+            aria-label="Toggle navigation menu" // Replaced t()
             className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title={t('Toggle navigation menu')}
+            title="Toggle navigation menu" // Replaced t()
           >
             <HamburgerIcon open={isMobileMenuOpen} />
           </button>
@@ -155,7 +154,7 @@ const Header = () => {
                                 : 'text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700'
                               } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900`}
                 >
-                  {t(labelKey)}
+                  {labelKey} {/* Replaced t() */}
                 </Link>
               ))}
             </div>

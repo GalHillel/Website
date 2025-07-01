@@ -3,10 +3,8 @@
 
 import Link from 'next/link';
 import siteContent from '@/entities/SiteContent.json';
-import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
-  const { t } = useTranslation();
   const { user } = siteContent; // Get user data for links
   const currentYear = new Date().getFullYear();
 
@@ -43,7 +41,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-sm text-center md:text-left">
-            {t('copyRight', { year: currentYear })}
+            {`© ${currentYear} Gal Hillel. All rights reserved.`} {/* Replaced t() */}
           </p>
 
           <div className="flex space-x-6 items-center"> {/* Increased space-x for slightly more room */}
@@ -53,7 +51,7 @@ const Footer = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={t(link.name)}
+                aria-label={link.name} // Replaced t()
                 className="group p-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 transition-transform duration-200 ease-in-out hover:-translate-y-0.5"
               >
                 <link.IconComponent />
