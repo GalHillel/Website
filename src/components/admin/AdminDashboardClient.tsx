@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import siteContentData from "@/entities/SiteContent.json";
+// Removed: import siteContentData from "@/entities/SiteContent.json";
 
 // Simplified types for English-only content
 interface UserContent {
@@ -53,36 +53,42 @@ interface SiteContentAdmin {
 }
 
 const AdminDashboardClient = () => {
-  const initialContent: SiteContentAdmin = {
-    user: siteContentData.user,
-    hero: siteContentData.hero,
-    about: siteContentData.about,
-    projects: siteContentData.projects as Project[],
-    skills: siteContentData.skills as SkillCategory[],
-    resumeUrl: siteContentData.resumeUrl,
-    metadata: siteContentData.metadata,
-  };
+  // initialContent is now fetched from API
   const [content, setContent] = useState<SiteContentAdmin | null>(null);
   const [isContentLoading, setIsContentLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<
     "idle" | "saving" | "success" | "error"
   >("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const localStorageKey = "adminSiteContent";
 
   useEffect(() => {
-    try {
-      const storedContent = localStorage.getItem(localStorageKey);
-      if (storedContent) {
-        setContent(JSON.parse(storedContent));
-      } else {
-        setContent(initialContent);
+    const fetchContent = async () => {
+      setIsContentLoading(true);
+      setFetchError(null);
+      try {
+        const response = await fetch("/api/admin/content");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `Failed to fetch content: ${response.statusText}`);
+        }
+        const data: SiteContentAdmin = await response.json();
+        setContent(data);
+      } catch (error) {
+        console.error("Error loading content from API:", error);
+        if (error instanceof Error) {
+          setFetchError(error.message);
+        } else {
+          setFetchError("An unknown error occurred while fetching content.");
+        }
+        // Optionally, load fallback or provide a way to retry
+      } finally {
+        setIsContentLoading(false);
       }
-    } catch (error) {
-      console.error("Error loading content from localStorage:", error);
-      setContent(initialContent);
-    }
-    setIsContentLoading(false);
+    };
+
+    fetchContent();
   }, []);
 
   const handleNestedInputChange = (path: string, value: string | number) => {
@@ -123,15 +129,33 @@ const AdminDashboardClient = () => {
   const handleSave = async () => {
     if (!content) return;
     setSaveStatus("saving");
+    setSaveError(null);
     try {
-      localStorage.setItem(localStorageKey, JSON.stringify(content));
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      const response = await fetch("/api/admin/content", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(content),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Failed to save content: ${response.statusText}`);
+      }
+
+      // const result = await response.json(); // Contains { message: "..." }
       setSaveStatus("success");
       setTimeout(() => setSaveStatus("idle"), 3000);
     } catch (error) {
-      console.error("Error saving content to localStorage:", error);
+      console.error("Error saving content via API:", error);
+      if (error instanceof Error) {
+        setSaveError(error.message);
+      } else {
+        setSaveError("An unknown error occurred while saving content.");
+      }
       setSaveStatus("error");
-      setTimeout(() => setSaveStatus("idle"), 5000);
+      setTimeout(() => setSaveStatus("idle"), 5000); // Keep error message visible longer
     }
   };
 
@@ -222,8 +246,27 @@ const AdminDashboardClient = () => {
   };
 
 
-  if (isContentLoading || !content) {
+  if (isContentLoading) {
     return <p className="text-center py-10">Loading content editor...</p>;
+  }
+
+  if (fetchError) {
+    return (
+      <div className="text-center py-10">
+        <p className="text-red-500 dark:text-red-400 text-xl">
+          Error loading content: {fetchError}
+        </p>
+        <p className="mt-2 text-slate-600 dark:text-slate-300">
+          Please try refreshing the page or contact support if the issue persists.
+        </p>
+      </div>
+    );
+  }
+
+  if (!content) {
+    // This case should ideally be covered by fetchError if API fails,
+    // but as a fallback if content is null without a specific fetchError.
+    return <p className="text-center py-10">No content available. Please try again later.</p>;
   }
 
   const buttonClass = "px-4 py-2 text-sm font-medium rounded-md transition-colors";
@@ -768,9 +811,14 @@ const AdminDashboardClient = () => {
           {saveStatus === "idle" && "Save Local Changes"}
         </button>
       </div>
-      {saveStatus === "error" && (
+      {saveStatus === "error" && saveError && (
         <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">
-          Failed to save changes to local storage.
+          Save Error: {saveError}
+        </p>
+      )}
+      {saveStatus === "error" && !saveError && (
+         <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">
+          Failed to save changes. Please try again.
         </p>
       )}
     </div>
