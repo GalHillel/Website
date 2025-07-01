@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed
 import siteContentData from '@/entities/SiteContent.json';
 
 // Simplified types for English-only content
@@ -54,7 +54,7 @@ interface SiteContentAdmin {
 }
 
 const AdminDashboardClient = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed
   // Ensure initial data conforms to SiteContentAdmin (important after JSON structure change)
   const initialContent: SiteContentAdmin = {
     user: siteContentData.user,
@@ -146,43 +146,43 @@ const AdminDashboardClient = () => {
   };
 
   if (isContentLoading || !content) { // Use renamed state and updated loading check
-    return <p className="text-center py-10">{t('Loading content editor...')}</p>;
+    return <p className="text-center py-10">Loading content editor...</p>; // Replaced t()
   }
 
   return (
     <div className="space-y-8">
       <div className="p-4 bg-yellow-100 dark:bg-yellow-800/30 border-l-4 border-yellow-500 dark:border-yellow-400 rounded-md">
         <p className="text-sm text-yellow-700 dark:text-yellow-200">
-          <strong>{t('Note')}:</strong> {t('Changes made here are saved locally in your browser (using localStorage) and will not affect the live website data or other users. This is for demonstration purposes only.')}
+          <strong>Note:</strong> Changes made here are saved locally in your browser (using localStorage) and will not affect the live website data or other users. This is for demonstration purposes only. {/* Replaced t() */}
         </p>
       </div>
 
       {/* User Info Section */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('User Information')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">User Information</h2> {/* Replaced t() */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="userName" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Name')}</label>
+            <label htmlFor="userName" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label> {/* Replaced t() */}
             <input type="text" id="userName" value={content.user.name} onChange={(e) => handleNestedInputChange('user.name', e.target.value)}
                    className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
           </div>
           <div>
-            <label htmlFor="userEmail" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Email')}</label>
+            <label htmlFor="userEmail" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label> {/* Replaced t() */}
             <input type="email" id="userEmail" value={content.user.email} onChange={(e) => handleNestedInputChange('user.email', e.target.value)}
                    className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
           </div>
           <div>
-            <label htmlFor="userGithub" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('GitHub Profile URL')}</label>
+            <label htmlFor="userGithub" className="block text-sm font-medium text-slate-700 dark:text-slate-300">GitHub Profile URL</label> {/* Replaced t() */}
             <input type="url" id="userGithub" value={content.user.github} onChange={(e) => handleNestedInputChange('user.github', e.target.value)}
                    className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
           </div>
           <div>
-            <label htmlFor="userLinkedin" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('LinkedIn Profile URL')}</label>
+            <label htmlFor="userLinkedin" className="block text-sm font-medium text-slate-700 dark:text-slate-300">LinkedIn Profile URL</label> {/* Replaced t() */}
             <input type="url" id="userLinkedin" value={content.user.linkedin} onChange={(e) => handleNestedInputChange('user.linkedin', e.target.value)}
                    className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
           </div>
           <div>
-            <label htmlFor="userProfileImage" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Profile Image Path')}</label>
+            <label htmlFor="userProfileImage" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Profile Image Path</label> {/* Replaced t() */}
             <input type="text" id="userProfileImage" value={content.user.profileImage} onChange={(e) => handleNestedInputChange('user.profileImage', e.target.value)}
                    className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
           </div>
@@ -191,19 +191,19 @@ const AdminDashboardClient = () => {
 
       {/* About Me Section */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('About Me Section')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">About Me Section</h2> {/* Replaced t() */}
         <div className="mb-4">
-          <label htmlFor="aboutBio" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Biography')}</label>
+          <label htmlFor="aboutBio" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Biography</label> {/* Replaced t() */}
           <textarea id="aboutBio" value={content.about.bio} onChange={(e) => handleNestedInputChange('about.bio', e.target.value)} rows={5}
                     className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
         <div className="mb-4">
-          <label htmlFor="aboutEducation" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Education')}</label>
+          <label htmlFor="aboutEducation" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Education</label> {/* Replaced t() */}
           <textarea id="aboutEducation" value={content.about.education} onChange={(e) => handleNestedInputChange('about.education', e.target.value)} rows={3}
                     className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
         <div className="mb-4">
-          <label htmlFor="aboutCsMath" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('CS & Math Background')}</label>
+          <label htmlFor="aboutCsMath" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">CS & Math Background</label> {/* Replaced t() */}
           <textarea id="aboutCsMath" value={content.about.csMathBackground} onChange={(e) => handleNestedInputChange('about.csMathBackground', e.target.value)} rows={4}
                     className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
@@ -211,14 +211,14 @@ const AdminDashboardClient = () => {
 
       {/* Hero Section Teasers */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('Hero Section Content')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">Hero Section Content</h2> {/* Replaced t() */}
         <div className="mb-4">
-          <label htmlFor="heroTagline" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Tagline')}</label>
+          <label htmlFor="heroTagline" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tagline</label> {/* Replaced t() */}
           <input type="text" id="heroTagline" value={content.hero.tagline} onChange={(e) => handleNestedInputChange('hero.tagline', e.target.value)}
                  className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
         <div className="mb-4">
-          <label htmlFor="heroIntro" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Intro Text')}</label>
+          <label htmlFor="heroIntro" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Intro Text</label> {/* Replaced t() */}
           <textarea id="heroIntro" value={content.hero.intro} onChange={(e) => handleNestedInputChange('hero.intro', e.target.value)} rows={3}
                     className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
@@ -226,14 +226,14 @@ const AdminDashboardClient = () => {
 
       {/* Site Metadata Section */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('Site Metadata')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">Site Metadata</h2> {/* Replaced t() */}
         <div className="mb-4">
-          <label htmlFor="metaTitle" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Site Title')}</label>
+          <label htmlFor="metaTitle" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Site Title</label> {/* Replaced t() */}
           <input type="text" id="metaTitle" value={content.metadata.title} onChange={(e) => handleNestedInputChange('metadata.title', e.target.value)}
                  className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
         <div className="mb-4">
-          <label htmlFor="metaDescription" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('Site Description')}</label>
+          <label htmlFor="metaDescription" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Site Description</label> {/* Replaced t() */}
           <textarea id="metaDescription" value={content.metadata.description} onChange={(e) => handleNestedInputChange('metadata.description', e.target.value)} rows={3}
                     className="mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300" />
         </div>
@@ -241,48 +241,48 @@ const AdminDashboardClient = () => {
 
       {/* Projects Section */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('Manage Projects')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">Manage Projects</h2> {/* Replaced t() */}
         {content.projects.map((project, projectIndex) => (
           <div key={project.id} className="mb-6 p-4 border border-slate-200 dark:border-slate-700 rounded-md">
-            <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300 mb-2">{t('Project')} {projectIndex + 1}: {project.title}</h3>
+            <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300 mb-2">Project {projectIndex + 1}: {project.title}</h3> {/* Replaced t() */}
             {/* Title */}
             <div className="mb-2">
-              <label htmlFor={`projectTitle-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Title')}</label>
+              <label htmlFor={`projectTitle-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Title</label> {/* Replaced t() */}
               <input type="text" id={`projectTitle-${project.id}`} value={project.title}
                      onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.title`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
             </div>
             {/* Description */}
             <div className="mb-2">
-              <label htmlFor={`projectDesc-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Description')}</label>
+              <label htmlFor={`projectDesc-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Description</label> {/* Replaced t() */}
               <textarea id={`projectDesc-${project.id}`} value={project.description}
                         onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.description`, e.target.value)} rows={3}
                         className="mt-1 block w-full input-admin" />
             </div>
             {/* Image URL */}
             <div className="mb-2">
-              <label htmlFor={`projectImg-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Image URL')}</label>
+              <label htmlFor={`projectImg-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Image URL</label> {/* Replaced t() */}
               <input type="text" id={`projectImg-${project.id}`} value={project.imageUrl || ''}
                      onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.imageUrl`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
             </div>
             {/* Tags (comma-separated string for simplicity in this UI) */}
             <div className="mb-2">
-              <label htmlFor={`projectTags-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Tags (comma-separated)')}</label>
+              <label htmlFor={`projectTags-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Tags (comma-separated)</label> {/* Replaced t() */}
               <input type="text" id={`projectTags-${project.id}`} value={project.tags.join(', ')}
                      onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.tags`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
             </div>
             {/* GitHub Link */}
             <div className="mb-2">
-              <label htmlFor={`projectGithub-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('GitHub Link')}</label>
+              <label htmlFor={`projectGithub-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">GitHub Link</label> {/* Replaced t() */}
               <input type="url" id={`projectGithub-${project.id}`} value={project.githubLink || ''}
                      onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.githubLink`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
             </div>
             {/* Demo Link */}
             <div className="mb-2">
-              <label htmlFor={`projectDemo-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Demo Link')}</label>
+              <label htmlFor={`projectDemo-${project.id}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Demo Link</label> {/* Replaced t() */}
               <input type="url" id={`projectDemo-${project.id}`} value={project.demoLink || ''}
                      onChange={(e) => handleNestedInputChange(`projects.${projectIndex}.demoLink`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
@@ -290,33 +290,33 @@ const AdminDashboardClient = () => {
           </div>
         ))}
         {/* Add Project button - functionality deferred */}
-        <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-4">{t('Adding or deleting projects requires more advanced state management and will be implemented later.')}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-4">Adding or deleting projects requires more advanced state management and will be implemented later.</p> {/* Replaced t() */}
       </section>
 
       {/* Skills Section */}
       <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">{t('Manage Skills')}</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">Manage Skills</h2> {/* Replaced t() */}
         {content.skills.map((skillCategory, categoryIndex) => (
           <div key={`skillcat-${categoryIndex}`} className="mb-6 p-4 border border-slate-200 dark:border-slate-700 rounded-md">
             {/* Category Name */}
             <div className="mb-2">
-              <label htmlFor={`skillCategoryName-${categoryIndex}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('Category Name')}</label>
+              <label htmlFor={`skillCategoryName-${categoryIndex}`} className="block text-sm font-medium text-slate-700 dark:text-slate-300">Category Name</label> {/* Replaced t() */}
               <input type="text" id={`skillCategoryName-${categoryIndex}`} value={skillCategory.category}
                      onChange={(e) => handleNestedInputChange(`skills.${categoryIndex}.category`, e.target.value)}
                      className="mt-1 block w-full input-admin" />
             </div>
             {/* Skills within Category */}
-            <h4 className="text-md font-medium text-slate-600 dark:text-slate-400 mt-3 mb-2">{t('Skills in this category:')}</h4>
+            <h4 className="text-md font-medium text-slate-600 dark:text-slate-400 mt-3 mb-2">Skills in this category:</h4> {/* Replaced t() */}
             {skillCategory.items.map((skillItem, itemIndex) => (
               <div key={`skillitem-${categoryIndex}-${itemIndex}`} className="grid grid-cols-2 gap-4 mb-2 items-center">
                 <div>
-                  <label htmlFor={`skillName-${categoryIndex}-${itemIndex}`} className="block text-xs font-medium text-slate-700 dark:text-slate-300">{t('Skill Name')}</label>
+                  <label htmlFor={`skillName-${categoryIndex}-${itemIndex}`} className="block text-xs font-medium text-slate-700 dark:text-slate-300">Skill Name</label> {/* Replaced t() */}
                   <input type="text" id={`skillName-${categoryIndex}-${itemIndex}`} value={skillItem.name}
                          onChange={(e) => handleNestedInputChange(`skills.${categoryIndex}.items.${itemIndex}.name`, e.target.value)}
                          className="mt-1 block w-full input-admin text-sm" />
                 </div>
                 <div>
-                  <label htmlFor={`skillProficiency-${categoryIndex}-${itemIndex}`} className="block text-xs font-medium text-slate-700 dark:text-slate-300">{t('Proficiency (%)')}</label>
+                  <label htmlFor={`skillProficiency-${categoryIndex}-${itemIndex}`} className="block text-xs font-medium text-slate-700 dark:text-slate-300">Proficiency (%)</label> {/* Replaced t() */}
                   <input type="number" id={`skillProficiency-${categoryIndex}-${itemIndex}`} value={skillItem.proficiency}
                          min="0" max="100"
                          onChange={(e) => handleNestedInputChange(`skills.${categoryIndex}.items.${itemIndex}.proficiency`, e.target.value)}
@@ -328,7 +328,7 @@ const AdminDashboardClient = () => {
           </div>
         ))}
         {/* Add Skill Category button - functionality deferred */}
-        <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-4">{t('Adding or deleting skills/categories requires more advanced state management and will be implemented later.')}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 italic mt-4">Adding or deleting skills/categories requires more advanced state management and will be implemented later.</p> {/* Replaced t() */}
       </section>
 
       <div className="mt-8 flex justify-end">
@@ -337,14 +337,14 @@ const AdminDashboardClient = () => {
           disabled={saveStatus === 'saving'} // Button is disabled only when 'saving'
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {saveStatus === 'saving' && t('Saving...')}
-          {saveStatus === 'success' && t('Saved Successfully!')}
-          {saveStatus === 'error' && t('Save Error!')}
-          {saveStatus === 'idle' && t('Save Local Changes')}
+          {saveStatus === 'saving' && 'Saving...'} {/* Replaced t() */}
+          {saveStatus === 'success' && 'Saved Successfully!'} {/* Replaced t() */}
+          {saveStatus === 'error' && 'Save Error!'} {/* Replaced t() */}
+          {saveStatus === 'idle' && 'Save Local Changes'} {/* Replaced t() */}
         </button>
       </div>
       {saveStatus === 'error' && (
-        <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">{t('Failed to save changes to local storage.')}</p>
+        <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">Failed to save changes to local storage.</p> {/* Replaced t() */}
       )}
     </div>
   );

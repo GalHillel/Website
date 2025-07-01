@@ -1,7 +1,7 @@
 // @/app/skills/page.tsx
 "use client";
 
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed
 import siteContent from '@/entities/SiteContent.json';
 import AnimatedSection from '@/components/AnimatedSection';
 import { motion } from 'framer-motion';
@@ -17,7 +17,7 @@ interface SkillCategory {
 }
 
 const SkillBar: React.FC<{ name: string; proficiency: number }> = ({ name, proficiency }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed
   return (
     <motion.div
       className="mb-4"
@@ -26,7 +26,7 @@ const SkillBar: React.FC<{ name: string; proficiency: number }> = ({ name, profi
       transition={{ duration: 0.5 }}
     >
       <div className="flex justify-between mb-1">
-        <span className="text-base font-medium text-gray-700 dark:text-gray-300">{t(name) || name}</span>
+        <span className="text-base font-medium text-gray-700 dark:text-gray-300">{name}</span> {/* Replaced t() */}
         <span className="text-sm font-medium text-blue-700 dark:text-blue-400">{proficiency}%</span>
       </div>
       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
@@ -39,7 +39,7 @@ const SkillBar: React.FC<{ name: string; proficiency: number }> = ({ name, profi
           aria-valuenow={proficiency}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={t('Skill Proficiency: {{name}} {{proficiency}}%', { name: t(name) || name, proficiency: proficiency }) || `${name} ${proficiency}%`}
+          aria-label={`Skill Proficiency: ${name} ${proficiency}%`} // Replaced t()
         />
       </div>
     </motion.div>
@@ -48,14 +48,14 @@ const SkillBar: React.FC<{ name: string; proficiency: number }> = ({ name, profi
 
 
 export default function SkillsPage() {
-  const { t } = useTranslation(); // i18n instance no longer needed for category name selection
+  // const { t } = useTranslation(); // Removed
 
-  const skillsData: SkillCategory[] = siteContent.skills as unknown as SkillCategory[]; // Assert type after JSON change
+  const skillsData: SkillCategory[] = siteContent.skills as unknown as SkillCategory[];
 
   return (
     <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
-        {t('My Skills')}
+        My Skills {/* Replaced t() */}
       </h1>
 
       <div className="space-y-12">

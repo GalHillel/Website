@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // Removed
 import Link from 'next/link';
 import siteContent from '@/entities/SiteContent.json';
 import AnimatedSection from '@/components/AnimatedSection';
@@ -28,8 +28,7 @@ const EmailIcon = () => (
 );
 
 export default function ContactPage() {
-  // 🔧 Hook order must not change
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -51,7 +50,7 @@ export default function ContactPage() {
       EMAILJS_TEMPLATE_ID === 'YOUR_TEMPLATE_ID' ||
       EMAILJS_USER_ID === 'YOUR_PUBLIC_KEY'
     ) {
-      alert(t('EmailJS is not configured. Please set up your EmailJS credentials.'));
+      alert('EmailJS is not configured. Please set up your EmailJS credentials.'); // Replaced t()
       setIsSubmitting(false);
       setSubmitStatus('error');
       return;
@@ -75,7 +74,7 @@ export default function ContactPage() {
       })
       .catch((err) => {
         console.error('EmailJS not found:', err);
-        alert(t('Error sending message. EmailJS library might be missing.'));
+        alert('Error sending message. EmailJS library might be missing.'); // Replaced t()
         setIsSubmitting(false);
         setSubmitStatus('error');
       });
@@ -84,54 +83,54 @@ export default function ContactPage() {
   return (
     <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
-        {t('Get in Touch')}
+        Get in Touch {/* Replaced t() */}
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start">
         <AnimatedSection delay={0.2} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-lg shadow-xl">
           <h2 className="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-100">
-            {t('Send Me a Message')}
+            Send Me a Message {/* Replaced t() */}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                {t('Your Name')}
+                Your Name {/* Replaced t() */}
               </label>
               <input
                 type="text"
                 name="name"
                 id="name"
                 required
-                placeholder={t('Enter your name')}
+                placeholder="Enter your name" // Replaced t()
                 className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm text-slate-900 dark:text-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                {t('Your Email')}
+                Your Email {/* Replaced t() */}
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
                 required
-                placeholder={t('Enter your email address')}
+                placeholder="Enter your email address" // Replaced t()
                 className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm text-slate-900 dark:text-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             {/* Message */}
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                {t('Your Message')}
+                Your Message {/* Replaced t() */}
               </label>
               <textarea
                 name="message"
                 id="message"
                 rows={4}
                 required
-                placeholder={t('Write your message here...')}
+                placeholder="Write your message here..." // Replaced t()
                 className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm text-slate-900 dark:text-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
@@ -143,18 +142,18 @@ export default function ContactPage() {
                 whileTap={{ scale: 0.98 }}
                 className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
               >
-                {isSubmitting ? t('Sending...') : t('Send Message')}
+                {isSubmitting ? 'Sending...' : 'Send Message'} {/* Replaced t() */}
               </motion.button>
             </div>
             {/* Status messages */}
             {submitStatus === 'success' && (
               <p className="mt-4 text-sm text-green-600 dark:text-green-400">
-                {t('Message sent successfully! Thank you.')}
+                Message sent successfully! Thank you. {/* Replaced t() */}
               </p>
             )}
             {submitStatus === 'error' && (
               <p className="mt-4 text-sm text-red-600 dark:text-red-400">
-                {t('Failed to send message. Please try again later or contact me directly via email.')}
+                Failed to send message. Please try again later or contact me directly via email. {/* Replaced t() */}
               </p>
             )}
           </form>
@@ -162,9 +161,9 @@ export default function ContactPage() {
 
         <AnimatedSection delay={0.4} className="space-y-6 text-slate-700 dark:text-slate-300">
           <h2 className="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-100">
-            {t('Contact Information')}
+            Contact Information {/* Replaced t() */}
           </h2>
-          <p>{t('Feel free to reach out through any of these platforms.')}</p>
+          <p>Feel free to reach out through any of these platforms. I look forward to hearing from you!</p> {/* Replaced t() */}
 
           <div className="space-y-4">
             {user.linkedin && (
@@ -174,7 +173,7 @@ export default function ContactPage() {
                 whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
                 <LinkedInIcon />
-                <span className="ml-3 font-medium text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-500 transition-colors">{t('LinkedIn Profile')}</span>
+                <span className="ml-3 font-medium text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-500 transition-colors">LinkedIn Profile</span> {/* Replaced t() */}
               </motion.a>
             )}
             {user.github && (
@@ -184,7 +183,7 @@ export default function ContactPage() {
                 whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
                 <GitHubIcon />
-                <span className="ml-3 font-medium text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">{t('GitHub Profile')}</span>
+                <span className="ml-3 font-medium text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">GitHub Profile</span> {/* Replaced t() */}
               </motion.a>
             )}
             {user.email && (
@@ -194,19 +193,19 @@ export default function ContactPage() {
                 whileHover={{ y: -3, transition: { duration: 0.2 } }}
               >
                 <EmailIcon />
-                <span className="ml-3 font-medium text-red-500 dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">{t('Send an Email')}</span>
+                <span className="ml-3 font-medium text-red-500 dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-500 transition-colors">Send an Email</span> {/* Replaced t() */}
               </motion.a>
             )}
           </div>
 
           {resumeUrl && (
             <p className="mt-6 text-sm">
-              {t('ResumeDownloadPrompt')}
+              You can also download my resume: {/* Replaced t() */}
               <Link
                 href={resumeUrl} target="_blank" download
                 className="text-blue-600 dark:text-blue-400 hover:underline font-semibold ml-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded-sm"
               >
-                {t('Download Resume')}
+                Download Resume {/* Replaced t() */}
               </Link>
             </p>
           )}

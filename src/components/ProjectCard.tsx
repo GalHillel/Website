@@ -3,8 +3,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion'; // Ensure motion is imported
+// import { useTranslation } from 'react-i18next'; // Removed
+import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
   title: string;
@@ -23,7 +23,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   githubLink,
   demoLink,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation(); // Removed
 
   return (
     <motion.div
@@ -37,7 +37,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <div className="relative w-full h-48 sm:h-56 overflow-hidden"> {/* Added overflow-hidden for image scale effect */}
           <Image
             src={imageUrl}
-            alt={title || t('Project image')}
+            alt={title || 'Project image'} // Replaced t()
             layout="fill"
             objectFit="cover"
             className="transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:brightness-110" // Added group-hover effects
@@ -46,9 +46,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       ) : (
         <div
           className="w-full h-48 sm:h-56 bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-colors duration-300"
-          aria-label={t('Placeholder for project image')}
+          aria-label="Placeholder for project image" // Replaced t()
         >
-          <span className="text-slate-500 dark:text-slate-400">{t('No Image')}</span>
+          <span className="text-slate-500 dark:text-slate-400">No Image Available</span> {/* Replaced t() */}
         </div>
       )}
 
@@ -64,7 +64,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 key={tag}
                 className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-xs font-semibold mr-2 mb-2"
               >
-                {t(tag) || tag}
+                {tag} {/* Replaced t() */}
               </span>
             ))}
           </div>
@@ -77,7 +77,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               rel="noopener noreferrer"
               className="text-sm bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
             >
-              {t('GitHub Repo')}
+              GitHub Repo {/* Replaced t() */}
             </Link>
           )}
           {demoLink && (
@@ -87,7 +87,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               rel="noopener noreferrer"
               className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
             >
-              {t('Live Demo')}
+              Live Demo {/* Replaced t() */}
             </Link>
           )}
         </div>
