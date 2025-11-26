@@ -1,21 +1,52 @@
 {
   "user": {
-    "name": "Gal Hillel",
+    "name": "Gal",
     "email": "galh2011@icloud.com",
     "github": "https://github.com/GalHillel",
     "linkedin": "https://linkedin.com/in/galhillel1",
-    "profileImage": "/profile.jpeg"
-  },
-  "hero": {
-    "tagline": "Software Developer | Problem Solver | Tech Enthusiast",
-    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work and skills."
+    "profileImage": "/uploads/1764167228712-575824159-7I6A0610.jpg",
+    "intro": "test intro",
+    "tagline": "test tagline",
+    "taglines": [
+      "Software Developer",
+      "Problem Solver",
+      "Tech Enthusiast",
+      "Creative Thinker"
+    ],
+    "location": "Israel",
+    "imagePosition": "top"
   },
   "about": {
-    "bio": "A results-driven software developer with a strong foundation in Computer Science, Mathematics, and Software Engineering. Experienced in building scalable backend systems, intuitive frontends, and machine learning tools. Passionate about elegant architecture, real-world impact, and clean code.",
-    "education": "B.Sc. Computer Science & Mathematics - [University Name] (Year)",
-    "csMathBackground": "Deep understanding of algorithms, data structures, discrete mathematics, linear algebra, and calculus. Applied this knowledge in various academic and personal projects, focusing on efficient solutions and analytical problem-solving."
+    "bio": "test Bio",
+    "education": "Cumputer 123",
+    "csMathBackground": "test 1234",
+    "experience": "Test Experience 122526513@@"
   },
   "projects": [
+    {
+      "id": "1764167342094",
+      "title": "New Project",
+      "description": "Test",
+      "tags": [
+        "Python",
+        "TypeScript"
+      ],
+      "imageUrl": "/uploads/1764167387647-147515166-7I6A0707.jpg",
+      "githubLink": "https://github.com/GalHillel/System-Programming-Course",
+      "demoLink": "https://github.com/GalHillel/System-Programming-Course"
+    },
+    {
+      "id": "1764163924516",
+      "title": "Test",
+      "description": "Test",
+      "tags": [
+        "Python",
+        "React"
+      ],
+      "imageUrl": "/uploads/1764167247271-629097768-7I6A0038.jpg",
+      "githubLink": "https://github.com/GalHillel/System-Programming-Course",
+      "demoLink": "https://github.com/GalHillel/System-Programming-Course"
+    },
     {
       "id": "proj1",
       "title": "Project Alpha",
@@ -34,10 +65,6 @@
     {
       "category": "Frontend Development",
       "items": [
-        {
-          "name": "HTML5",
-          "proficiency": 95
-        },
         {
           "name": "CSS3 & SCSS",
           "proficiency": 90
@@ -72,7 +99,7 @@
           "proficiency": 50
         },
         {
-          "name": "New Skill",
+          "name": "Another Skill",
           "proficiency": 95
         },
         {
@@ -80,11 +107,23 @@
           "proficiency": 30
         }
       ]
+    },
+    {
+      "category": "New Category 2",
+      "items": [
+        {
+          "name": "New Skill 2",
+          "proficiency": 10
+        },
+        {
+          "name": "New Skill",
+          "proficiency": 50
+        },
+        {
+          "name": "New Skill3",
+          "proficiency": 90
+        }
+      ]
     }
-  ],
-  "resumeUrl": "/resume/Gal_Hillel_Resume.pdf",
-  "metadata": {
-    "title": "Gal Hillel - Software Developer",
-    "description": "Personal portfolio of Gal Hillel, showcasing projects and skills in software development."
-  }
+  ]
 }

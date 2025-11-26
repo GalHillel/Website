@@ -1,828 +1,647 @@
-// @/components/admin/AdminDashboardClient.tsx
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-// Removed: import siteContentData from "@/entities/SiteContent.json";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { FullSiteContent, Project, SkillCategory, SkillItem } from '@/services/contentService';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Trash2, Save, LogOut, CheckCircle2, XCircle, User, Briefcase, Code2, LayoutGrid, Upload, Image as ImageIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
-// Simplified types for English-only content
-interface UserContent {
-  name: string;
-  email: string;
-  github: string;
-  linkedin: string;
-  profileImage: string;
-}
-interface AboutContent {
-  bio: string;
-  education: string;
-  csMathBackground: string;
-}
-interface HeroContent {
-  tagline: string;
-  intro: string;
-}
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl?: string | null;
-  tags: string[];
-  githubLink?: string;
-  demoLink?: string;
-}
-interface SkillItem {
-  name: string;
-  proficiency: number;
-}
-interface SkillCategory {
-  category: string;
-  items: SkillItem[];
-}
-interface SiteMetadata {
-  title: string;
-  description: string;
-}
-interface SiteContentAdmin {
-  user: UserContent;
-  hero: HeroContent;
-  about: AboutContent;
-  projects: Project[];
-  skills: SkillCategory[];
-  resumeUrl: string;
-  metadata: SiteMetadata;
+interface AdminDashboardClientProps {
+  initialContent: FullSiteContent;
 }
 
-const AdminDashboardClient = () => {
-  // initialContent is now fetched from API
-  const [content, setContent] = useState<SiteContentAdmin | null>(null);
-  const [isContentLoading, setIsContentLoading] = useState(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
-  const [saveStatus, setSaveStatus] = useState<
-    "idle" | "saving" | "success" | "error"
-  >("idle");
-  const [saveError, setSaveError] = useState<string | null>(null);
+export default function AdminDashboardClient({ initialContent }: AdminDashboardClientProps) {
+  const [content, setContent] = useState<FullSiteContent>(initialContent);
+  const [isSaving, setIsSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const router = useRouter();
 
-
+  // Track changes to show floating save bar
   useEffect(() => {
-    const fetchContent = async () => {
-      setIsContentLoading(true);
-      setFetchError(null);
-      try {
-        const response = await fetch("/api/admin/content");
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || `Failed to fetch content: ${response.statusText}`);
-        }
-        const data: SiteContentAdmin = await response.json();
-        setContent(data);
-      } catch (error) {
-        console.error("Error loading content from API:", error);
-        if (error instanceof Error) {
-          setFetchError(error.message);
-        } else {
-          setFetchError("An unknown error occurred while fetching content.");
-        }
-        // Optionally, load fallback or provide a way to retry
-      } finally {
-        setIsContentLoading(false);
-      }
-    };
-
-    fetchContent();
-  }, []);
-
-  const handleNestedInputChange = (path: string, value: string | number) => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const keys = path.split(".");
-      const newState: SiteContentAdmin = JSON.parse(JSON.stringify(prevContent));
-      let currentLevel: any = newState;
-
-      keys.forEach((key, index) => {
-        if (index === keys.length - 1) {
-          if (key === "tags") {
-            currentLevel[key] = (value as string)
-              .split(",")
-              .map((tag: string) => tag.trim());
-          } else if (key === "proficiency" && typeof currentLevel[key] !== "undefined") {
-            currentLevel[key] = Number(value);
-          } else {
-            currentLevel[key] = value;
-          }
-        } else {
-          const nextKeyIsArrayIndex = /^\d+$/.test(keys[index + 1]);
-          if (Array.isArray(currentLevel[key]) && nextKeyIsArrayIndex) {
-            currentLevel = currentLevel[key][Number(keys[index + 1])];
-            keys.splice(index + 1, 1); // Consume the array index key
-          } else if (typeof currentLevel[key] === 'object' && currentLevel[key] !== null) {
-            currentLevel = currentLevel[key];
-          } else {
-            // This case should ideally not be hit if paths are correct
-            console.warn(`Path issue at ${key} in ${path}`);
-          }
-        }
-      });
-      return newState;
-    });
-  };
+    // Simple check: if content changes from initial, show save bar. 
+    // For now, we'll just set hasChanges to true on any edit.
+  }, [content]);
 
   const handleSave = async () => {
-    if (!content) return;
-    setSaveStatus("saving");
-    setSaveError(null);
+    setIsSaving(true);
+    setAlert(null);
     try {
-      const response = await fetch("/api/admin/content", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const res = await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(content),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Failed to save content: ${response.statusText}`);
-      }
+      if (!res.ok) throw new Error('Failed to save');
 
-      // const result = await response.json(); // Contains { message: "..." }
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus("idle"), 3000);
+      setAlert({ type: 'success', message: 'Settings saved successfully' });
+      setHasChanges(false);
+      router.refresh();
+
+      // Clear alert after 3 seconds
+      setTimeout(() => setAlert(null), 3000);
     } catch (error) {
-      console.error("Error saving content via API:", error);
-      if (error instanceof Error) {
-        setSaveError(error.message);
-      } else {
-        setSaveError("An unknown error occurred while saving content.");
-      }
-      setSaveStatus("error");
-      setTimeout(() => setSaveStatus("idle"), 5000); // Keep error message visible longer
+      setAlert({ type: 'error', message: 'Failed to save settings' });
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  // Project handlers
-  const handleAddProject = () => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const newProject: Project = {
-        id: `proj-${Date.now()}`,
-        title: "New Project",
-        description: "",
-        tags: [],
-        imageUrl: null,
-        githubLink: "",
-        demoLink: "",
-      };
-      return {
-        ...prevContent,
-        projects: [...prevContent.projects, newProject],
-      };
-    });
+  const handleLogout = () => {
+    document.cookie = 'admin_access=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    router.push('/');
+    router.refresh();
   };
 
-  const handleDeleteProject = (projectIndex: number) => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const updatedProjects = prevContent.projects.filter(
-        (_, index) => index !== projectIndex
-      );
-      return { ...prevContent, projects: updatedProjects };
-    });
-  };
+  const handleFileUpload = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append('file', file);
 
-  // Skill Category handlers
-  const handleAddSkillCategory = () => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const newCategory: SkillCategory = {
-        category: "New Category",
-        items: [],
-      };
-      return {
-        ...prevContent,
-        skills: [...prevContent.skills, newCategory],
-      };
-    });
-  };
-
-  const handleDeleteSkillCategory = (categoryIndex: number) => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const updatedSkills = prevContent.skills.filter(
-        (_, index) => index !== categoryIndex
-      );
-      return { ...prevContent, skills: updatedSkills };
-    });
-  };
-
-  // Skill Item handlers
-  const handleAddSkill = (categoryIndex: number) => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const newSkill: SkillItem = { name: "New Skill", proficiency: 0 };
-      const updatedSkills = prevContent.skills.map((cat, index) => {
-        if (index === categoryIndex) {
-          return { ...cat, items: [...cat.items, newSkill] };
-        }
-        return cat;
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
       });
-      return { ...prevContent, skills: updatedSkills };
-    });
+
+      if (!res.ok) throw new Error('Upload failed');
+
+      const data = await res.json();
+      return data.url;
+    } catch (error) {
+      console.error('Upload error:', error);
+      setAlert({ type: 'error', message: 'Failed to upload image' });
+      return null;
+    }
   };
 
-  const handleDeleteSkill = (categoryIndex: number, skillIndex: number) => {
-    setContent((prevContent) => {
-      if (!prevContent) return prevContent;
-      const updatedSkills = prevContent.skills.map((cat, cIndex) => {
-        if (cIndex === categoryIndex) {
-          return {
-            ...cat,
-            items: cat.items.filter((_, sIndex) => sIndex !== skillIndex),
-          };
-        }
-        return cat;
-      });
-      return { ...prevContent, skills: updatedSkills };
-    });
+  // --- State Updaters ---
+
+  const updateProfile = (field: string, value: any) => {
+    if (!content.user) return;
+    setContent({ ...content, user: { ...content.user, [field]: value } });
+    setHasChanges(true);
   };
 
+  const updateAbout = (field: string, value: string) => {
+    if (!content.about) return;
+    setContent({ ...content, about: { ...content.about, [field]: value } });
+    setHasChanges(true);
+  };
 
-  if (isContentLoading) {
-    return <p className="text-center py-10">Loading content editor...</p>;
-  }
+  const addProject = () => {
+    const newProject: Project = {
+      id: Date.now().toString(),
+      title: 'New Project',
+      description: '',
+      tags: [],
+      imageUrl: '',
+      githubLink: '',
+      demoLink: ''
+    };
+    setContent({ ...content, projects: [newProject, ...content.projects] });
+    setHasChanges(true);
+  };
 
-  if (fetchError) {
-    return (
-      <div className="text-center py-10">
-        <p className="text-red-500 dark:text-red-400 text-xl">
-          Error loading content: {fetchError}
-        </p>
-        <p className="mt-2 text-slate-600 dark:text-slate-300">
-          Please try refreshing the page or contact support if the issue persists.
-        </p>
-      </div>
+  const updateProject = (id: string, field: keyof Project, value: any) => {
+    const updatedProjects = content.projects.map(p =>
+      p.id === id ? { ...p, [field]: value } : p
     );
-  }
+    setContent({ ...content, projects: updatedProjects });
+    setHasChanges(true);
+  };
 
-  if (!content) {
-    // This case should ideally be covered by fetchError if API fails,
-    // but as a fallback if content is null without a specific fetchError.
-    return <p className="text-center py-10">No content available. Please try again later.</p>;
-  }
+  const deleteProject = (id: string) => {
+    if (!confirm('Are you sure?')) return;
+    setContent({ ...content, projects: content.projects.filter(p => p.id !== id) });
+    setHasChanges(true);
+  };
 
-  const buttonClass = "px-4 py-2 text-sm font-medium rounded-md transition-colors";
-  const primaryButtonClass = `${buttonClass} bg-blue-500 hover:bg-blue-600 text-white`;
-  const dangerButtonClass = `${buttonClass} bg-red-500 hover:bg-red-600 text-white`;
-  const secondaryButtonClass = `${buttonClass} bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 text-slate-700 dark:text-slate-200`;
-  const inputAdminClass = "mt-1 block w-full px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-slate-900 dark:text-slate-50 transition-colors duration-300";
+  const addCategory = () => {
+    const newCategory: SkillCategory = {
+      category: 'New Category',
+      items: []
+    };
+    setContent({ ...content, skills: [...content.skills, newCategory] });
+    setHasChanges(true);
+  };
 
+  const updateCategoryName = (index: number, name: string) => {
+    const newSkills = [...content.skills];
+    newSkills[index].category = name;
+    setContent({ ...content, skills: newSkills });
+    setHasChanges(true);
+  };
+
+  const deleteCategory = (index: number) => {
+    if (!confirm('Delete this entire category?')) return;
+    const newSkills = [...content.skills];
+    newSkills.splice(index, 1);
+    setContent({ ...content, skills: newSkills });
+    setHasChanges(true);
+  };
+
+  const updateSkillItem = (catIndex: number, skillIndex: number, field: keyof SkillItem, value: any) => {
+    const newSkills = [...content.skills];
+    newSkills[catIndex].items[skillIndex] = { ...newSkills[catIndex].items[skillIndex], [field]: value };
+    setContent({ ...content, skills: newSkills });
+    setHasChanges(true);
+  };
+
+  const addSkillItem = (catIndex: number) => {
+    const newSkills = [...content.skills];
+    newSkills[catIndex].items.push({ name: 'New Skill', proficiency: 50 });
+    setContent({ ...content, skills: newSkills });
+    setHasChanges(true);
+  };
+
+  const deleteSkillItem = (catIndex: number, skillIndex: number) => {
+    if (!confirm('Are you sure?')) return;
+    const newSkills = [...content.skills];
+    newSkills[catIndex].items.splice(skillIndex, 1);
+    setContent({ ...content, skills: newSkills });
+    setHasChanges(true);
+  };
 
   return (
-    <div className="space-y-8">
-      <div className="p-4 bg-yellow-100 dark:bg-yellow-800/30 border-l-4 border-yellow-500 dark:border-yellow-400 rounded-md">
-        <p className="text-sm text-yellow-700 dark:text-yellow-200">
-          <strong>Note:</strong> Changes made here are saved locally in your
-          browser (using localStorage) and will not affect the live website data
-          or other users. This is for demonstration purposes only.
-        </p>
+    <div className="relative min-h-screen pb-24">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight mb-2">System Settings</h1>
+          <p className="text-muted-foreground">Manage your portfolio content and configuration.</p>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="glass-button text-sm px-4 py-2 h-auto"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Logout
+        </button>
       </div>
 
-      {/* User Info Section */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
-          User Information
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="userName"
-              className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="userName"
-              value={content.user.name}
-              onChange={(e) =>
-                handleNestedInputChange("user.name", e.target.value)
-              }
-              className={inputAdminClass}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="userEmail"
-              className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="userEmail"
-              value={content.user.email}
-              onChange={(e) =>
-                handleNestedInputChange("user.email", e.target.value)
-              }
-              className={inputAdminClass}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="userGithub"
-              className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              GitHub Profile URL
-            </label>
-            <input
-              type="url"
-              id="userGithub"
-              value={content.user.github}
-              onChange={(e) =>
-                handleNestedInputChange("user.github", e.target.value)
-              }
-              className={inputAdminClass}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="userLinkedin"
-              className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              LinkedIn Profile URL
-            </label>
-            <input
-              type="url"
-              id="userLinkedin"
-              value={content.user.linkedin}
-              onChange={(e) =>
-                handleNestedInputChange("user.linkedin", e.target.value)
-              }
-              className={inputAdminClass}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="userProfileImage"
-              className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-            >
-              Profile Image Path
-            </label>
-            <input
-              type="text"
-              id="userProfileImage"
-              value={content.user.profileImage}
-              onChange={(e) =>
-                handleNestedInputChange("user.profileImage", e.target.value)
-              }
-              className={inputAdminClass}
-            />
-          </div>
-        </div>
-      </section>
+      <Tabs defaultValue="profile" className="space-y-8">
+        <TabsList className="bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md inline-flex">
+          <TabsTrigger value="profile" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
+            <User className="w-4 h-4 mr-2" /> Profile
+          </TabsTrigger>
+          <TabsTrigger value="projects" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
+            <Briefcase className="w-4 h-4 mr-2" /> Projects
+          </TabsTrigger>
+          <TabsTrigger value="skills" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
+            <Code2 className="w-4 h-4 mr-2" /> Skills
+          </TabsTrigger>
+        </TabsList>
 
-      {/* About Me Section */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
-          About Me Section
-        </h2>
-        <div className="mb-4">
-          <label
-            htmlFor="aboutBio"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Biography
-          </label>
-          <textarea
-            id="aboutBio"
-            value={content.about.bio}
-            onChange={(e) =>
-              handleNestedInputChange("about.bio", e.target.value)
-            }
-            rows={5}
-            className={inputAdminClass}
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="aboutEducation"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Education
-          </label>
-          <textarea
-            id="aboutEducation"
-            value={content.about.education}
-            onChange={(e) =>
-              handleNestedInputChange("about.education", e.target.value)
-            }
-            rows={3}
-            className={inputAdminClass}
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="aboutCsMath"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            CS & Math Background
-          </label>
-          <textarea
-            id="aboutCsMath"
-            value={content.about.csMathBackground}
-            onChange={(e) =>
-              handleNestedInputChange("about.csMathBackground", e.target.value)
-            }
-            rows={4}
-            className={inputAdminClass}
-          />
-        </div>
-      </section>
-
-      {/* Hero Section Teasers */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
-          Hero Section Content
-        </h2>
-        <div className="mb-4">
-          <label
-            htmlFor="heroTagline"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Tagline
-          </label>
-          <input
-            type="text"
-            id="heroTagline"
-            value={content.hero.tagline}
-            onChange={(e) =>
-              handleNestedInputChange("hero.tagline", e.target.value)
-            }
-            className={inputAdminClass}
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="heroIntro"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Intro Text
-          </label>
-          <textarea
-            id="heroIntro"
-            value={content.hero.intro}
-            onChange={(e) =>
-              handleNestedInputChange("hero.intro", e.target.value)
-            }
-            rows={3}
-            className={inputAdminClass}
-          />
-        </div>
-      </section>
-
-      {/* Site Metadata Section */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
-          Site Metadata
-        </h2>
-        <div className="mb-4">
-          <label
-            htmlFor="metaTitle"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Site Title
-          </label>
-          <input
-            type="text"
-            id="metaTitle"
-            value={content.metadata.title}
-            onChange={(e) =>
-              handleNestedInputChange("metadata.title", e.target.value)
-            }
-            className={inputAdminClass}
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="metaDescription"
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
-          >
-            Site Description
-          </label>
-          <textarea
-            id="metaDescription"
-            value={content.metadata.description}
-            onChange={(e) =>
-              handleNestedInputChange("metadata.description", e.target.value)
-            }
-            rows={3}
-            className={inputAdminClass}
-          />
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-            Manage Projects
-          </h2>
-          <button onClick={handleAddProject} className={primaryButtonClass}>
-            Add Project
-          </button>
-        </div>
-        {content.projects.map((project, projectIndex) => (
-          <div
-            key={project.id} // Ensure unique key: using new Date().getTime() for new, or existing id
-            className="mb-6 p-4 border border-slate-200 dark:border-slate-700 rounded-md"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300">
-                Project {projectIndex + 1}: {project.title || "New Project"}
+        {/* Profile Tab */}
+        <TabsContent value="profile" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* User Info Panel */}
+            <div className="glass-panel p-8 space-y-6">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <User className="w-5 h-5 text-blue-400" /> Identity
               </h3>
-              <button
-                onClick={() => handleDeleteProject(projectIndex)}
-                className={dangerButtonClass}
-              >
-                Delete Project
-              </button>
-            </div>
-            {/* Title */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectTitle-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Title
-              </label>
-              <input
-                type="text"
-                id={`projectTitle-${project.id}`}
-                value={project.title}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.title`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-            {/* Description */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectDesc-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Description
-              </label>
-              <textarea
-                id={`projectDesc-${project.id}`}
-                value={project.description}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.description`,
-                    e.target.value
-                  )
-                }
-                rows={3}
-                className={inputAdminClass}
-              />
-            </div>
-            {/* Image URL */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectImg-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Image URL
-              </label>
-              <input
-                type="text"
-                id={`projectImg-${project.id}`}
-                value={project.imageUrl || ""}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.imageUrl`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-            {/* Tags (comma-separated string for simplicity in this UI) */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectTags-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Tags (comma-separated)
-              </label>
-              <input
-                type="text"
-                id={`projectTags-${project.id}`}
-                value={project.tags.join(", ")}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.tags`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-            {/* GitHub Link */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectGithub-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                GitHub Link
-              </label>
-              <input
-                type="url"
-                id={`projectGithub-${project.id}`}
-                value={project.githubLink || ""}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.githubLink`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-            {/* Demo Link */}
-            <div className="mb-2">
-              <label
-                htmlFor={`projectDemo-${project.id}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Demo Link
-              </label>
-              <input
-                type="url"
-                id={`projectDemo-${project.id}`}
-                value={project.demoLink || ""}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `projects.${projectIndex}.demoLink`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {/* Skills Section */}
-      <section className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-xl transition-colors duration-300">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-            Manage Skills
-          </h2>
-          <button
-            onClick={handleAddSkillCategory}
-            className={primaryButtonClass}
-          >
-            Add Skill Category
-          </button>
-        </div>
-        {content.skills.map((skillCategory, categoryIndex) => (
-          <div
-            key={`skillcat-${categoryIndex}-${skillCategory.category}`} // More robust key
-            className="mb-6 p-4 border border-slate-200 dark:border-slate-700 rounded-md"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-medium text-slate-700 dark:text-slate-300">
-                Category: {skillCategory.category || "New Category"}
-              </h3>
-              <button
-                onClick={() => handleDeleteSkillCategory(categoryIndex)}
-                className={dangerButtonClass}
-              >
-                Delete Category
-              </button>
-            </div>
-            {/* Category Name */}
-            <div className="mb-2">
-              <label
-                htmlFor={`skillCategoryName-${categoryIndex}`}
-                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
-              >
-                Category Name
-              </label>
-              <input
-                type="text"
-                id={`skillCategoryName-${categoryIndex}`}
-                value={skillCategory.category}
-                onChange={(e) =>
-                  handleNestedInputChange(
-                    `skills.${categoryIndex}.category`,
-                    e.target.value
-                  )
-                }
-                className={inputAdminClass}
-              />
-            </div>
-            {/* Skills within Category */}
-            <div className="flex justify-between items-center mt-4 mb-2">
-              <h4 className="text-md font-medium text-slate-600 dark:text-slate-400">
-                Skills in this category:
-              </h4>
-              <button
-                onClick={() => handleAddSkill(categoryIndex)}
-                className={secondaryButtonClass}
-              >
-                Add Skill
-              </button>
-            </div>
-            {skillCategory.items.map((skillItem, itemIndex) => (
-              <div
-                key={`skillitem-${categoryIndex}-${itemIndex}-${skillItem.name}`} // More robust key
-                className="grid grid-cols-10 gap-2 mb-2 items-center"
-              >
-                <div className="col-span-4">
-                  <label
-                    htmlFor={`skillName-${categoryIndex}-${itemIndex}`}
-                    className="block text-xs font-medium text-slate-700 dark:text-slate-300"
-                  >
-                    Skill Name
-                  </label>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Full Name</label>
                   <input
-                    type="text"
-                    id={`skillName-${categoryIndex}-${itemIndex}`}
-                    value={skillItem.name}
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        `skills.${categoryIndex}.items.${itemIndex}.name`,
-                        e.target.value
-                      )
-                    }
-                    className={`${inputAdminClass} text-sm`}
+                    className="glass-input"
+                    value={content.user?.name || ''}
+                    onChange={(e) => updateProfile('name', e.target.value)}
                   />
                 </div>
-                <div className="col-span-3">
-                  <label
-                    htmlFor={`skillProficiency-${categoryIndex}-${itemIndex}`}
-                    className="block text-xs font-medium text-slate-700 dark:text-slate-300"
-                  >
-                    Proficiency (%)
-                  </label>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Location</label>
                   <input
-                    type="number"
-                    id={`skillProficiency-${categoryIndex}-${itemIndex}`}
-                    value={skillItem.proficiency}
-                    min="0"
-                    max="100"
-                    onChange={(e) =>
-                      handleNestedInputChange(
-                        `skills.${categoryIndex}.items.${itemIndex}.proficiency`,
-                        Number(e.target.value)
-                      )
-                    }
-                    className={`${inputAdminClass} text-sm`}
+                    className="glass-input"
+                    value={content.user?.location || ''}
+                    onChange={(e) => updateProfile('location', e.target.value)}
+                    placeholder="e.g. Tel Aviv, Israel"
                   />
                 </div>
-                <div className="col-span-3 flex items-end">
+                <div className="space-y-3">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Taglines (Typewriter Effect)</label>
+                  <div className="space-y-2">
+                    {(content.user?.taglines || []).map((tagline, index) => (
+                      <div key={index} className="flex gap-2">
+                        <input
+                          className="glass-input"
+                          value={tagline}
+                          onChange={(e) => {
+                            const newTaglines = [...(content.user?.taglines || [])];
+                            newTaglines[index] = e.target.value;
+                            updateProfile('taglines', newTaglines);
+                          }}
+                          placeholder={`Phrase ${index + 1}`}
+                        />
+                        <button
+                          onClick={() => {
+                            const newTaglines = [...(content.user?.taglines || [])];
+                            newTaglines.splice(index, 1);
+                            updateProfile('taglines', newTaglines);
+                          }}
+                          className="glass-button text-red-400 hover:bg-red-500/10 px-3"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newTaglines = [...(content.user?.taglines || [])];
+                        newTaglines.push('');
+                        updateProfile('taglines', newTaglines);
+                      }}
+                      className="glass-button text-xs px-3 py-2 w-full flex items-center justify-center gap-2 text-blue-300 hover:text-blue-200"
+                    >
+                      <Plus className="w-3 h-3" /> Add Tagline
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Intro</label>
+                  <textarea
+                    className="glass-input min-h-[100px] resize-none"
+                    value={content.user?.intro || ''}
+                    onChange={(e) => updateProfile('intro', e.target.value)}
+                  />
+                </div>
+                {/* Profile Image Upload */}
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Profile Image</label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border border-white/10 bg-white/5">
+                      {content.user?.profileImage ? (
+                        <Image
+                          src={content.user.profileImage}
+                          alt="Profile"
+                          fill
+                          className={cn("object-cover",
+                            content.user.imagePosition === 'top' ? 'object-top' :
+                              content.user.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
+                          )}
+                        />
+                      ) : (
+                        <User className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          id="profile-image-upload"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const url = await handleFileUpload(file);
+                              if (url) updateProfile('profileImage', url);
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor="profile-image-upload"
+                          className="glass-button text-sm px-4 py-2 cursor-pointer flex items-center justify-center gap-2 w-fit"
+                        >
+                          <Upload className="w-4 h-4" />
+                          Upload New Photo
+                        </label>
+                        <select
+                          className="glass-input w-auto py-1 px-3 text-sm"
+                          value={content.user?.imagePosition || 'center'}
+                          onChange={(e) => updateProfile('imagePosition', e.target.value)}
+                        >
+                          <option value="center">Center</option>
+                          <option value="top">Top</option>
+                          <option value="bottom">Bottom</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Links Panel */}
+            <div className="glass-panel p-8 space-y-6">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <LayoutGrid className="w-5 h-5 text-purple-400" /> Connections
+              </h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub URL</label>
+                  <input
+                    className="glass-input"
+                    value={content.user?.github || ''}
+                    onChange={(e) => updateProfile('github', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">LinkedIn URL</label>
+                  <input
+                    className="glass-input"
+                    value={content.user?.linkedin || ''}
+                    onChange={(e) => updateProfile('linkedin', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* About & Bio Panel - Full Width */}
+            <div className="glass-panel p-8 space-y-6 md:col-span-2">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-green-400" /> Biography
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Full Bio</label>
+                  <textarea
+                    className="glass-input min-h-[150px]"
+                    value={content.about?.bio || ''}
+                    onChange={(e) => updateAbout('bio', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Experience</label>
+                  <textarea
+                    className="glass-input min-h-[100px]"
+                    value={content.about?.experience || ''}
+                    onChange={(e) => updateAbout('experience', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Education</label>
+                  <input
+                    className="glass-input"
+                    value={content.about?.education || ''}
+                    onChange={(e) => updateAbout('education', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">CS & Math Background</label>
+                  <textarea
+                    className="glass-input min-h-[80px]"
+                    value={content.about?.csMathBackground || ''}
+                    onChange={(e) => updateAbout('csMathBackground', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* Projects Tab */}
+        <TabsContent value="projects" className="space-y-6">
+          <div className="flex justify-end">
+            <button onClick={addProject} className="glass-button text-sm px-4 py-2 h-auto">
+              <Plus className="w-4 h-4 mr-2" /> Add Project
+            </button>
+          </div>
+          <div className="grid grid-cols-1 gap-6">
+            {content.projects.map((project) => (
+              <div key={project.id} className="glass-panel p-6 relative group">
+                <button
+                  onClick={() => deleteProject(project.id)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 z-10"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Title</label>
+                      <input
+                        className="glass-input font-bold text-lg"
+                        value={project.title}
+                        onChange={(e) => updateProject(project.id, 'title', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Description</label>
+                      <textarea
+                        className="glass-input min-h-[100px]"
+                        value={project.description}
+                        onChange={(e) => updateProject(project.id, 'description', e.target.value)}
+                      />
+                    </div>
+
+                    {/* Project Image Upload */}
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Project Image</label>
+                      <div className="flex items-start gap-4">
+                        <div className="relative w-24 h-16 rounded-lg overflow-hidden border border-white/10 bg-white/5 shrink-0">
+                          {project.imageUrl ? (
+                            <Image
+                              src={project.imageUrl}
+                              alt={project.title}
+                              fill
+                              className={cn("object-cover",
+                                project.imagePosition === 'top' ? 'object-top' :
+                                  project.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
+                              )}
+                            />
+                          ) : (
+                            <ImageIcon className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
+                          )}
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <div className="flex gap-2">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              id={`file-${project.id}`}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const url = await handleFileUpload(file);
+                                  if (url) updateProject(project.id, 'imageUrl', url);
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`file-${project.id}`}
+                              className="glass-button text-xs px-3 py-2 cursor-pointer flex items-center justify-center gap-2 w-fit"
+                            >
+                              <Upload className="w-3 h-3" />
+                              {project.imageUrl ? 'Change' : 'Upload'}
+                            </label>
+                            <select
+                              className="glass-input w-auto py-1 px-2 text-xs h-auto"
+                              value={project.imagePosition || 'center'}
+                              onChange={(e) => updateProject(project.id, 'imagePosition', e.target.value)}
+                            >
+                              <option value="center">Center</option>
+                              <option value="top">Top</option>
+                              <option value="bottom">Bottom</option>
+                            </select>
+                          </div>
+                          <input
+                            className="glass-input text-xs py-1 px-2 h-8"
+                            placeholder="Or paste URL..."
+                            value={project.imageUrl || ''}
+                            onChange={(e) => updateProject(project.id, 'imageUrl', e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Tags (comma separated)</label>
+                      <input
+                        className="glass-input"
+                        value={project.tags.join(', ')}
+                        onChange={(e) => updateProject(project.id, 'tags', e.target.value.split(',').map(s => s.trim()))}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub Link</label>
+                        <input
+                          className="glass-input"
+                          value={project.githubLink || ''}
+                          onChange={(e) => updateProject(project.id, 'githubLink', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Demo Link</label>
+                        <input
+                          className="glass-input"
+                          value={project.demoLink || ''}
+                          onChange={(e) => updateProject(project.id, 'demoLink', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* Skills Tab */}
+        <TabsContent value="skills" className="space-y-6">
+          <div className="flex justify-end">
+            <button onClick={addCategory} className="glass-button text-sm px-4 py-2 h-auto">
+              <Plus className="w-4 h-4 mr-2" /> Add Category
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {content.skills.map((category, catIndex) => (
+              <div key={catIndex} className="glass-panel p-6 space-y-4 relative group">
+                <button
+                  onClick={() => deleteCategory(catIndex)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 z-10"
+                  title="Delete Category"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+
+                <div className="border-b border-white/10 pb-4 pr-10">
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold block mb-2">Category Name</label>
+                  <input
+                    className="glass-input font-bold text-lg bg-transparent border-transparent px-0 py-0 focus:bg-white/5 focus:px-3 focus:py-2"
+                    value={category.category}
+                    onChange={(e) => updateCategoryName(catIndex, e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  {category.items.map((skill, skillIndex) => (
+                    <div key={skillIndex} className="flex items-center gap-3 group/item">
+                      <input
+                        className="glass-input py-2"
+                        value={skill.name}
+                        onChange={(e) => updateSkillItem(catIndex, skillIndex, 'name', e.target.value)}
+                        placeholder="Skill Name"
+                      />
+                      <input
+                        type="number"
+                        className="glass-input py-2 w-20 text-center"
+                        value={skill.proficiency}
+                        onChange={(e) => updateSkillItem(catIndex, skillIndex, 'proficiency', parseInt(e.target.value))}
+                        min="0" max="100"
+                      />
+                      <button
+                        onClick={() => deleteSkillItem(catIndex, skillIndex)}
+                        className="p-2 text-red-400 hover:bg-red-500/10 rounded-full transition-colors opacity-0 group-hover/item:opacity-100"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+
                   <button
-                    onClick={() => handleDeleteSkill(categoryIndex, itemIndex)}
-                    className={`${dangerButtonClass} text-xs py-1 px-2 h-full`} // Adjusted for size
+                    onClick={() => addSkillItem(catIndex)}
+                    className="w-full py-2 mt-2 rounded-xl border border-dashed border-white/20 text-white/40 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all text-sm flex items-center justify-center gap-2"
                   >
-                    Delete Skill
+                    <Plus className="w-4 h-4" /> Add Skill
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        ))}
-      </section>
+        </TabsContent>
+      </Tabs>
 
-      <div className="mt-8 flex justify-end">
-        <button
-          onClick={handleSave}
-          disabled={saveStatus === "saving"}
-          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {saveStatus === "saving" && "Saving..."}
-          {saveStatus === "success" && "Saved Successfully!"}
-          {saveStatus === "error" && "Save Error!"}
-          {saveStatus === "idle" && "Save Local Changes"}
-        </button>
-      </div>
-      {saveStatus === "error" && saveError && (
-        <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">
-          Save Error: {saveError}
-        </p>
-      )}
-      {saveStatus === "error" && !saveError && (
-         <p className="text-sm text-red-500 dark:text-red-400 mt-2 text-right">
-          Failed to save changes. Please try again.
-        </p>
-      )}
+      {/* Floating Save Bar */}
+      <AnimatePresence>
+        {hasChanges && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+          >
+            <div className="glass-panel px-6 py-3 flex items-center gap-4 bg-black/80 backdrop-blur-2xl border-white/20">
+              <span className="text-sm font-medium text-white">Unsaved changes</span>
+              <div className="h-4 w-px bg-white/20" />
+              <button
+                onClick={() => {
+                  setContent(initialContent);
+                  setHasChanges(false);
+                }}
+                className="text-sm text-white/60 hover:text-white transition-colors"
+              >
+                Reset
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="bg-white text-black px-4 py-1.5 rounded-full text-sm font-bold hover:scale-105 active:scale-95 transition-all"
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {alert && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className={cn(
+              "fixed bottom-8 right-8 z-50 px-6 py-4 rounded-2xl backdrop-blur-xl border shadow-2xl flex items-center gap-3",
+              alert.type === 'success'
+                ? "bg-green-500/20 border-green-500/30 text-green-200"
+                : "bg-red-500/20 border-red-500/30 text-red-200"
+            )}
+          >
+            {alert.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+            <span className="font-medium">{alert.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
-};
-
-export default AdminDashboardClient;
+}

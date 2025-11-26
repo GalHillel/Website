@@ -1,56 +1,118 @@
-// @/components/HomePageClientView.tsx
-"use client";
+'use client';
 
 import Link from 'next/link';
-import AnimatedSection from '@/components/AnimatedSection';
+import { motion } from 'framer-motion';
+import SpotlightCard from '@/components/SpotlightCard';
 import TypewriterTagline from '@/components/TypewriterTagline';
-import { HeroContent } from '@/entities/SiteContent'; // Assuming SiteContent types can be imported
+import { HeroContent } from '@/entities/SiteContent';
+import { ArrowRight } from 'lucide-react';
 
 interface HomePageClientViewProps {
   heroContent: HeroContent;
-  // Add other parts of siteContent if needed by this view
 }
 
 export default function HomePageClientView({ heroContent }: HomePageClientViewProps) {
-  const heroIntro = heroContent.intro;
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-4 relative">
-      {/* Hero Section */}
-      <AnimatedSection delay={0.1} className="py-12 md:py-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-slate-800 dark:text-slate-100">
-          Gal Hillel
-        </h1>
-        <TypewriterTagline />
-      </AnimatedSection>
+    <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-6rem)] px-4 overflow-hidden pt-20">
 
-      {/* Short Intro Section */}
-      <AnimatedSection delay={0.3} className="mb-12 md:mb-20 max-w-2xl">
-        <p className="text-md sm:text-lg md:text-xl text-slate-600 dark:text-slate-400">
-          {heroIntro}
-        </p>
-      </AnimatedSection>
-
-      {/* CTA Buttons Section */}
-      <AnimatedSection delay={0.5} className="mb-16 md:mb-20">
-        <div className="space-y-4 sm:space-y-0 sm:space-x-4 flex flex-col sm:flex-row items-center">
-          <Link href="/projects" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300 text-lg">
-            View Projects
-          </Link>
-          <Link href="/contact" className="w-full sm:w-auto bg-transparent hover:bg-gray-200 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-semibold py-3 px-8 rounded-lg border-2 border-blue-600 dark:border-blue-400 transition-colors duration-300 text-lg">
-            Get in Touch
-          </Link>
-        </div>
-      </AnimatedSection>
-
-      {/* Smooth scroll hint / Scroll to explore */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <Link href="/about" aria-label="Scroll to explore or go to About page">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
-        </Link>
+      {/* Background Floating Elements (Abstract Glass Orbs) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{
+            y: [0, -30, 0],
+            rotate: [0, 10, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] left-[5%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            y: [0, 40, 0],
+            rotate: [0, -15, 0],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-10%] right-[5%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]"
+        />
+        <motion.div
+          animate={{
+            x: [0, 50, 0],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-white/5 rounded-full blur-[150px]"
+        />
       </div>
+
+      {/* Main Content */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-6xl"
+      >
+        <SpotlightCard className="p-12 md:p-24 flex flex-col items-center text-center backdrop-blur-3xl bg-black/40 border-white/10 shadow-2xl rounded-[3rem]">
+
+          {/* Massive Typographic Hero */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-7xl md:text-9xl font-black tracking-tighter mb-6"
+          >
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-purple-400 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+              Gal Hillel
+            </span>
+          </motion.h1>
+
+          {/* Dynamic Tagline */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mb-12"
+          >
+            <div className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <TypewriterTagline text={heroContent.tagline} taglines={heroContent.taglines} />
+            </div>
+          </motion.div>
+
+          {/* Intro Text */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto mb-16 leading-relaxed font-light tracking-wide"
+          >
+            {heroContent.intro || "I build modern, scalable, and user-friendly web applications. Explore my work and skills."}
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-8 w-full sm:w-auto"
+          >
+            <Link
+              href="/projects"
+              className="glass-button group w-full sm:w-auto px-10 py-5 rounded-full bg-white text-black font-bold text-xl shadow-[0_0_40px_-10px_rgba(255,255,255,0.4)] hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.6)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+            >
+              <span className="relative z-10">View Projects</span>
+              <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            <Link
+              href="/contact"
+              className="w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:scale-105 transition-all duration-300 text-white font-medium text-xl flex items-center justify-center"
+            >
+              Get in Touch
+            </Link>
+          </motion.div>
+
+        </SpotlightCard>
+      </motion.div>
     </div>
   );
 }

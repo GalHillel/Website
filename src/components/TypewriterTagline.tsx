@@ -4,23 +4,35 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const phrases = [
-  "Software Developer",
-  "Problem Solver",
-  "Tech Enthusiast",
-  "Creative Thinker"
-];
+interface TypewriterTaglineProps {
+  text?: string;
+  taglines?: string[];
+}
 
-const TypewriterTagline = () => {
+const TypewriterTagline = ({ text, taglines }: TypewriterTaglineProps) => {
   const [loopNum, setLoopNum] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Parse phrases from text prop or use defaults
+  const phrases = taglines && taglines.length > 0
+    ? taglines
+    : text
+      ? text.split('|').map(s => s.trim()).filter(s => s.length > 0)
+      : [
+        "Software Developer",
+        "Problem Solver",
+        "Tech Enthusiast",
+        "Creative Thinker"
+      ];
 
   const period = 1500; // ms to pause at full word
   const typingSpeed = 100;
   const deletingSpeed = 50;
 
   useEffect(() => {
+    if (phrases.length === 0) return;
+
     const i = loopNum % phrases.length;
     const fullText = phrases[i];
 
@@ -40,7 +52,7 @@ const TypewriterTagline = () => {
 
     const timeout = setTimeout(updateText, isDeleting ? deletingSpeed : typingSpeed);
     return () => clearTimeout(timeout);
-  }, [currentText, isDeleting, loopNum]);
+  }, [currentText, isDeleting, loopNum, phrases]);
 
   return (
     <div className="h-10 md:h-12 flex items-center justify-center overflow-hidden my-3 md:my-4">

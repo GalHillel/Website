@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePathname } from 'next/navigation';
+import { ArrowUp } from 'lucide-react';
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
 
   const toggleVisibility = () => {
-    if (window.pageYOffset > 300) {
+    if (window.pageYOffset > 300 && !pathname.startsWith('/admin')) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
@@ -33,24 +36,17 @@ const ScrollToTopButton = () => {
       {isVisible && (
         <motion.button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-colors duration-300 z-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          className="fixed bottom-8 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg text-white hover:bg-white/20 hover:scale-110 active:scale-95 transition-all duration-300 z-40 group"
+          initial={{ opacity: 0, scale: 0.5, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          exit={{ opacity: 0, scale: 0.5, y: 20 }}
+          whileHover={{ y: -5 }}
           aria-label="Scroll to top"
-          title="Scroll to top"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2.5}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-          </svg>
+          <ArrowUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform duration-300" />
+
+          {/* Inner Glow */}
+          <div className="absolute inset-0 rounded-full bg-white/5 blur-sm -z-10" />
         </motion.button>
       )}
     </AnimatePresence>

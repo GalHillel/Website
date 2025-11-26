@@ -3,8 +3,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-// import { useTranslation } from 'react-i18next'; // Removed
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import SpotlightCard from '@/components/SpotlightCard';
 
 interface ProjectCardProps {
   title: string;
@@ -13,6 +14,7 @@ interface ProjectCardProps {
   tags: string[];
   githubLink?: string;
   demoLink?: string;
+  imagePosition?: 'top' | 'center' | 'bottom';
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -22,76 +24,83 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   tags,
   githubLink,
   demoLink,
+  imagePosition,
 }) => {
-  // const { t } = useTranslation(); // Removed
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.03, boxShadow: "0px 10px 20px rgba(0,0,0,0.1)", transition: { duration: 0.2 } }}
-      className="group bg-white dark:bg-slate-800 rounded-lg shadow-xl overflow-hidden flex flex-col h-full transition-colors duration-300" // Added "group"
+      whileHover={{ y: -10, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="h-full"
     >
-      {imageUrl ? (
-        <div className="relative w-full h-48 sm:h-56 overflow-hidden"> {/* Added overflow-hidden for image scale effect */}
-          <Image
-            src={imageUrl}
-            alt={title || 'Project image'} // Replaced t()
-            layout="fill"
-            objectFit="cover"
-            className="transition-transform duration-300 ease-in-out group-hover:scale-105 group-hover:brightness-110" // Added group-hover effects
-          />
-        </div>
-      ) : (
-        <div
-          className="w-full h-48 sm:h-56 bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-colors duration-300"
-          aria-label="Placeholder for project image" // Replaced t()
-        >
-          <span className="text-slate-500 dark:text-slate-400">No Image Available</span> {/* Replaced t() */}
-        </div>
-      )}
+      <SpotlightCard className={cn(
+        "h-full flex flex-col overflow-hidden group relative transition-all duration-500 backdrop-blur-xl bg-black/40",
+        "hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]",
+        "hover:border-white/30"
+      )}>
+        {/* Glow Effect on Hover */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/0 to-white/0 group-hover:to-white/5 transition-all duration-500 pointer-events-none" />
 
-      <div className="p-6 flex-grow flex flex-col justify-between">
-        <div>
-          <h3 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-900 dark:text-white">{title}</h3>
-          <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 min-h-[60px] overflow-y-auto">
-            {description}
-          </p>
-          <div className="mb-4">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-xs font-semibold mr-2 mb-2"
+        {imageUrl ? (
+          <div className="relative w-full h-48 sm:h-56 overflow-hidden">
+            <Image
+              src={imageUrl}
+              alt={title || 'Project image'}
+              fill
+              className={cn("transition-transform duration-700 ease-out group-hover:scale-110 object-cover",
+                imagePosition === 'top' ? 'object-top' :
+                  imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
+              )}
+            />
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
+          </div>
+        ) : (
+          <div className="w-full h-48 sm:h-56 bg-white/5 flex items-center justify-center border-b border-white/5">
+            <span className="text-white/40 font-medium">No Image Available</span>
+          </div>
+        )}
+
+        <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2 text-white group-hover:text-blue-300 transition-colors duration-300">{title}</h3>
+            <p className="text-white/70 text-sm mb-4 min-h-[60px] line-clamp-3 leading-relaxed">
+              {description}
+            </p>
+            <div className="mb-6 flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-block bg-white/5 text-white/80 rounded-full px-3 py-1 text-xs font-medium border border-white/10 group-hover:border-white/20 transition-colors"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-3 mt-auto pt-4 border-t border-white/10">
+            {githubLink && (
+              <Link
+                href={githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-button text-xs px-4 py-2 h-auto"
               >
-                {tag} {/* Replaced t() */}
-              </span>
-            ))}
+                GitHub
+              </Link>
+            )}
+            {demoLink && (
+              <Link
+                href={demoLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-button text-xs px-4 py-2 h-auto bg-white/20 hover:bg-white/30 border-white/30"
+              >
+                Live Demo
+              </Link>
+            )}
           </div>
         </div>
-        <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-          {githubLink && (
-            <Link
-              href={githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 dark:hover:bg-slate-600 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
-            >
-              GitHub Repo {/* Replaced t() */}
-            </Link>
-          )}
-          {demoLink && (
-            <Link
-              href={demoLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-800"
-            >
-              Live Demo {/* Replaced t() */}
-            </Link>
-          )}
-        </div>
-      </div>
+      </SpotlightCard>
     </motion.div>
   );
 };

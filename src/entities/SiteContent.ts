@@ -6,17 +6,25 @@ export interface UserContent {
   github: string;
   linkedin: string;
   profileImage: string;
+  tagline?: string;
+  taglines?: string[];
+  intro?: string;
+  imagePosition?: 'top' | 'center' | 'bottom';
+  location?: string;
 }
 
 export interface AboutContent {
   bio: string;
   education: string;
   csMathBackground: string;
+  experience?: string;
 }
 
 export interface HeroContent {
   tagline: string;
+  taglines?: string[];
   intro: string;
+  profileImage?: string;
 }
 
 export interface Project {
@@ -27,9 +35,11 @@ export interface Project {
   tags: string[];
   githubLink?: string;
   demoLink?: string;
+  imagePosition?: 'top' | 'center' | 'bottom';
 }
 
 export interface SkillItem {
+  id?: string;
   name: string;
   proficiency: number;
 }
@@ -44,10 +54,10 @@ export interface SiteMetadata {
   description: string;
 }
 
-export interface SiteContent { // Renamed from SiteContentAdmin for general use
-  user: UserContent;
-  hero: HeroContent;
-  about: AboutContent;
+export interface SiteContent {
+  user: UserContent | null;
+  hero: HeroContent | null;
+  about: AboutContent | null;
   projects: Project[];
   skills: SkillCategory[];
   resumeUrl: string;

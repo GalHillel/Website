@@ -3,7 +3,8 @@
 
 import AnimatedSection from '@/components/AnimatedSection';
 import { motion } from 'framer-motion';
-import { SkillCategory as SkillCategoryType, SkillItem as SkillItemType } from '@/entities/SiteContent'; // Use global types
+import SpotlightCard from '@/components/SpotlightCard';
+import { SkillCategory as SkillCategoryType, SkillItem as SkillItemType } from '@/entities/SiteContent';
 
 interface SkillBarProps {
   name: string;
@@ -13,27 +14,31 @@ interface SkillBarProps {
 const SkillBar: React.FC<SkillBarProps> = ({ name, proficiency }) => {
   return (
     <motion.div
-      className="mb-4"
+      className="mb-6 group"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex justify-between mb-1">
-        <span className="text-base font-medium text-gray-700 dark:text-gray-300">{name}</span>
-        <span className="text-sm font-medium text-blue-700 dark:text-blue-400">{proficiency}%</span>
+      <div className="flex justify-between mb-2">
+        <span className="text-base font-medium text-white/90 group-hover:text-white transition-colors">{name}</span>
+        <span className="text-sm font-bold text-blue-300 group-hover:text-blue-200 transition-colors">{proficiency}%</span>
       </div>
-      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+      <div className="w-full bg-black/20 rounded-full h-3 backdrop-blur-sm border border-white/5 overflow-hidden relative">
+        {/* Glowing Beam */}
         <motion.div
-          className="bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 h-3 rounded-full"
+          className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${proficiency}%` }}
-          transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
-          role="progressbar"
-          aria-valuenow={proficiency}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={`Skill Proficiency: ${name} ${proficiency}%`}
-        />
+          transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+        >
+          {/* Inner Glow/Shine */}
+          <div className="absolute inset-0 bg-white/30 blur-[2px]" />
+
+          {/* Leading Edge Glow */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-full bg-white blur-[4px]" />
+        </motion.div>
+
+        {/* Outer Glow (Simulated with shadow on container, but since overflow hidden, we do it differently or rely on the inner beam brightness) */}
       </div>
     </motion.div>
   );
@@ -45,32 +50,44 @@ interface SkillsPageClientViewProps {
 
 export default function SkillsPageClientView({ skillsData }: SkillsPageClientViewProps) {
   return (
-    <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
-        My Skills
-      </h1>
+    <div className="container mx-auto px-4 py-8 md:py-16 pt-24">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="page-title-glow"
+      >
+        Technical Arsenal
+      </motion.h1>
 
-      <div className="space-y-12">
+      <div className="space-y-10 max-w-6xl mx-auto">
         {skillsData.map((categoryGroup, index) => {
           const categoryName = categoryGroup.category;
           return (
             <AnimatedSection
               key={categoryName + index}
               delay={0.2 + index * 0.1}
-              className="p-6 md:p-8 bg-white dark:bg-slate-800 rounded-xl shadow-xl transition-colors duration-300"
             >
-              <h2 className="text-2xl md:text-3xl font-semibold mb-8 text-slate-800 dark:text-slate-100 border-b-2 border-blue-500 dark:border-blue-400 pb-3">
-                {categoryName}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-                {categoryGroup.items.map((skill: SkillItemType) => (
-                  <SkillBar key={skill.name} name={skill.name} proficiency={skill.proficiency} />
-                ))}
-              </div>
+              <SpotlightCard className="p-8 md:p-10 relative overflow-hidden backdrop-blur-xl bg-black/40">
+                {/* Decorative background blob */}
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                <h2 className="text-2xl md:text-3xl font-bold mb-10 text-white flex items-center relative z-10">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-purple-200">
+                    {categoryName}
+                  </span>
+                  <div className="h-px flex-grow bg-gradient-to-r from-white/20 to-transparent ml-6" />
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-8 relative z-10">
+                  {categoryGroup.items.map((skill: SkillItemType, skillIndex) => (
+                    <SkillBar key={`${skill.name}-${skillIndex}`} name={skill.name} proficiency={skill.proficiency} />
+                  ))}
+                </div>
+              </SpotlightCard>
             </AnimatedSection>
           );
         })}
       </div>
-    </AnimatedSection>
+    </div>
   );
 }

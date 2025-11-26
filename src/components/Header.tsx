@@ -1,166 +1,145 @@
-// @/components/Header.tsx
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import { motion, AnimatePresence } from "framer-motion";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { Menu, X } from 'lucide-react';
 
-const HamburgerIcon = ({ open }: { open: boolean }) => (
-  <div className="w-6 h-6 flex flex-col justify-around items-center cursor-pointer">
-    <motion.span
-      className="block h-0.5 w-6 bg-gray-900 dark:bg-gray-100 origin-center"
-      animate={open ? { rotate: 45, y: 5.5 } : { rotate: 0, y: 0 }}
-      transition={{ duration: 0.3 }}
-    />
-    <motion.span
-      className="block h-0.5 w-6 bg-gray-900 dark:bg-gray-100"
-      animate={open ? { opacity: 0 } : { opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    />
-    <motion.span
-      className="block h-0.5 w-6 bg-gray-900 dark:bg-gray-100 origin-center"
-      animate={open ? { rotate: -45, y: -5.5 } : { rotate: 0, y: 0 }}
-      transition={{ duration: 0.3 }}
-    />
-  </div>
-);
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/skills', label: 'Skills' },
+  { href: '/contact', label: 'Contact' },
+];
 
 const Header = () => {
-  const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Close mobile menu on route change
   useEffect(() => {
-    setMounted(true);
-    document.documentElement.lang = "en";
-    document.documentElement.dir = "ltr";
-  }, []);
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
 
-  const toggleTheme = () => {
-    if (!mounted) return;
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/projects", label: "Projects" },
-    { href: "/skills", label: "Skills" },
-    { href: "/contact", label: "Contact" },
-  ];
-
-  if (!mounted) {
-    return (
-      <header className="bg-slate-100 dark:bg-slate-900 shadow-md">
-        <nav className="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center h-[68px] animate-pulse">
-          <div className="h-8 w-40 rounded bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite_linear]"></div>
-          <div className="flex space-x-3">
-            {[...Array(2)].map((_, i) => (
-              <div
-                key={i}
-                className="w-8 h-8 rounded-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite_linear]"
-              />
-            ))}
-            <div className="w-6 h-6 rounded-md bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700 bg-[length:200%_100%] animate-[shimmer_1.5s_infinite_linear] md:hidden" />
-          </div>
-        </nav>
-      </header>
-    );
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth')) {
+    return null;
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md shadow-md text-slate-900 dark:text-slate-100 transition-colors duration-300 border-b border-slate-200 dark:border-slate-700">
-      <nav className="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center h-[68px]">
-        <Link
-          href="/"
-          className="text-2xl font-extrabold hover:text-blue-600 dark:hover:text-blue-400 transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-          onClick={() => setIsMobileMenuOpen(false)}
-          aria-label="Go to homepage"
+    <>
+      {/* Desktop Floating Pill Header */}
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-fit px-4 hidden md:block">
+        <motion.header
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          className="flex items-center gap-1 p-1.5 rounded-full border border-white/20 bg-white/10 dark:bg-black/20 backdrop-blur-xl shadow-lg shadow-black/5"
         >
-          Gal Hillel
-        </Link>
-
-        <div className="hidden md:flex space-x-8 items-center">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`relative text-base font-medium transition-colors px-2 py-1 border-b-2 ${
-                pathname === href
-                  ? "text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400"
-                  : "text-slate-800 dark:text-slate-200 border-transparent hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-500 dark:hover:border-blue-400"
-              } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 rounded-sm`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {label}
-            </Link>
-          ))}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title="Toggle light/dark theme"
-          >
-            {resolvedTheme === "dark" ? "☀️" : "🌙"}
-          </button>
-        </div>
-
-        <div className="md:hidden flex items-center space-x-3">
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors text-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title="Toggle light/dark theme"
-          >
-            {resolvedTheme === "dark" ? "☀️" : "🌙"}
-          </button>
-          <button
-            onClick={toggleMobileMenu}
-            aria-label="Toggle navigation menu"
-            className="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors z-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
-            title="Toggle navigation menu"
-          >
-            <HamburgerIcon open={isMobileMenuOpen} />
-          </button>
-        </div>
-      </nav>
-
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden absolute top-[68px] left-0 right-0 bg-slate-50 dark:bg-slate-900 shadow-lg pb-6 z-20 border-t border-slate-300 dark:border-slate-700"
-          >
-            <div className="container mx-auto px-4 sm:px-6 flex flex-col items-start space-y-3 pt-5">
-              {navLinks.map(({ href, label }) => (
+          <nav className="flex items-center gap-1">
+            {navLinks.map(({ href, label }) => {
+              const isActive = pathname === href;
+              return (
                 <Link
                   key={href}
                   href={href}
-                  onClick={toggleMobileMenu}
-                  className={`w-full px-4 py-3 text-lg font-semibold rounded-md transition-colors ${
-                    pathname === href
-                      ? "bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-300"
-                      : "text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700"
-                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900`}
+                  className={cn(
+                    "relative px-5 py-2 text-sm font-medium transition-colors rounded-full",
+                    isActive ? "text-white dark:text-white" : "text-gray-600 dark:text-white/60 hover:text-black dark:hover:text-white"
+                  )}
                 >
-                  {label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-pill"
+                      className="absolute inset-0 bg-black/5 dark:bg-white/10 rounded-full border border-black/5 dark:border-white/5"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="relative z-10">{label}</span>
                 </Link>
-              ))}
-            </div>
+              );
+            })}
+          </nav>
+
+          {/* Admin Link */}
+          <Link
+            href="/admin"
+            className="ml-2 w-9 h-9 flex items-center justify-center rounded-full text-gray-500 dark:text-white/40 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+            title="Admin"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="12" x2="12" y1="3" y2="21" /><path d="M3 14h18" /></svg>
+          </Link>
+        </motion.header>
+      </div>
+
+      {/* Mobile Header */}
+      <div className="fixed top-4 right-4 z-50 md:hidden">
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-foreground shadow-lg"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-sm glass-panel p-6 flex flex-col gap-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-bold">Menu</span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <nav className="flex flex-col gap-2">
+                {navLinks.map(({ href, label }) => {
+                  const isActive = pathname === href;
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={cn(
+                        "px-4 py-3 rounded-xl text-lg font-medium transition-all",
+                        isActive
+                          ? "bg-white/10 text-foreground"
+                          : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                      )}
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
+                <Link
+                  href="/admin"
+                  className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground hover:bg-white/5 hover:text-foreground flex items-center gap-2"
+                >
+                  Admin Dashboard
+                </Link>
+              </nav>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
 

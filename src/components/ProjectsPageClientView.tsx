@@ -3,9 +3,9 @@
 
 import ProjectCard from '@/components/ProjectCard';
 import AnimatedSection from '@/components/AnimatedSection';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo } from 'react';
-import { Project } from '@/entities/SiteContent'; // Use global Project type
+import { Project } from '@/entities/SiteContent';
 
 interface ProjectsPageClientViewProps {
   projects: Project[];
@@ -14,6 +14,7 @@ interface ProjectsPageClientViewProps {
 export default function ProjectsPageClientView({ projects }: ProjectsPageClientViewProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
+  // Derive all unique tags from the immutable projects prop
   const allTags = useMemo(() => {
     const tagsSet = new Set<string>();
     projects.forEach(project => {
@@ -28,6 +29,7 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
     );
   };
 
+  // Derive filtered projects on the fly - never store in state
   const filteredProjects = useMemo(() => {
     if (selectedTags.length === 0) {
       return projects;
@@ -37,40 +39,25 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
     );
   }, [projects, selectedTags]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
   return (
-    <AnimatedSection className="container mx-auto px-4 py-8 md:py-16">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-16 text-gray-900 dark:text-white">
+    <div className="container mx-auto px-4 py-8 md:py-16 pt-24">
+      <h1 className="page-title-glow">
         My Projects
       </h1>
 
       {allTags.length > 0 && (
         <AnimatedSection delay={0.2} className="mb-8 md:mb-12 text-center">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Filter by Technology</h2>
-          <div className="flex flex-wrap justify-center gap-2">
+          <h2 className="text-xl font-semibold mb-6 text-white/80">Filter by Technology</h2>
+          <div className="flex flex-wrap justify-center gap-3">
             {allTags.map(tag => (
               <motion.button
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 aria-pressed={selectedTags.includes(tag)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md border
                   ${selectedTags.includes(tag)
-                    ? 'bg-blue-600 text-white ring-2 ring-blue-400 dark:ring-blue-600'
-                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'}`}
+                    ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                    : 'bg-white/10 text-white border-white/10 hover:bg-white/20 hover:border-white/30'}`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -81,7 +68,7 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
           {selectedTags.length > 0 && (
             <button
               onClick={() => setSelectedTags([])}
-              className="mt-6 text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              className="mt-6 text-sm text-blue-300 hover:text-blue-200 hover:underline transition-colors"
             >
               Clear Filters
             </button>
@@ -89,33 +76,47 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
         </AnimatedSection>
       )}
 
-      {filteredProjects.length > 0 ? (
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {filteredProjects.map((project) => (
-            <motion.div key={project.id} variants={cardVariants}>
-              <ProjectCard
-                title={project.title}
-                description={project.description}
-                imageUrl={project.imageUrl}
-                tags={project.tags}
-                githubLink={project.githubLink}
-                demoLink={project.demoLink}
-              />
+      <motion.div
+        layout
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto"
+      >
+        <AnimatePresence mode='popLayout'>
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
+              <motion.div
+                layout
+                key={project.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="h-full"
+              >
+                <ProjectCard
+                  title={project.title}
+                  description={project.description}
+                  imageUrl={project.imageUrl}
+                  tags={project.tags}
+                  githubLink={project.githubLink}
+                  demoLink={project.demoLink}
+                  imagePosition={project.imagePosition}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="col-span-full text-center py-20"
+            >
+              <p className="text-white/60 text-lg">
+                No projects match the selected filters.
+              </p>
             </motion.div>
-          ))}
-        </motion.div>
-      ) : (
-        <p className="text-center text-gray-600 dark:text-gray-400 text-lg mt-8">
-          {selectedTags.length > 0
-            ? 'No projects match the selected filters.'
-            : 'No projects available at the moment. Please check back later!'}
-        </p>
-      )}
-    </AnimatedSection>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }
