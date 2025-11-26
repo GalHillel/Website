@@ -9,5 +9,13 @@ export default async function AboutPage() {
     contentService.getAboutContent(),
   ]);
 
+  if (!user || !about) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white/60">
+        Content not found.
+      </div>
+    );
+  }
+
   return <AboutPageClientView user={user} about={about} />;
 }
