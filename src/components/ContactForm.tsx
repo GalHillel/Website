@@ -85,7 +85,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8 md:py-16 pt-24">
+        <div className="container mx-auto px-4 py-8 md:py-16">
             <h1 className="page-title-glow">
                 Get in Touch
             </h1>
@@ -96,7 +96,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <SpotlightCard className="p-6 sm:p-8 backdrop-blur-xl bg-black/40 border-white/10 shadow-2xl relative overflow-hidden group">
+                    <SpotlightCard className="p-6 sm:p-8 backdrop-blur-xl bg-[#0f1020]/80 border-white/10 shadow-2xl relative overflow-hidden group">
                         {/* Subtle Inner Glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
@@ -114,7 +114,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     id="name"
                                     required
                                     placeholder="Enter your name"
-                                    className="glass-input w-full"
+                                    className="glass-input w-full bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 />
                             </div>
                             <div>
@@ -127,7 +127,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     id="email"
                                     required
                                     placeholder="Enter your email address"
-                                    className="glass-input w-full"
+                                    className="glass-input w-full bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 />
                             </div>
                             <div>
@@ -140,14 +140,16 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     rows={4}
                                     required
                                     placeholder="Write your message here..."
-                                    className="glass-input w-full resize-none"
+                                    className="glass-input w-full resize-none bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 ></textarea>
                             </div>
                             <div>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full glass-button-primary py-3 font-bold flex items-center justify-center gap-2"
+                                    className="w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white shadow-lg
+                                    bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-400 hover:via-blue-400 hover:to-purple-500
+                                    transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                                 >
                                     {isSubmitting ? (
                                         <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -166,7 +168,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                     transition={{ duration: 0.5, delay: 0.2 }}
                     className="space-y-6"
                 >
-                    <SpotlightCard className="p-6 sm:p-8 backdrop-blur-xl bg-black/40 border-white/10 shadow-2xl relative overflow-hidden group">
+                    <SpotlightCard className="p-6 sm:p-8 backdrop-blur-xl bg-[#0f1020]/80 border-white/10 shadow-2xl relative overflow-hidden group">
                         {/* Subtle Inner Glow */}
                         <div className="absolute inset-0 bg-gradient-to-bl from-purple-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 

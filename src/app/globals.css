@@ -1,23 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #020617;
+  --foreground: #ededed;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  background-color: #020617;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #050505;
-    --foreground: #ededed;
-  }
-}
+/* Removed media query to enforce dark mode globally */
 
 /* Animated Mesh Gradient Background */
 body {
@@ -27,6 +19,8 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 body::before {
@@ -112,4 +106,48 @@ body::before {
 
 .glass-button:hover::after {
   @apply translate-x-full;
+}
+
+/* ------------------------------------------------------------------------ */
+/* MOBILE PERFORMANCE OVERRIDES (Safety Net)                               */
+/* ------------------------------------------------------------------------ */
+@media (max-width: 768px) {
+
+  /* Force faster or disabled transitions */
+  * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.2s !important;
+  }
+
+  /* Disable heavy background effects on body pseudo-elements */
+  body::before,
+  body::after {
+    animation: none !important;
+    transition: none !important;
+    /* Optional: Convert usage of filters to none if they cause lag */
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+
+  /* Simplify glass panels on mobile */
+  .glass-panel,
+  .glass-card {
+    backdrop-filter: blur(8px) !important;
+    /* Cap blur amount */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    /* Cap shadow size */
+    background-image: none !important;
+    /* Remove complex gradients if any */
+  }
+
+  /* Disable hover effects on touch */
+  .glass-card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Disable shimmer/shine animations */
+  .glass-button::after {
+    display: none !important;
+  }
 }

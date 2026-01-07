@@ -3,8 +3,8 @@
 
 import ProjectCard from '@/components/ProjectCard';
 import AnimatedSection from '@/components/AnimatedSection';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { useState, useMemo, useEffect } from 'react';
 import { Project } from '@/entities/SiteContent';
 
 interface ProjectsPageClientViewProps {
@@ -40,7 +40,7 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
   }, [projects, selectedTags]);
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-16 pt-24">
+    <div className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="page-title-glow">
         My Projects
       </h1>
@@ -48,13 +48,13 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
       {allTags.length > 0 && (
         <AnimatedSection delay={0.2} className="mb-8 md:mb-12 text-center">
           <h2 className="text-xl font-semibold mb-6 text-white/80">Filter by Technology</h2>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
             {allTags.map(tag => (
               <motion.button
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 aria-pressed={selectedTags.includes(tag)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md border
+                className={`px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all backdrop-blur-md border
                   ${selectedTags.includes(tag)
                     ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]'
                     : 'bg-white/10 text-white border-white/10 hover:bg-white/20 hover:border-white/30'}`}
@@ -76,47 +76,35 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
         </AnimatedSection>
       )}
 
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto"
-      >
-        <AnimatePresence mode='popLayout'>
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((project) => (
-              <motion.div
-                layout
-                key={project.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                <ProjectCard
-                  title={project.title}
-                  description={project.description}
-                  imageUrl={project.imageUrl}
-                  tags={project.tags}
-                  githubLink={project.githubLink}
-                  demoLink={project.demoLink}
-                  imagePosition={project.imagePosition}
-                />
-              </motion.div>
-            ))
-          ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="col-span-full text-center py-20"
+              key={project.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
             >
-              <p className="text-white/60 text-lg">
-                No projects match the selected filters.
-              </p>
+              <ProjectCard
+                title={project.title}
+                description={project.description}
+                imageUrl={project.imageUrl}
+                tags={project.tags}
+                githubLink={project.githubLink}
+                demoLink={project.demoLink}
+                imagePosition={project.imagePosition}
+              />
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-20">
+            <p className="text-white/60 text-lg">
+              No projects match the selected filters.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

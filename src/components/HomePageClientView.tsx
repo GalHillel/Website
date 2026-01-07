@@ -13,10 +13,10 @@ interface HomePageClientViewProps {
 
 export default function HomePageClientView({ heroContent }: HomePageClientViewProps) {
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-[calc(100vh-6rem)] px-4 overflow-hidden pt-20">
+    <div className="w-full max-w-6xl mx-auto px-4 overflow-hidden relative">
 
-      {/* Background Floating Elements (Abstract Glass Orbs) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Background Floating Elements (Abstract Glass Orbs) - Hidden on mobile */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         <motion.div
           animate={{
             y: [0, -30, 0],
@@ -45,6 +45,9 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
         />
       </div>
 
+      {/* Static Mobile Background - Simple Gradient */}
+
+
       {/* Main Content */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
@@ -52,14 +55,14 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
         transition={{ duration: 1, ease: "easeOut" }}
         className="relative z-10 w-full max-w-6xl"
       >
-        <SpotlightCard className="p-12 md:p-24 flex flex-col items-center text-center backdrop-blur-3xl bg-black/40 border-white/10 shadow-2xl rounded-[3rem]">
+        <SpotlightCard className="p-8 md:p-24 flex flex-col items-center text-center bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl rounded-[3rem]">
 
           {/* Massive Typographic Hero */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-7xl md:text-9xl font-black tracking-tighter mb-6"
+            className="text-7xl md:text-9xl font-black tracking-tighter mb-10"
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-purple-400 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
               Gal Hillel
@@ -73,7 +76,7 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
             transition={{ delay: 0.5 }}
             className="mb-12"
           >
-            <div className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+            <div className="inline-flex items-center justify-center px-10 py-6 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
               <TypewriterTagline text={heroContent.tagline} taglines={heroContent.taglines} />
             </div>
           </motion.div>
@@ -97,7 +100,7 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
           >
             <Link
               href="/projects"
-              className="glass-button group w-full sm:w-auto px-10 py-5 rounded-full bg-white text-black font-bold text-xl shadow-[0_0_40px_-10px_rgba(255,255,255,0.4)] hover:shadow-[0_0_60px_-10px_rgba(255,255,255,0.6)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+              className="glass-button group w-full sm:w-auto px-10 py-5 rounded-full bg-[#E0E0E0] text-black font-bold text-xl shadow-[0_0_30px_-5px_rgba(168,85,247,0.5)] hover:bg-white hover:shadow-[0_0_50px_-5px_rgba(168,85,247,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
             >
               <span className="relative z-10">View Projects</span>
               <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform" />
@@ -105,7 +108,7 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
 
             <Link
               href="/contact"
-              className="w-full sm:w-auto px-10 py-5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:scale-105 transition-all duration-300 text-white font-medium text-xl flex items-center justify-center"
+              className="w-full sm:w-auto px-10 py-5 rounded-full border-[1.5px] border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:scale-105 transition-all duration-300 text-white font-medium text-xl flex items-center justify-center shadow-lg hover:shadow-xl"
             >
               Get in Touch
             </Link>

@@ -61,7 +61,7 @@ const TypewriterTagline = ({ text, taglines }: TypewriterTaglineProps) => {
         <motion.span
           className="inline-block h-6 md:h-8 w-1 bg-blue-600 dark:bg-blue-400 ml-1"
           animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 1.0, repeat: Infinity, ease: "linear" }} // Smoother/slower pulse
         />
       </span>
     </div>

@@ -1,12 +1,12 @@
 {
   "user": {
-    "name": "Gal",
+    "name": "Gal Hillel",
     "email": "galh2011@icloud.com",
     "github": "https://github.com/GalHillel",
     "linkedin": "https://linkedin.com/in/galhillel1",
     "profileImage": "/uploads/1764167228712-575824159-7I6A0610.jpg",
-    "intro": "test intro",
-    "tagline": "test tagline",
+    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
+    "tagline": "Full Stack Developer",
     "taglines": [
       "Software Developer",
       "Problem Solver",
@@ -17,47 +17,49 @@
     "imagePosition": "top"
   },
   "about": {
-    "bio": "test Bio",
-    "education": "Cumputer ",
-    "csMathBackground": "test 1234",
-    "experience": "Test Experience 122526513@@"
+    "bio": "Passionate developer with a knack for building elegant solutions to complex problems. I specialize in full-stack development with a focus on React, Next.js, and modern web technologies.",
+    "education": "B.Sc. in Computer Science",
+    "csMathBackground": "Strong foundation in algorithms, data structures, and computational mathematics. Experienced in solving complex algorithmic challenges.",
+    "experience": "Freelance Full Stack Developer (2023-Present)\n- Built scalable web applications for diverse clients.\n- Optimized frontend performance and SEO."
   },
   "projects": [
     {
       "id": "1764167342094",
-      "title": "New Project",
-      "description": "Test",
+      "title": "E-Commerce Platform",
+      "description": "A comprehensive e-commerce solution featuring real-time inventory management, secure payments, and a responsive mobile-first design.",
       "tags": [
         "Python",
-        "TypeScript"
+        "TypeScript",
+        "React"
       ],
-      "imageUrl": "/uploads/1764167387647-147515166-7I6A0707.jpg",
-      "githubLink": "https://github.com/GalHillel/System-Programming-Course",
-      "demoLink": "https://github.com/GalHillel/System-Programming-Course"
+      "imageUrl": "/uploads/1767790888665-913755956-ferrari-296-7680x4320-22348.jpg",
+      "githubLink": "https://github.com/GalHillel",
+      "demoLink": "https://github.com/GalHillel"
     },
     {
       "id": "1764163924516",
-      "title": "Test",
-      "description": "Test",
+      "title": "Task Management App",
+      "description": "A productivity tool designed to streamline workflow with drag-and-drop task organization and real-time collaboration features.",
       "tags": [
         "Python",
-        "React"
+        "React",
+        "MongoDB"
       ],
-      "imageUrl": "/uploads/1764167247271-629097768-7I6A0038.jpg",
-      "githubLink": "https://github.com/GalHillel/System-Programming-Course",
-      "demoLink": "https://github.com/GalHillel/System-Programming-Course"
+      "imageUrl": "/uploads/1767790895232-989900783-elden-ring-7680x4320-22765.jpg",
+      "githubLink": "https://github.com/GalHillel",
+      "demoLink": "https://github.com/GalHillel"
     },
     {
       "id": "proj1",
       "title": "Project Alpha",
-      "description": "A cool web application built with modern technologies to solve an interesting problem. Features X, Y, and Z.",
+      "description": "A cool web application built with modern technologies to solve an interesting problem. Features robust API integration and modern UI.",
       "imageUrl": "/futuristic-blue-7680x4320-22185.jpg",
       "tags": [
         "React",
         "Node.js",
         "TypeScript"
       ],
-      "githubLink": "https://github.com/GalHillel/System-Programming-Course",
+      "githubLink": "https://github.com/GalHillel",
       "demoLink": ""
     }
   ],
@@ -92,36 +94,36 @@
       ]
     },
     {
-      "category": "New Category",
+      "category": "Backend Development",
       "items": [
         {
-          "name": "New Skill",
-          "proficiency": 50
+          "name": "Node.js",
+          "proficiency": 85
         },
         {
-          "name": "Another Skill",
-          "proficiency": 95
+          "name": "Python",
+          "proficiency": 80
         },
         {
-          "name": "New Skill",
-          "proficiency": 30
+          "name": "PostgreSQL",
+          "proficiency": 75
         }
       ]
     },
     {
-      "category": "New Category 2",
+      "category": "Tools & DevOps",
       "items": [
         {
-          "name": "New Skill 2",
-          "proficiency": 10
-        },
-        {
-          "name": "New Skill",
-          "proficiency": 50
-        },
-        {
-          "name": "New Skill3",
+          "name": "Git & GitHub",
           "proficiency": 90
+        },
+        {
+          "name": "Docker",
+          "proficiency": 70
+        },
+        {
+          "name": "AWS",
+          "proficiency": 60
         }
       ]
     }

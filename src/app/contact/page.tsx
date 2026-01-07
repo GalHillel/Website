@@ -22,7 +22,7 @@ export default async function ContactPage() {
   // For now, safe default.
 
   return (
-    <main className="min-h-screen">
+    <main>
       <ContactForm user={user} resumeUrl={""} />
     </main>
   );

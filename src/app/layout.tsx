@@ -17,6 +17,15 @@ const geistMono = Geist_Mono({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
+export const viewport: Viewport = {
+    themeColor: '#1e293b',
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
+};
+
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
@@ -54,14 +63,7 @@ export const metadata: Metadata = {
     },
 };
 
-export const viewport: Viewport = {
-    themeColor: [
-        { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-        { media: "(prefers-color-scheme: dark)", color: "#000000" },
-    ],
-    width: "device-width",
-    initialScale: 1,
-};
+
 
 export default async function RootLayout({
     children,
@@ -75,9 +77,9 @@ export default async function RootLayout({
     const userProfile = await contentService.getUserProfile();
 
     return (
-        <html lang={siteLang} dir={siteDir} suppressHydrationWarning>
+        <html lang={siteLang} dir={siteDir} suppressHydrationWarning className="dark">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-gray-100`}
             >
                 <ThemeProviderComponent
                     attribute="class"

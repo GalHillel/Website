@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -17,12 +15,6 @@ const navLinks = [
 
 const Header = () => {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
 
   if (pathname.startsWith('/admin') || pathname.startsWith('/auth')) {
     return null;
@@ -73,72 +65,6 @@ const Header = () => {
           </Link>
         </motion.header>
       </div>
-
-      {/* Mobile Header */}
-      <div className="fixed top-4 right-4 z-50 md:hidden">
-        <button
-          onClick={() => setIsMobileMenuOpen(true)}
-          className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-foreground shadow-lg"
-        >
-          <Menu className="w-6 h-6" />
-        </button>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm glass-panel p-6 flex flex-col gap-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-bold">Menu</span>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <nav className="flex flex-col gap-2">
-                {navLinks.map(({ href, label }) => {
-                  const isActive = pathname === href;
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={cn(
-                        "px-4 py-3 rounded-xl text-lg font-medium transition-all",
-                        isActive
-                          ? "bg-white/10 text-foreground"
-                          : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-                      )}
-                    >
-                      {label}
-                    </Link>
-                  );
-                })}
-                <Link
-                  href="/admin"
-                  className="px-4 py-3 rounded-xl text-lg font-medium text-muted-foreground hover:bg-white/5 hover:text-foreground flex items-center gap-2"
-                >
-                  Admin Dashboard
-                </Link>
-              </nav>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };

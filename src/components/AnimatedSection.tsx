@@ -15,8 +15,8 @@ interface AnimatedSectionProps {
 }
 
 const defaultVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 10 }, // Kept small for mobile
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
 
 const AnimatedSection: React.FC<AnimatedSectionProps> = ({

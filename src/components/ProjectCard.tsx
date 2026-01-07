@@ -33,15 +33,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       className="h-full"
     >
       <SpotlightCard className={cn(
-        "h-full flex flex-col overflow-hidden group relative transition-all duration-500 backdrop-blur-xl bg-black/40",
-        "hover:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.1)]",
+        "h-full flex flex-col overflow-hidden group relative transition-all duration-500 backdrop-blur-xl bg-white/5 border border-white/10 shadow-xl",
+        "hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]",
         "hover:border-white/30"
       )}>
         {/* Glow Effect on Hover */}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/0 to-white/0 group-hover:to-white/5 transition-all duration-500 pointer-events-none" />
 
         {imageUrl ? (
-          <div className="relative w-full h-48 sm:h-56 overflow-hidden">
+          <div className="relative w-full h-48 sm:h-56 overflow-hidden rounded-t-2xl">
             <Image
               src={imageUrl}
               alt={title || 'Project image'}
@@ -62,10 +62,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <div className="p-6 flex-grow flex flex-col justify-between relative z-10">
           <div>
             <h3 className="text-xl sm:text-2xl font-bold mb-2 text-white group-hover:text-blue-300 transition-colors duration-300">{title}</h3>
-            <p className="text-white/70 text-sm mb-4 min-h-[60px] line-clamp-3 leading-relaxed">
+            <p className="text-white/70 text-sm mb-5 min-h-[60px] line-clamp-3 leading-relaxed">
               {description}
             </p>
-            <div className="mb-6 flex flex-wrap gap-2">
+            <div className="mb-4 flex flex-wrap gap-2 pb-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
@@ -83,7 +83,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 href={githubLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-button text-xs px-4 py-2 h-auto"
+                className="px-4 py-2 rounded-lg text-xs font-bold border border-white/20 bg-white/5 hover:bg-white/10 text-white transition-all hover:scale-105"
               >
                 GitHub
               </Link>
@@ -93,7 +93,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 href={demoLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-button text-xs px-4 py-2 h-auto bg-white/20 hover:bg-white/30 border-white/30"
+                className="px-4 py-2 rounded-lg text-xs font-bold border border-white/20 bg-white/10 hover:bg-white/20 text-blue-200 hover:text-white transition-all hover:scale-105"
               >
                 Live Demo
               </Link>

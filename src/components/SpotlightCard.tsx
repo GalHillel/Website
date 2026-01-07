@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useRef, useState, MouseEvent } from 'react';
+import React, { MouseEvent } from 'react';
+import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import { cn } from '@/lib/utils';
 
 interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,43 +16,34 @@ export default function SpotlightCard({
     spotlightColor = 'rgba(255, 255, 255, 0.15)',
     ...props
 }: SpotlightCardProps) {
-    const divRef = useRef<HTMLDivElement>(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [opacity, setOpacity] = useState(0);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
 
-    const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-        if (!divRef.current) return;
-
-        const rect = divRef.current.getBoundingClientRect();
-        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-
-    const handleMouseEnter = () => {
-        setOpacity(1);
-    };
-
-    const handleMouseLeave = () => {
-        setOpacity(0);
-    };
+    function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+        let { left, top } = currentTarget.getBoundingClientRect();
+        mouseX.set(clientX - left);
+        mouseY.set(clientY - top);
+    }
 
     return (
         <div
-            ref={divRef}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
             className={cn(
-                "relative rounded-2xl border border-white/10 bg-black/20 overflow-hidden",
+                "group relative rounded-2xl border border-white/10 bg-black/20 overflow-hidden",
                 className
             )}
+            onMouseMove={handleMouseMove}
             {...props}
         >
-            {/* Spotlight Effect */}
-            <div
-                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+            <motion.div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100 hidden md:block"
                 style={{
-                    opacity,
-                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
+                    background: useMotionTemplate`
+                        radial-gradient(
+                        650px circle at ${mouseX}px ${mouseY}px,
+                        ${spotlightColor},
+                        transparent 80%
+                        )
+                    `,
                 }}
             />
 
