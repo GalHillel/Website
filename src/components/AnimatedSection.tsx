@@ -1,9 +1,7 @@
 // @/components/AnimatedSection.tsx
 "use client";
 
-import { motion, useAnimation, Variants } from 'framer-motion';
-import { useInView } from 'react-intersection-observer'; // If not installed, need to: npm install react-intersection-observer
-import { useEffect } from 'react';
+import { motion, Variants } from 'framer-motion';
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -27,25 +25,14 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({
   once = true,
   threshold = 0.1,
 }) => {
-  const controls = useAnimation();
-  const [ref, inView] = useInView({ triggerOnce: once, threshold: threshold });
-
-  useEffect(() => {
-    if (inView) {
-      controls.start('visible');
-    } else if (!once) { // If not triggerOnce, allow animation to reverse if element scrolls out of view
-      controls.start('hidden');
-    }
-  }, [controls, inView, once]);
-
   return (
     <motion.div
-      ref={ref}
       initial="hidden"
-      animate={controls}
+      whileInView="visible"
+      viewport={{ once, amount: threshold }}
       variants={variants}
       className={className}
-      transition={{ delay: delay }} // Pass only delay; transition details should be in variants if needed
+      transition={{ delay }}
     >
       {children}
     </motion.div>

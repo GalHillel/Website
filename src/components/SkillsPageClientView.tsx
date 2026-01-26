@@ -4,7 +4,7 @@
 import AnimatedSection from '@/components/AnimatedSection';
 import { motion } from 'framer-motion';
 import SpotlightCard from '@/components/SpotlightCard';
-import { SkillCategory as SkillCategoryType, SkillItem as SkillItemType } from '@/entities/SiteContent';
+import { SkillCategory as SkillCategoryType, SkillItem as SkillItemType, SiteUI } from '@/data/SiteContent';
 
 interface SkillBarProps {
   name: string;
@@ -48,9 +48,10 @@ const SkillBar: React.FC<SkillBarProps> = ({ name, proficiency }) => {
 
 interface SkillsPageClientViewProps {
   skillsData: SkillCategoryType[];
+  uiContent: SiteUI['skills'];
 }
 
-export default function SkillsPageClientView({ skillsData }: SkillsPageClientViewProps) {
+export default function SkillsPageClientView({ skillsData, uiContent }: SkillsPageClientViewProps) {
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
       <motion.h1
@@ -58,7 +59,7 @@ export default function SkillsPageClientView({ skillsData }: SkillsPageClientVie
         animate={{ opacity: 1, y: 0 }}
         className="page-title-glow"
       >
-        Technical Arsenal
+        {uiContent?.title || "Technical Arsenal"}
       </motion.h1>
 
       <div className="space-y-10 max-w-6xl mx-auto">

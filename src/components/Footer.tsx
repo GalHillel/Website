@@ -1,16 +1,16 @@
 "use client";
 
 import Link from 'next/link';
-import { UserContent } from '@/entities/SiteContent';
+import { UserContent, SiteUI } from '@/data/SiteContent';
 
 interface FooterProps {
   user: UserContent | null;
+  ui?: SiteUI['footer'];
 }
 
-const Footer = ({ user }: FooterProps) => {
+const Footer = ({ user, ui }: FooterProps) => {
   const currentYear = new Date().getFullYear();
 
-  // Define SVG icons for the footer
   const FooterLinkedInIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ const Footer = ({ user }: FooterProps) => {
               {user?.name || 'Gal Hillel'}
             </Link>
             <p className="text-sm text-slate-400 mt-1">
-              © {currentYear} All Rights Reserved.
+              © {currentYear} {ui?.rightsText || "All Rights Reserved."}
             </p>
           </div>
 

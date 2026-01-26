@@ -4,10 +4,8 @@ import { contentService } from '@/services/contentService';
 export const revalidate = 60;
 
 export default async function AboutPage() {
-  const [user, about] = await Promise.all([
-    contentService.getUserProfile(),
-    contentService.getAboutContent(),
-  ]);
+  const content = await contentService.getAllContent();
+  const { user, about, ui } = content;
 
   if (!user || !about) {
     return (
@@ -17,5 +15,5 @@ export default async function AboutPage() {
     );
   }
 
-  return <AboutPageClientView user={user} about={about} />;
+  return <AboutPageClientView user={user} about={about} uiContent={ui.about} />;
 }

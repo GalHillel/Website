@@ -4,7 +4,7 @@ import { contentService } from '@/services/contentService';
 export const revalidate = 60;
 
 export default async function SkillsPage() {
-  const skillsData = await contentService.getSkills();
+  const content = await contentService.getAllContent();
 
-  return <SkillsPageClientView skillsData={skillsData} />;
+  return <SkillsPageClientView skillsData={content.skills} uiContent={content.ui.skills} />;
 }

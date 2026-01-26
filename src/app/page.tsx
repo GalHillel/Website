@@ -4,7 +4,8 @@ import { contentService } from '@/services/contentService';
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function HomePage() {
-  const userProfile = await contentService.getUserProfile();
+  const content = await contentService.getAllContent();
+  const userProfile = content.user;
 
   const heroContent = {
     tagline: userProfile?.tagline || "Software Developer",
@@ -13,5 +14,5 @@ export default async function HomePage() {
     profileImage: userProfile?.profileImage,
   };
 
-  return <HomePageClientView heroContent={heroContent} />;
+  return <HomePageClientView heroContent={heroContent} uiContent={content.ui.home} />;
 }

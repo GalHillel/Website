@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FullSiteContent, Project, SkillCategory, SkillItem } from '@/services/contentService';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Save, LogOut, CheckCircle2, XCircle, User, Briefcase, Code2, LayoutGrid, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Save, LogOut, CheckCircle2, XCircle, User, Briefcase, Code2, LayoutGrid, Upload, Image as ImageIcon, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -166,6 +166,26 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
     setHasChanges(true);
   };
 
+  const updateUI = (section: string, key: string, value: any) => {
+    if (!content.ui) return;
+    const newUI = { ...content.ui };
+    // @ts-ignore
+    if (!newUI[section]) newUI[section] = {};
+    // @ts-ignore
+    newUI[section][key] = value;
+    setContent({ ...content, ui: newUI });
+    setHasChanges(true);
+  };
+
+  const updateNavLink = (index: number, field: 'href' | 'label', value: string) => {
+    if (!content.ui) return;
+    const newNavLinks = [...content.ui.navLinks];
+    newNavLinks[index] = { ...newNavLinks[index], [field]: value };
+    setContent({ ...content, ui: { ...content.ui, navLinks: newNavLinks } });
+    setHasChanges(true);
+  };
+
+
   return (
     <div className="relative min-h-screen pb-24">
       <div className="flex items-center justify-between mb-8">
@@ -192,6 +212,9 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
           </TabsTrigger>
           <TabsTrigger value="skills" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
             <Code2 className="w-4 h-4 mr-2" /> Skills
+          </TabsTrigger>
+          <TabsTrigger value="config" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
+            <Settings className="w-4 h-4 mr-2" /> Configuration
           </TabsTrigger>
         </TabsList>
 
@@ -278,10 +301,10 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
                           src={content.user.profileImage}
                           alt="Profile"
                           fill
-                          className={cn("object-cover",
+                          className={`object-cover ${cn(
                             content.user.imagePosition === 'top' ? 'object-top' :
                               content.user.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-                          )}
+                          )}`}
                         />
                       ) : (
                         <User className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
@@ -438,10 +461,10 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
                               src={project.imageUrl}
                               alt={project.title}
                               fill
-                              className={cn("object-cover",
+                              className={`object-cover ${cn(
                                 project.imagePosition === 'top' ? 'object-top' :
                                   project.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-                              )}
+                              )}`}
                             />
                           ) : (
                             <ImageIcon className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
@@ -588,6 +611,193 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
             ))}
           </div>
         </TabsContent>
+
+        {/* Configuration Tab */}
+        <TabsContent value="config" className="space-y-8">
+          {content.ui && (
+            <>
+              {/* Navigation */}
+              <div className="glass-panel p-8 space-y-6">
+                <h3 className="text-xl font-semibold flex items-center gap-2">
+                  <LayoutGrid className="w-5 h-5 text-yellow-400" /> Navigation
+                </h3>
+                <div className="space-y-4">
+                  {content.ui.navLinks.map((link, index) => (
+                    <div key={index} className="grid grid-cols-2 gap-4">
+                      <input
+                        className="glass-input"
+                        value={link.label}
+                        onChange={(e) => updateNavLink(index, 'label', e.target.value)}
+                        placeholder="Label"
+                      />
+                      <input
+                        className="glass-input font-mono text-sm"
+                        value={link.href}
+                        onChange={(e) => updateNavLink(index, 'href', e.target.value)}
+                        placeholder="Path"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Pages Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* Home Page Config */}
+                <div className="glass-panel p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Home Page</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Project Button</label>
+                      <input className="glass-input" value={content.ui.home.buttonProjects} onChange={(e) => updateUI('home', 'buttonProjects', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Contact Button</label>
+                      <input className="glass-input" value={content.ui.home.buttonContact} onChange={(e) => updateUI('home', 'buttonContact', e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* About Page Config */}
+                <div className="glass-panel p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">About Page</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Bio Title</label>
+                      <input className="glass-input" value={content.ui.about.sectionBio} onChange={(e) => updateUI('about', 'sectionBio', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Exp. Title</label>
+                      <input className="glass-input" value={content.ui.about.sectionExperience} onChange={(e) => updateUI('about', 'sectionExperience', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Edu. Title</label>
+                      <input className="glass-input" value={content.ui.about.sectionEducation} onChange={(e) => updateUI('about', 'sectionEducation', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">CS Title</label>
+                      <input className="glass-input" value={content.ui.about.sectionCS} onChange={(e) => updateUI('about', 'sectionCS', e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/10">
+                    <label className="text-xs text-muted-foreground mb-2 block">Value Labels</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <input className="glass-input text-xs" value={content.ui.about.locationLabel} onChange={(e) => updateUI('about', 'locationLabel', e.target.value)} />
+                      <input className="glass-input text-xs" value={content.ui.about.experienceLabel} onChange={(e) => updateUI('about', 'experienceLabel', e.target.value)} />
+                      <input className="glass-input text-xs" value={content.ui.about.emailLabel} onChange={(e) => updateUI('about', 'emailLabel', e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Projects Page Config */}
+                <div className="glass-panel p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Projects Page</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
+                      <input className="glass-input" value={content.ui.projects.title} onChange={(e) => updateUI('projects', 'title', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Filter Heading</label>
+                      <input className="glass-input" value={content.ui.projects.filterTitle} onChange={(e) => updateUI('projects', 'filterTitle', e.target.value)} />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">No Results Msg</label>
+                      <input className="glass-input" value={content.ui.projects.noResults} onChange={(e) => updateUI('projects', 'noResults', e.target.value)} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Skills Page Config */}
+                <div className="glass-panel p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Skills Page</h3>
+                  <div>
+                    <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
+                    <input className="glass-input" value={content.ui.skills.title} onChange={(e) => updateUI('skills', 'title', e.target.value)} />
+                  </div>
+                </div>
+
+                {/* Contact Page Config */}
+                <div className="glass-panel p-6 space-y-4 md:col-span-2">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Contact Page</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
+                        <input className="glass-input" value={content.ui.contact.title} onChange={(e) => updateUI('contact', 'title', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Form Title</label>
+                        <input className="glass-input" value={content.ui.contact.formTitle} onChange={(e) => updateUI('contact', 'formTitle', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Info Title</label>
+                        <input className="glass-input" value={content.ui.contact.infoTitle} onChange={(e) => updateUI('contact', 'infoTitle', e.target.value)} />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Info Text</label>
+                        <textarea className="glass-input min-h-[60px]" value={content.ui.contact.infoText} onChange={(e) => updateUI('contact', 'infoText', e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Name Label</label>
+                          <input className="glass-input" value={content.ui.contact.nameLabel} onChange={(e) => updateUI('contact', 'nameLabel', e.target.value)} />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Email Label</label>
+                          <input className="glass-input" value={content.ui.contact.emailLabel} onChange={(e) => updateUI('contact', 'emailLabel', e.target.value)} />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Message Label</label>
+                        <input className="glass-input" value={content.ui.contact.messageLabel} onChange={(e) => updateUI('contact', 'messageLabel', e.target.value)} />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">LinkedIn Label</label>
+                          <input className="glass-input" value={content.ui.contact.linkedinText} onChange={(e) => updateUI('contact', 'linkedinText', e.target.value)} />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub Label</label>
+                          <input className="glass-input" value={content.ui.contact.githubText} onChange={(e) => updateUI('contact', 'githubText', e.target.value)} />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Email Link</label>
+                          <input className="glass-input" value={content.ui.contact.emailText} onChange={(e) => updateUI('contact', 'emailText', e.target.value)} />
+                        </div>
+                        <div>
+                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Submit Button</label>
+                          <input className="glass-input" value={content.ui.contact.submitButton} onChange={(e) => updateUI('contact', 'submitButton', e.target.value)} />
+                        </div>
+                      </div>
+                      <div className="space-y-2 pt-2 border-t border-white/10">
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Resume Prompt</label>
+                        <input className="glass-input" value={content.ui.contact.resumePrompt} onChange={(e) => updateUI('contact', 'resumePrompt', e.target.value)} />
+                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mt-2">Download Button</label>
+                        <input className="glass-input" value={content.ui.contact.downloadResume} onChange={(e) => updateUI('contact', 'downloadResume', e.target.value)} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Config */}
+                <div className="glass-panel p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Footer</h3>
+                  <div>
+                    <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Rights Text</label>
+                    <input className="glass-input" value={content.ui.footer.rightsText} onChange={(e) => updateUI('footer', 'rightsText', e.target.value)} />
+                  </div>
+                </div>
+
+              </div>
+            </>
+          )}
+        </TabsContent>
       </Tabs>
 
       {/* Floating Save Bar */}
@@ -642,6 +852,6 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 }

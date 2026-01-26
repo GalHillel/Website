@@ -46,10 +46,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               src={imageUrl}
               alt={title || 'Project image'}
               fill
-              className={cn("transition-transform duration-700 ease-out group-hover:scale-110 object-cover",
+              className={`object-cover ${cn("transition-transform duration-700 ease-out group-hover:scale-110",
                 imagePosition === 'top' ? 'object-top' :
                   imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-              )}
+              )}`}
             />
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
           </div>

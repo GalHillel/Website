@@ -3,14 +3,15 @@
 
 import Image from 'next/image';
 import AnimatedSection from '@/components/AnimatedSection';
-import { UserContent, AboutContent } from '@/entities/SiteContent';
+import { UserContent, AboutContent, SiteUI } from '@/data/SiteContent';
 
 interface AboutPageClientViewProps {
   user: UserContent;
   about: AboutContent;
+  uiContent: SiteUI['about'];
 }
 
-export default function AboutPageClientView({ user, about }: AboutPageClientViewProps) {
+export default function AboutPageClientView({ user, about, uiContent }: AboutPageClientViewProps) {
   const profileImageUrl = user.profileImage || "/placeholder-profile.jpg";
 
   return (
@@ -32,7 +33,7 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
                   fill
                   className={`object-cover transition-transform duration-500 group-hover:scale-105 ${user.imagePosition === 'top' ? 'object-top' :
                     user.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-                    }`}
+                    } `}
                 />
               </div>
             </div>
@@ -42,15 +43,15 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
 
             <div className="mt-5 w-full space-y-3">
               <div className="grid grid-cols-[100px_1fr] items-center text-sm border-b border-white/10 pb-3">
-                <span className="text-white/50 font-medium">Location</span>
+                <span className="text-white/50 font-medium">{uiContent?.locationLabel || "Location"}</span>
                 <span className="text-white">{user.location || "Tel Aviv, Israel"}</span>
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center text-sm border-b border-white/10 pb-3">
-                <span className="text-white/50 font-medium">Experience</span>
+                <span className="text-white/50 font-medium">{uiContent?.experienceLabel || "Experience"}</span>
                 <span className="text-white">3+ Years</span>
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center text-sm border-b border-white/10 pb-3">
-                <span className="text-white/50 font-medium">Email</span>
+                <span className="text-white/50 font-medium">{uiContent?.emailLabel || "Email"}</span>
                 <span className="text-white truncate">{user.email}</span>
               </div>
             </div>
@@ -67,7 +68,7 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
               <h3 className="text-2xl font-bold mb-4 text-white flex items-center gap-3 relative z-10">
                 <span className="w-8 h-1 bg-blue-500 rounded-full" />
-                Biography
+                {uiContent?.sectionBio || "Biography"}
               </h3>
               <p className="text-white/80 leading-relaxed text-lg relative z-10">
                 {about.bio}
@@ -82,7 +83,7 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
                 <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
                 <h3 className="text-2xl font-bold mb-4 text-white flex items-center gap-3 relative z-10">
                   <span className="w-8 h-1 bg-cyan-500 rounded-full" />
-                  Experience
+                  {uiContent?.sectionExperience || "Experience"}
                 </h3>
                 <p className="text-white/80 leading-relaxed text-lg whitespace-pre-line relative z-10">
                   {about.experience}
@@ -97,7 +98,7 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
               <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
               <h3 className="text-2xl font-bold mb-4 text-white flex items-center gap-3 relative z-10">
                 <span className="w-8 h-1 bg-purple-500 rounded-full" />
-                Education
+                {uiContent?.sectionEducation || "Education"}
               </h3>
               <p className="text-white/80 leading-relaxed text-lg whitespace-pre-line font-medium relative z-10">
                 {about.education}
@@ -111,7 +112,7 @@ export default function AboutPageClientView({ user, about }: AboutPageClientView
               <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
               <h3 className="text-2xl font-bold mb-4 text-white flex items-center gap-3 relative z-10">
                 <span className="w-8 h-1 bg-pink-500 rounded-full" />
-                CS & Math Background
+                {uiContent?.sectionCS || "CS & Math Background"}
               </h3>
               <p className="text-white/80 leading-relaxed text-lg whitespace-pre-line relative z-10">
                 {about.csMathBackground}

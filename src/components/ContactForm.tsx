@@ -1,10 +1,11 @@
 "use client";
 
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import SpotlightCard from '@/components/SpotlightCard';
-import { UserContent } from '@/entities/SiteContent';
+import { UserContent, SiteUI } from '@/data/SiteContent';
 import { CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
 // SVG Icons
@@ -29,9 +30,10 @@ const EmailIcon = () => (
 interface ContactFormProps {
     user: UserContent | null;
     resumeUrl?: string;
+    uiContent: SiteUI['contact'];
 }
 
-export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
+export default function ContactForm({ user, resumeUrl, uiContent }: ContactFormProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
@@ -47,14 +49,11 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
         // Capture the form element synchronously
         const formElement = event.currentTarget;
 
-        // Check configuration only on submit
+        // Check configuration
         if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_USER_ID) {
-            // Simulate success for demo purposes if keys are missing, but warn in console
-            console.warn('EmailJS credentials missing. Simulating success for demo.');
-            setTimeout(() => {
-                setFeedback({ type: 'error', message: 'EmailJS not configured (Demo Mode)' });
-                setIsSubmitting(false);
-            }, 1000);
+            console.error('EmailJS credentials missing.');
+            setFeedback({ type: 'error', message: 'System configuration error. Please try again later.' });
+            setIsSubmitting(false);
             return;
         }
 
@@ -87,7 +86,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
     return (
         <div className="container mx-auto px-4 py-8 md:py-16">
             <h1 className="page-title-glow">
-                Get in Touch
+                {uiContent?.title || "Get in Touch"}
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start max-w-6xl mx-auto">
@@ -101,45 +100,45 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
                         <h2 className="text-2xl font-semibold mb-6 text-white relative z-10">
-                            Send Me a Message
+                            {uiContent?.formTitle || "Send Me a Message"}
                         </h2>
                         <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-1 uppercase tracking-wider">
-                                    Your Name
+                                    {uiContent?.nameLabel || "Your Name"}
                                 </label>
                                 <input
                                     type="text"
                                     name="name"
                                     id="name"
                                     required
-                                    placeholder="Enter your name"
+                                    placeholder={uiContent?.nameLabel ? `Enter ${uiContent.nameLabel}` : "Enter your name"}
                                     className="glass-input w-full bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-1 uppercase tracking-wider">
-                                    Your Email
+                                    {uiContent?.emailLabel || "Your Email"}
                                 </label>
                                 <input
                                     type="email"
                                     name="email"
                                     id="email"
                                     required
-                                    placeholder="Enter your email address"
+                                    placeholder={uiContent?.emailLabel ? `Enter ${uiContent.emailLabel}` : "Enter your email"}
                                     className="glass-input w-full bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 />
                             </div>
                             <div>
                                 <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-1 uppercase tracking-wider">
-                                    Your Message
+                                    {uiContent?.messageLabel || "Your Message"}
                                 </label>
                                 <textarea
                                     name="message"
                                     id="message"
                                     rows={4}
                                     required
-                                    placeholder="Write your message here..."
+                                    placeholder={uiContent?.messageLabel ? `Write ${uiContent.messageLabel} here...` : "Write your message here..."}
                                     className="glass-input w-full resize-none bg-white/5 focus:bg-white/10 border-white/20 focus:border-white/30 text-white placeholder:text-white/50 rounded-lg px-4 py-3 outline-none transition-all duration-300"
                                 ></textarea>
                             </div>
@@ -154,7 +153,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     {isSubmitting ? (
                                         <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     ) : (
-                                        'Send Message'
+                                        uiContent?.submitButton || 'Send Message'
                                     )}
                                 </button>
                             </div>
@@ -173,9 +172,9 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                         <div className="absolute inset-0 bg-gradient-to-bl from-purple-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
                         <h2 className="text-2xl font-semibold mb-6 text-white relative z-10">
-                            Contact Information
+                            {uiContent?.infoTitle || "Contact Information"}
                         </h2>
-                        <p className="text-white/70 mb-6 relative z-10">Feel free to reach out through any of these platforms. I look forward to hearing from you!</p>
+                        <p className="text-white/70 mb-6 relative z-10">{uiContent?.infoText || "Feel free to reach out through any of these platforms. I look forward to hearing from you!"}</p>
 
                         <div className="space-y-4 relative z-10">
                             {user?.linkedin && (
@@ -184,7 +183,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     className="group flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300 border border-transparent hover:border-white/10"
                                 >
                                     <LinkedInIcon />
-                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">LinkedIn Profile</span>
+                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">{uiContent?.linkedinText || "LinkedIn Profile"}</span>
                                 </a>
                             )}
                             {user?.github && (
@@ -193,7 +192,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     className="group flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300 border border-transparent hover:border-white/10"
                                 >
                                     <GitHubIcon />
-                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">GitHub Profile</span>
+                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">{uiContent?.githubText || "GitHub Profile"}</span>
                                 </a>
                             )}
                             {user?.email && (
@@ -202,7 +201,7 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                                     className="group flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300 border border-transparent hover:border-white/10"
                                 >
                                     <EmailIcon />
-                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">Send an Email</span>
+                                    <span className="ml-3 font-medium text-white/80 group-hover:text-white transition-colors">{uiContent?.emailText || "Send an Email"}</span>
                                 </a>
                             )}
                         </div>
@@ -210,13 +209,13 @@ export default function ContactForm({ user, resumeUrl }: ContactFormProps) {
                         {resumeUrl && (
                             <div className="mt-8 pt-6 border-t border-white/10 relative z-10">
                                 <p className="text-sm text-white/60 mb-2">
-                                    You can also download my resume:
+                                    {uiContent?.resumePrompt || "You can also download my resume:"}
                                 </p>
                                 <Link
                                     href={resumeUrl} target="_blank" download
                                     className="inline-flex items-center text-blue-400 hover:text-blue-300 font-semibold transition-colors"
                                 >
-                                    Download Resume
+                                    {uiContent?.downloadResume || "Download Resume"}
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>

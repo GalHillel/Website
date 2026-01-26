@@ -4,14 +4,15 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import SpotlightCard from '@/components/SpotlightCard';
 import TypewriterTagline from '@/components/TypewriterTagline';
-import { HeroContent } from '@/entities/SiteContent';
+import { HeroContent, SiteUI } from '@/data/SiteContent';
 import { ArrowRight } from 'lucide-react';
 
 interface HomePageClientViewProps {
   heroContent: HeroContent;
+  uiContent: SiteUI['home'];
 }
 
-export default function HomePageClientView({ heroContent }: HomePageClientViewProps) {
+export default function HomePageClientView({ heroContent, uiContent }: HomePageClientViewProps) {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 overflow-hidden relative">
 
@@ -102,7 +103,7 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
               href="/projects"
               className="glass-button group w-full sm:w-auto px-10 py-5 rounded-full bg-[#E0E0E0] text-black font-bold text-xl shadow-[0_0_30px_-5px_rgba(168,85,247,0.5)] hover:bg-white hover:shadow-[0_0_50px_-5px_rgba(168,85,247,0.7)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
             >
-              <span className="relative z-10">View Projects</span>
+              <span className="relative z-10">{uiContent?.buttonProjects || "View Projects"}</span>
               <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 transition-transform" />
             </Link>
 
@@ -110,7 +111,7 @@ export default function HomePageClientView({ heroContent }: HomePageClientViewPr
               href="/contact"
               className="w-full sm:w-auto px-10 py-5 rounded-full border-[1.5px] border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:scale-105 transition-all duration-300 text-white font-medium text-xl flex items-center justify-center shadow-lg hover:shadow-xl"
             >
-              Get in Touch
+              {uiContent?.buttonContact || "Get in Touch"}
             </Link>
           </motion.div>
 

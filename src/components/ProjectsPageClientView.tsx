@@ -5,13 +5,14 @@ import ProjectCard from '@/components/ProjectCard';
 import AnimatedSection from '@/components/AnimatedSection';
 import { motion } from 'framer-motion';
 import { useState, useMemo, useEffect } from 'react';
-import { Project } from '@/entities/SiteContent';
+import { Project, SiteUI } from '@/data/SiteContent';
 
 interface ProjectsPageClientViewProps {
   projects: Project[];
+  uiContent: SiteUI['projects'];
 }
 
-export default function ProjectsPageClientView({ projects }: ProjectsPageClientViewProps) {
+export default function ProjectsPageClientView({ projects, uiContent }: ProjectsPageClientViewProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Derive all unique tags from the immutable projects prop
@@ -42,12 +43,12 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
       <h1 className="page-title-glow">
-        My Projects
+        {uiContent?.title || "My Projects"}
       </h1>
 
       {allTags.length > 0 && (
         <AnimatedSection delay={0.2} className="mb-8 md:mb-12 text-center">
-          <h2 className="text-xl font-semibold mb-6 text-white/80">Filter by Technology</h2>
+          <h2 className="text-xl font-semibold mb-6 text-white/80">{uiContent?.filterTitle || "Filter by Technology"}</h2>
           <div className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
             {allTags.map(tag => (
               <motion.button
@@ -70,7 +71,7 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
               onClick={() => setSelectedTags([])}
               className="mt-6 text-sm text-blue-300 hover:text-blue-200 hover:underline transition-colors"
             >
-              Clear Filters
+              {uiContent?.clearFilters || "Clear Filters"}
             </button>
           )}
         </AnimatedSection>
@@ -100,7 +101,7 @@ export default function ProjectsPageClientView({ projects }: ProjectsPageClientV
         ) : (
           <div className="col-span-full text-center py-20">
             <p className="text-white/60 text-lg">
-              No projects match the selected filters.
+              {uiContent?.noResults || "No projects match the selected filters."}
             </p>
           </div>
         )}

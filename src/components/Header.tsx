@@ -5,15 +5,22 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/skills', label: 'Skills' },
-  { href: '/contact', label: 'Contact' },
-];
 
-const Header = () => {
+interface HeaderProps {
+  navLinks?: { href: string; label: string }[];
+}
+
+const Header = ({ navLinks }: HeaderProps) => {
+  const defaultNavLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'About' },
+    { href: '/projects', label: 'Projects' },
+    { href: '/skills', label: 'Skills' },
+    { href: '/contact', label: 'Contact' },
+  ];
+
+  const links = navLinks || defaultNavLinks;
+
   const pathname = usePathname();
 
   if (pathname.startsWith('/admin') || pathname.startsWith('/auth')) {
@@ -31,7 +38,7 @@ const Header = () => {
           className="flex items-center gap-1 p-1.5 rounded-full border border-white/20 bg-white/10 dark:bg-black/20 backdrop-blur-xl shadow-lg shadow-black/5"
         >
           <nav className="flex items-center gap-1">
-            {navLinks.map(({ href, label }) => {
+            {links.map(({ href, label }) => {
               const isActive = pathname === href;
               return (
                 <Link

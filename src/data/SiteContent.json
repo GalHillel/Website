@@ -1,0 +1,203 @@
+{
+  "user": {
+    "name": "Gal",
+    "email": "galh2011@icloud.com",
+    "github": "https://github.com/GalHillel",
+    "linkedin": "https://linkedin.com/in/galhillel1",
+    "profileImage": "/uploads/1767974912440-778736350-7I6A0589.jpg",
+    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
+    "tagline": "Full Stack Developer",
+    "taglines": [
+      "Software Developer",
+      "Problem Solver",
+      "Tech Enthusiast",
+      "Creative Thinker",
+      "tets",
+      "אחד בעברית"
+    ],
+    "location": "Israel",
+    "imagePosition": "center"
+  },
+  "about": {
+    "bio": "Passionate developer with a knack for building elegant solutions to complex problems. I specialize in full-stack development with a focus on React, Next.js, and modern web technologies.",
+    "education": "B.Sc",
+    "csMathBackground": "Strong foundation in algorithms, data structures, and computational mathematics. Experienced in solving complex algorithmic challenges.",
+    "experience": "Freelance Full Stack Developer (2023-Present)\n- Built scalable web applications for diverse clients.\n- Optimized frontend performance and SEO."
+  },
+  "projects": [
+    {
+      "id": "1764167342094",
+      "title": "E-Commerce",
+      "description": "A comprehensive e-commerce solution featuring real-time inventory management, secure payments, and a responsive mobile-first design.",
+      "tags": [
+        "Python",
+        "TypeScript",
+        "React"
+      ],
+      "imageUrl": "/uploads/1767790888665-913755956-ferrari-296-7680x4320-22348.jpg",
+      "githubLink": "https://github.com/GalHillel",
+      "demoLink": "https://github.com/GalHillel",
+      "imagePosition": "top"
+    },
+    {
+      "id": "1764163924516",
+      "title": "Task Management App",
+      "description": "A productivity tool designed to streamline workflow with drag-and-drop task organization and real-time collaboration features.",
+      "tags": [
+        "Python",
+        "React",
+        "MongoDB"
+      ],
+      "imageUrl": "/uploads/1767790895232-989900783-elden-ring-7680x4320-22765.jpg",
+      "githubLink": "https://github.com/GalHillel",
+      "demoLink": "https://github.com/GalHillel",
+      "imagePosition": "top"
+    },
+    {
+      "id": "proj1",
+      "title": "Project Alpha",
+      "description": "A cool web application built with modern technologies to solve an interesting problem. Features robust API integration and modern UI.",
+      "imageUrl": "/futuristic-blue-7680x4320-22185.jpg",
+      "tags": [
+        "React",
+        "Node.js",
+        "TypeScript"
+      ],
+      "githubLink": "https://github.com/GalHillel",
+      "demoLink": "נךש"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Frontend Development",
+      "items": [
+        {
+          "name": "CSS3 & SCSS",
+          "proficiency": 80
+        },
+        {
+          "name": "JavaScript (ES6+)",
+          "proficiency": 92
+        },
+        {
+          "name": "TypeScript",
+          "proficiency": 88
+        },
+        {
+          "name": "React",
+          "proficiency": 93
+        },
+        {
+          "name": "Next.js",
+          "proficiency": 85
+        },
+        {
+          "name": "Tailwind CSS",
+          "proficiency": 90
+        }
+      ]
+    },
+    {
+      "category": "Backend Development",
+      "items": [
+        {
+          "name": "Node.js",
+          "proficiency": 85
+        },
+        {
+          "name": "Python",
+          "proficiency": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "proficiency": 75
+        }
+      ]
+    },
+    {
+      "category": "Tools & DevOps",
+      "items": [
+        {
+          "name": "Git & GitHub",
+          "proficiency": 90
+        },
+        {
+          "name": "Docker",
+          "proficiency": 70
+        },
+        {
+          "name": "AWS",
+          "proficiency": 60
+        }
+      ]
+    },
+    {
+      "category": "New Category",
+      "items": []
+    }
+  ],
+  "ui": {
+    "navLinks": [
+      {
+        "href": "/",
+        "label": "Home"
+      },
+      {
+        "href": "/about",
+        "label": "About"
+      },
+      {
+        "href": "/projects",
+        "label": "Projects"
+      },
+      {
+        "href": "/skills",
+        "label": "Skills"
+      },
+      {
+        "href": "/contact",
+        "label": "Contact"
+      }
+    ],
+    "home": {
+      "buttonProjects": "View Projects",
+      "buttonContact": "Get in Touch"
+    },
+    "about": {
+      "locationLabel": "Location",
+      "experienceLabel": "Experience",
+      "emailLabel": "Email",
+      "sectionBio": "Biography",
+      "sectionExperience": "Experience",
+      "sectionEducation": "Education",
+      "sectionCS": "CS & Math Background"
+    },
+    "projects": {
+      "title": "My Projects",
+      "filterTitle": "Filter by Technology",
+      "noResults": "No projects match the selected filters.",
+      "clearFilters": "Clear Filters"
+    },
+    "skills": {
+      "title": "Technical Arsenal"
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "formTitle": "Send Me a Message",
+      "infoTitle": "Contact Information",
+      "infoText": "Feel free to reach out through any of these platforms. I look forward to hearing from you!",
+      "nameLabel": "Your Name",
+      "emailLabel": "Your Email",
+      "messageLabel": "Your Message",
+      "submitButton": "Send Message",
+      "downloadResume": "Download Resume",
+      "linkedinText": "LinkedIn Profile",
+      "githubText": "GitHub Profile",
+      "emailText": "Send an Email",
+      "resumePrompt": "You can also download my resume:"
+    },
+    "footer": {
+      "rightsText": "All Rights Reserved."
+    }
+  }
+}

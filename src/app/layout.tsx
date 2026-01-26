@@ -73,8 +73,8 @@ export default async function RootLayout({
     const siteLang = 'en';
     const siteDir = 'ltr';
 
-    // Fetch user profile for the footer
-    const userProfile = await contentService.getUserProfile();
+    // Fetch full content including user profile and UI config
+    const content = await contentService.getAllContent();
 
     return (
         <html lang={siteLang} dir={siteDir} suppressHydrationWarning className="dark">
@@ -87,7 +87,7 @@ export default async function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <Layout user={userProfile}>{children}</Layout>
+                    <Layout user={content.user} ui={content.ui}>{children}</Layout>
                 </ThemeProviderComponent>
             </body>
         </html>

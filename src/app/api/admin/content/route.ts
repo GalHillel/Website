@@ -21,7 +21,11 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         // Define path to the JSON file
-        const filePath = path.join(process.cwd(), 'src', 'entities', 'SiteContent.json');
+        const dataDir = path.join(process.cwd(), 'src', 'data');
+        const filePath = path.join(dataDir, 'SiteContent.json');
+
+        // Ensure directory exists
+        await fs.mkdir(dataDir, { recursive: true });
 
         // Write the updated content to the file
         await fs.writeFile(filePath, JSON.stringify(body, null, 2), 'utf-8');
