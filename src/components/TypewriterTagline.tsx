@@ -1,20 +1,20 @@
-// @/components/TypewriterTagline.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface TypewriterTaglineProps {
   text?: string;
   taglines?: string[];
+  className?: string;
 }
 
-const TypewriterTagline = ({ text, taglines }: TypewriterTaglineProps) => {
+const TypewriterTagline = ({ text, taglines, className }: TypewriterTaglineProps) => {
   const [loopNum, setLoopNum] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Parse phrases from text prop or use defaults
   const phrases = taglines && taglines.length > 0
     ? taglines
     : text
@@ -22,13 +22,13 @@ const TypewriterTagline = ({ text, taglines }: TypewriterTaglineProps) => {
       : [
         "Software Developer",
         "Problem Solver",
-        "Tech Enthusiast",
+        "Classic Tech",
         "Creative Thinker"
       ];
 
-  const period = 1500; // ms to pause at full word
-  const typingSpeed = 100;
-  const deletingSpeed = 50;
+  const period = 2000;
+  const typingSpeed = 80;
+  const deletingSpeed = 40;
 
   useEffect(() => {
     if (phrases.length === 0) return;
@@ -55,13 +55,13 @@ const TypewriterTagline = ({ text, taglines }: TypewriterTaglineProps) => {
   }, [currentText, isDeleting, loopNum, phrases]);
 
   return (
-    <div className="h-10 md:h-12 flex items-center justify-center overflow-hidden my-3 md:my-4">
-      <span className="text-xl md:text-2xl lg:text-3xl font-semibold text-blue-600 dark:text-blue-400">
+    <div className={cn("flex items-center", className)}>
+      <span className="text-xl md:text-2xl font-medium text-blue-400 tracking-wide">
         {currentText}
         <motion.span
-          className="inline-block h-6 md:h-8 w-1 bg-blue-600 dark:bg-blue-400 ml-1"
+          className="inline-block h-[1em] w-[2px] bg-blue-400 ml-1 align-middle"
           animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: 1.0, repeat: Infinity, ease: "linear" }} // Smoother/slower pulse
+          transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
         />
       </span>
     </div>

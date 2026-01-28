@@ -1,4 +1,3 @@
-// @/components/AnimatedSection.tsx
 "use client";
 
 import { motion, Variants } from 'framer-motion';
@@ -8,12 +7,12 @@ interface AnimatedSectionProps {
   className?: string;
   variants?: Variants;
   delay?: number;
-  once?: boolean; // Whether the animation should only run once
-  threshold?: number; // Intersection observer threshold
+  once?: boolean;
+  threshold?: number;
 }
 
 const defaultVariants: Variants = {
-  hidden: { opacity: 0, y: 10 }, // Kept small for mobile
+  hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 };
 

@@ -1,141 +1,176 @@
 {
   "user": {
-    "name": "Gal",
+    "name": "Gal Hillel",
     "email": "galh2011@icloud.com",
     "github": "https://github.com/GalHillel",
     "linkedin": "https://linkedin.com/in/galhillel1",
     "profileImage": "/uploads/1767974912440-778736350-7I6A0589.jpg",
-    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work and skills.",
-    "tagline": "Full Stack Developer",
+    "intro": "I build modern, scalable, and user-friendly web applications. Explore my work.",
+    "tagline": "Software Developer",
     "taglines": [
       "Software Developer",
-      "Problem Solver",
-      "Tech Enthusiast",
-      "Creative Thinker",
-      "tets",
-      "אחד בעברית"
+      "DevOps Engineer",
+      "Automation Enthusiast",
+      "AI&ML Enthusiast",
+      "CS Graduate"
     ],
-    "location": "Israel",
+    "location": "Petah Tikva, Israel",
+    "status": "Open to work",
+    "statusColor": "emerald",
+    "socialLinks": {
+      "github": "https://github.com/GalHillel",
+      "linkedin": "https://linkedin.com/in/galhillel1"
+    },
     "imagePosition": "center"
   },
   "about": {
-    "bio": "Passionate developer with a knack for building elegant solutions to complex problems. I specialize in full-stack development with a focus on React, Next.js, and modern web technologies.",
-    "education": "B.Sc",
-    "csMathBackground": "Strong foundation in algorithms, data structures, and computational mathematics. Experienced in solving complex algorithmic challenges.",
-    "experience": "Freelance Full Stack Developer (2023-Present)\n- Built scalable web applications for diverse clients.\n- Optimized frontend performance and SEO."
+    "bio": "B.Sc. in Computer Science and Mathematics, complemented by a DevOps specialization from the Technion. Passionate about building robust, scalable backend systems that seamlessly integrate code and infrastructure.\n\nCurrently working as an SAP Systems Implementor at Ness Technologies, I have gained hands-on experience in handling production environments and critical workflows. I bring a strong analytical mindset, honed during my degree and my military service as a Commander, combining technical precision with leadership capabilities.",
+    "education": [
+      {
+        "degree": "DevOps Professional",
+        "institution": "Technion - Israel Institute of Technology",
+        "year": "2025 - Present",
+        "description": "Focus on Linux Administration, Bash Scripting, CI/CD (Jenkins), Git, Terraform, Ansible, Docker, and Kubernetes orchestration."
+      },
+      {
+        "id": "edu1",
+        "degree": "B.Sc. in Computer Science & Mathematics",
+        "institution": "Ariel University",
+        "year": "2022 - 2025",
+        "description": "Strong foundation in algorithms, operating systems, and computer networks. Developed analytical problem-solving skills through complex challenges."
+      }
+    ],
+    "experience": [
+      {
+        "role": "SAP Systems Implementor",
+        "company": "Ness Technologies",
+        "period": "2025 - Present",
+        "description": "Supporting large-scale SAP system replacement projects.\nHandling critical production issues and optimizing operational workflows.\nCollaborating with cross-functional teams to ensure system stability."
+      }
+    ],
+    "csMathBackground": "Strong foundation in algorithms, data structures, and computational mathematics."
   },
   "projects": [
     {
       "id": "1764167342094",
-      "title": "E-Commerce",
-      "description": "A comprehensive e-commerce solution featuring real-time inventory management, secure payments, and a responsive mobile-first design.",
+      "title": "EventUs - Android Events Management App",
+      "description": "A scalable event management system. Developed backend REST APIs using NestJS with role-based auth. Designed MongoDB schemas for performance. Fully containerized the environment using Docker for consistent deployment.",
       "tags": [
+        "Docker",
+        "NestJS",
         "Python",
-        "TypeScript",
-        "React"
+        "MongoDB",
+        "REST API"
       ],
-      "imageUrl": "/uploads/1767790888665-913755956-ferrari-296-7680x4320-22348.jpg",
-      "githubLink": "https://github.com/GalHillel",
-      "demoLink": "https://github.com/GalHillel",
-      "imagePosition": "top"
-    },
-    {
-      "id": "1764163924516",
-      "title": "Task Management App",
-      "description": "A productivity tool designed to streamline workflow with drag-and-drop task organization and real-time collaboration features.",
-      "tags": [
-        "Python",
-        "React",
-        "MongoDB"
-      ],
-      "imageUrl": "/uploads/1767790895232-989900783-elden-ring-7680x4320-22765.jpg",
-      "githubLink": "https://github.com/GalHillel",
-      "demoLink": "https://github.com/GalHillel",
-      "imagePosition": "top"
-    },
-    {
-      "id": "proj1",
-      "title": "Project Alpha",
-      "description": "A cool web application built with modern technologies to solve an interesting problem. Features robust API integration and modern UI.",
-      "imageUrl": "/futuristic-blue-7680x4320-22185.jpg",
-      "tags": [
-        "React",
-        "Node.js",
-        "TypeScript"
-      ],
-      "githubLink": "https://github.com/GalHillel",
-      "demoLink": "נךש"
+      "imageUrl": "/uploads/1769599775141-130240779-EventUs.png",
+      "githubLink": "https://github.com/GalHillel/EventUs",
+      "demoLink": "https://github.com/GalHillel/EventUs"
     }
   ],
   "skills": [
     {
-      "category": "Frontend Development",
+      "category": "DevOps & Cloud",
       "items": [
         {
-          "name": "CSS3 & SCSS",
+          "name": "Docker",
+          "proficiency": 90
+        },
+        {
+          "name": "Kubernetes",
           "proficiency": 80
         },
         {
-          "name": "JavaScript (ES6+)",
-          "proficiency": 92
-        },
-        {
-          "name": "TypeScript",
-          "proficiency": 88
-        },
-        {
-          "name": "React",
-          "proficiency": 93
-        },
-        {
-          "name": "Next.js",
+          "name": "Jenkins",
           "proficiency": 85
         },
         {
-          "name": "Tailwind CSS",
-          "proficiency": 90
+          "name": "Terraform",
+          "proficiency": 75
+        },
+        {
+          "name": "Ansible",
+          "proficiency": 75
+        },
+        {
+          "name": "Git",
+          "proficiency": 100
         }
       ]
     },
     {
-      "category": "Backend Development",
+      "category": "Programming",
       "items": [
         {
-          "name": "Node.js",
-          "proficiency": 85
+          "name": "Python",
+          "proficiency": 90
         },
         {
-          "name": "Python",
+          "name": "Java",
           "proficiency": 80
         },
         {
-          "name": "PostgreSQL",
+          "name": "JavaScript",
+          "proficiency": 75
+        },
+        {
+          "name": "C",
+          "proficiency": 80
+        },
+        {
+          "name": "C++",
+          "proficiency": 85
+        },
+        {
+          "name": "Bash Scripting",
           "proficiency": 75
         }
       ]
     },
     {
-      "category": "Tools & DevOps",
+      "category": "OS & Networking",
       "items": [
         {
-          "name": "Git & GitHub",
+          "name": "Linux Administration",
           "proficiency": 90
         },
         {
-          "name": "Docker",
-          "proficiency": 70
+          "name": "TCP/IP & Networking",
+          "proficiency": 85
         },
         {
-          "name": "AWS",
-          "proficiency": 60
+          "name": "Windows Server",
+          "proficiency": 80
+        },
+        {
+          "name": "Wireshark",
+          "proficiency": 75
         }
       ]
     },
     {
-      "category": "New Category",
-      "items": []
+      "category": "Databases",
+      "items": [
+        {
+          "name": "MongoDB",
+          "proficiency": 85
+        },
+        {
+          "name": "MySQL",
+          "proficiency": 80
+        }
+      ]
     }
   ],
+  "sectionTitles": {
+    "about": "About Me",
+    "projects": "Featured Projects",
+    "skills": "Technical Arsenal",
+    "contact": "Get in Touch"
+  },
+  "resumeUrl": "",
+  "metadata": {
+    "description": ""
+  },
   "ui": {
     "navLinks": [
       {
@@ -143,19 +178,19 @@
         "label": "Home"
       },
       {
-        "href": "/about",
+        "href": "#about",
         "label": "About"
       },
       {
-        "href": "/projects",
+        "href": "#projects",
         "label": "Projects"
       },
       {
-        "href": "/skills",
+        "href": "#skills",
         "label": "Skills"
       },
       {
-        "href": "/contact",
+        "href": "#contact",
         "label": "Contact"
       }
     ],
@@ -175,7 +210,7 @@
     "projects": {
       "title": "My Projects",
       "filterTitle": "Filter by Technology",
-      "noResults": "No projects match the selected filters.",
+      "noResults": "No projects match.",
       "clearFilters": "Clear Filters"
     },
     "skills": {
@@ -185,7 +220,7 @@
       "title": "Get in Touch",
       "formTitle": "Send Me a Message",
       "infoTitle": "Contact Information",
-      "infoText": "Feel free to reach out through any of these platforms. I look forward to hearing from you!",
+      "infoText": "Let's build something amazing together.",
       "nameLabel": "Your Name",
       "emailLabel": "Your Email",
       "messageLabel": "Your Message",
@@ -194,7 +229,7 @@
       "linkedinText": "LinkedIn Profile",
       "githubText": "GitHub Profile",
       "emailText": "Send an Email",
-      "resumePrompt": "You can also download my resume:"
+      "resumePrompt": "Download Resume"
     },
     "footer": {
       "rightsText": "All Rights Reserved."

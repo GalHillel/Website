@@ -17,7 +17,6 @@ export default function SignIn() {
         setError('');
         setIsLoading(true);
 
-        // Simulate network delay for effect
         await new Promise(resolve => setTimeout(resolve, 800));
 
         const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;

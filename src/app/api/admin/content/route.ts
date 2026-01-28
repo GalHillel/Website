@@ -8,26 +8,21 @@ export async function POST(request: Request) {
     }
 
     try {
-        // Security Check: Only allow in development or if password matches
         const isDev = process.env.NODE_ENV === 'development';
         const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
-        // Basic check - in a real app you'd check a session/cookie here
-        // For this local CMS pivot, we rely on the fact it's running locally
+
         if (!isDev && !adminPassword) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const body = await request.json();
 
-        // Define path to the JSON file
         const dataDir = path.join(process.cwd(), 'src', 'data');
         const filePath = path.join(dataDir, 'SiteContent.json');
 
-        // Ensure directory exists
         await fs.mkdir(dataDir, { recursive: true });
 
-        // Write the updated content to the file
         await fs.writeFile(filePath, JSON.stringify(body, null, 2), 'utf-8');
 
         return NextResponse.json({ success: true, message: 'Content saved successfully' });

@@ -47,7 +47,7 @@ export default function SpotlightCard({
                 }}
             />
 
-            {/* Content */}
+            {}
             <div className="relative h-full">
                 {children}
             </div>

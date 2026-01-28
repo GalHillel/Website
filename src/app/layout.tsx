@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Layout from "@/components/Layout";
 import { ThemeProviderComponent } from "@/components/ThemeProviderComponent";
 import { contentService } from "@/services/contentService";
+import GlobalBackground from "@/components/ui/GlobalBackground";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -18,7 +21,7 @@ const geistMono = Geist_Mono({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const viewport: Viewport = {
-    themeColor: '#1e293b',
+    themeColor: '#020617',
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
@@ -29,33 +32,27 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
-        default: "Gal Hillel - Portfolio",
-        template: `%s | Gal Hillel - Portfolio`,
+        default: "Gal Hillel - Full Stack Developer",
+        template: `%s | Gal Hillel`,
     },
-    description: "Full Stack Developer Portfolio",
-    keywords: "Gal Hillel, portfolio, software developer, software engineer, web developer, full stack, backend, frontend, computer science, projects",
+    description: "Senior Full Stack Developer specializing in modern web technologies, React, Next.js, and Cloud Architecture.",
+    keywords: "Gal Hillel, portfolio, software developer, next.js, react, typescript, full stack",
     robots: "index, follow",
     openGraph: {
         title: "Gal Hillel - Portfolio",
-        description: "Full Stack Developer Portfolio",
+        description: "Building high-performance web applications.",
         url: siteUrl,
-        siteName: "Gal Hillel - Portfolio",
+        siteName: "Gal Hillel",
         images: [
             {
                 url: "/og-image.png",
                 width: 1200,
                 height: 630,
-                alt: "Gal Hillel - Portfolio - Open Graph Image",
+                alt: "Gal Hillel Portfolio",
             },
         ],
         locale: 'en_US',
         type: 'website',
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Gal Hillel - Portfolio",
-        description: "Full Stack Developer Portfolio",
-        images: [`${siteUrl}/og-image.png`],
     },
     icons: {
         icon: "/favicon.ico",
@@ -63,31 +60,40 @@ export const metadata: Metadata = {
     },
 };
 
-
-
 export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const siteLang = 'en';
-    const siteDir = 'ltr';
-
-    // Fetch full content including user profile and UI config
     const content = await contentService.getAllContent();
 
     return (
-        <html lang={siteLang} dir={siteDir} suppressHydrationWarning className="dark">
+        <html lang="en" suppressHydrationWarning className="dark scroll-smooth">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-gray-100`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-blue-500/30 selection:text-blue-200`}
             >
                 <ThemeProviderComponent
                     attribute="class"
-                    defaultTheme="system"
-                    enableSystem
+                    defaultTheme="dark"
+                    enableSystem={false}
                     disableTransitionOnChange
                 >
-                    <Layout user={content.user} ui={content.ui}>{children}</Layout>
+                    {/* 1. Global Fixed Background */}
+                    <GlobalBackground />
+
+                    {/* 2. Global Header */}
+                    <Header navLinks={content.ui.navLinks} />
+
+                    {/* 3. Main Content */}
+                    <main className="relative z-10 min-h-screen flex flex-col">
+                        {children}
+                    </main>
+
+                    {/* 4. Global Footer */}
+                    <Footer user={content.user} ui={content.ui.footer} />
+
+                    {/* 5. Utilities */}
+                    <ScrollToTopButton />
                 </ThemeProviderComponent>
             </body>
         </html>

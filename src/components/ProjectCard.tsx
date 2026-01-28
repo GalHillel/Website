@@ -1,4 +1,3 @@
-// @/components/ProjectCard.tsx
 "use client";
 
 import Image from 'next/image';
@@ -37,7 +36,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         "hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]",
         "hover:border-white/30"
       )}>
-        {/* Glow Effect on Hover */}
+        {}
         <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/0 to-white/0 group-hover:to-white/5 transition-all duration-500 pointer-events-none" />
 
         {imageUrl ? (

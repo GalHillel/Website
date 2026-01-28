@@ -45,7 +45,7 @@ const ScrollToTopButton = () => {
         >
           <ArrowUp className="w-5 h-5 group-hover:-translate-y-1 transition-transform duration-300" />
 
-          {/* Inner Glow */}
+          {}
           <div className="absolute inset-0 rounded-full bg-white/5 blur-sm -z-10" />
         </motion.button>
       )}

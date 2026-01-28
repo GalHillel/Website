@@ -2,12 +2,100 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FullSiteContent, Project, SkillCategory, SkillItem } from '@/services/contentService';
+import {
+  FullSiteContent,
+  ExperienceItem,
+  EducationItem,
+  Project,
+  SkillCategory,
+  SectionTitles
+} from '@/services/contentService';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Save, LogOut, CheckCircle2, XCircle, User, Briefcase, Code2, LayoutGrid, Upload, Image as ImageIcon, Settings } from 'lucide-react';
+import {
+  Save, LogOut, CheckCircle2, AlertCircle,
+  User, Briefcase, GraduationCap, FolderGit2,
+  Wrench, Settings, ExternalLink, Github, ChevronRight,
+  MapPin, Globe, Mail, Trash2, X
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import DynamicListEditor from './DynamicListEditor';
+
+
+interface InputGroupProps {
+  label: string;
+  value: string | undefined;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  type?: "text" | "textarea" | "number" | "password";
+  className?: string;
+}
+
+const InputGroup = ({ label, value, onChange, placeholder, type = "text", className }: InputGroupProps) => (
+  <div className={cn("space-y-1.5", className)}>
+    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{label}</label>
+    {type === "textarea" ? (
+      <textarea className="w-full bg-[#0F1117] border border-white/10 rounded-lg px-4 py-2.5 text-gray-200 focus:border-blue-500/50 outline-none text-sm min-h-[100px]"
+        value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
+    ) : (
+      <input className="w-full bg-[#0F1117] border border-white/10 rounded-lg px-4 py-2.5 text-gray-200 focus:border-blue-500/50 outline-none text-sm"
+        value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} type={type} />
+    )}
+  </div>
+);
+
+interface ExperienceEditFormProps {
+  item?: ExperienceItem | null;
+  onSave: (item: ExperienceItem) => void;
+  onCancel: () => void;
+}
+
+const ExperienceEditForm = ({ item, onSave, onCancel }: ExperienceEditFormProps) => {
+  const [formData, setFormData] = useState<ExperienceItem>(item || {} as any);
+  const handleChange = (f: keyof ExperienceItem, v: string) => setFormData({ ...formData, [f]: v });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <InputGroup label="Role" value={formData.role} onChange={(v: string) => handleChange('role', v)} />
+        <InputGroup label="Company" value={formData.company} onChange={(v: string) => handleChange('company', v)} />
+      </div>
+      <InputGroup label="Period (e.g. 2023 - Present)" value={formData.period} onChange={(v: string) => handleChange('period', v)} />
+      <InputGroup label="Description" value={formData.description} onChange={(v: string) => handleChange('description', v)} type="textarea" />
+      <div className="flex gap-3 pt-2">
+        <button onClick={() => onSave(formData)} className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-md hover:bg-indigo-500">Save Entry</button>
+        <button onClick={onCancel} className="px-4 py-2 bg-transparent border border-white/10 text-white text-xs font-bold rounded-md hover:bg-white/5">Cancel</button>
+      </div>
+    </div>
+  );
+};
+
+interface EducationEditFormProps {
+  item?: EducationItem | null;
+  onSave: (item: EducationItem) => void;
+  onCancel: () => void;
+}
+
+const EducationEditForm = ({ item, onSave, onCancel }: EducationEditFormProps) => {
+  const [formData, setFormData] = useState<EducationItem>(item || {} as any);
+  const handleChange = (f: keyof EducationItem, v: string) => setFormData({ ...formData, [f]: v });
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <InputGroup label="Degree" value={formData.degree} onChange={(v: string) => handleChange('degree', v)} />
+        <InputGroup label="Institution" value={formData.institution} onChange={(v: string) => handleChange('institution', v)} />
+      </div>
+      <InputGroup label="Year" value={formData.year} onChange={(v: string) => handleChange('year', v)} />
+      <InputGroup label="Description" value={formData.description} onChange={(v: string) => handleChange('description', v)} type="textarea" />
+      <div className="flex gap-3 pt-2">
+        <button onClick={() => onSave(formData)} className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-md hover:bg-indigo-500">Save Entry</button>
+        <button onClick={onCancel} className="px-4 py-2 bg-transparent border border-white/10 text-white text-xs font-bold rounded-md hover:bg-white/5">Cancel</button>
+      </div>
+    </div>
+  );
+};
 
 interface AdminDashboardClientProps {
   initialContent: FullSiteContent;
@@ -17,14 +105,14 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
   const [content, setContent] = useState<FullSiteContent>(initialContent);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
   const [alert, setAlert] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const router = useRouter();
 
-  // Track changes to show floating save bar
   useEffect(() => {
-    // Simple check: if content changes from initial, show save bar. 
-    // For now, we'll just set hasChanges to true on any edit.
-  }, [content]);
+    setContent(initialContent);
+    setHasChanges(false);
+  }, [initialContent]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -38,820 +126,352 @@ export default function AdminDashboardClient({ initialContent }: AdminDashboardC
 
       if (!res.ok) throw new Error('Failed to save');
 
-      setAlert({ type: 'success', message: 'Settings saved successfully' });
+      setAlert({ type: 'success', message: 'Published successfully.' });
       setHasChanges(false);
       router.refresh();
-
-      // Clear alert after 3 seconds
       setTimeout(() => setAlert(null), 3000);
     } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to save settings' });
+      setAlert({ type: 'error', message: 'Failed to publish. Check connection.' });
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleLogout = () => {
-    document.cookie = 'admin_access=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    router.push('/');
-    router.refresh();
-  };
-
   const handleFileUpload = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
-
     try {
-      const res = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
       if (!res.ok) throw new Error('Upload failed');
-
       const data = await res.json();
       return data.url;
     } catch (error) {
       console.error('Upload error:', error);
-      setAlert({ type: 'error', message: 'Failed to upload image' });
+      setAlert({ type: 'error', message: 'Upload failed' });
       return null;
     }
   };
 
-  // --- State Updaters ---
-
-  const updateProfile = (field: string, value: any) => {
-    if (!content.user) return;
-    setContent({ ...content, user: { ...content.user, [field]: value } });
+  const updateField = (path: string[], value: any) => {
+    const newContent = { ...content };
+    let current: any = newContent;
+    for (let i = 0; i < path.length - 1; i++) {
+      if (!current[path[i]]) current[path[i]] = {};
+      current = current[path[i]];
+    }
+    current[path[path.length - 1]] = value;
+    setContent(newContent);
     setHasChanges(true);
   };
 
-  const updateAbout = (field: string, value: string) => {
-    if (!content.about) return;
-    setContent({ ...content, about: { ...content.about, [field]: value } });
-    setHasChanges(true);
-  };
-
-  const addProject = () => {
-    const newProject: Project = {
-      id: Date.now().toString(),
-      title: 'New Project',
-      description: '',
-      tags: [],
-      imageUrl: '',
-      githubLink: '',
-      demoLink: ''
-    };
-    setContent({ ...content, projects: [newProject, ...content.projects] });
-    setHasChanges(true);
-  };
-
-  const updateProject = (id: string, field: keyof Project, value: any) => {
-    const updatedProjects = content.projects.map(p =>
-      p.id === id ? { ...p, [field]: value } : p
-    );
-    setContent({ ...content, projects: updatedProjects });
-    setHasChanges(true);
-  };
-
-  const deleteProject = (id: string) => {
-    if (!confirm('Are you sure?')) return;
-    setContent({ ...content, projects: content.projects.filter(p => p.id !== id) });
-    setHasChanges(true);
-  };
-
-  const addCategory = () => {
-    const newCategory: SkillCategory = {
-      category: 'New Category',
-      items: []
-    };
-    setContent({ ...content, skills: [...content.skills, newCategory] });
-    setHasChanges(true);
-  };
-
-  const updateCategoryName = (index: number, name: string) => {
-    const newSkills = [...content.skills];
-    newSkills[index].category = name;
-    setContent({ ...content, skills: newSkills });
-    setHasChanges(true);
-  };
-
-  const deleteCategory = (index: number) => {
-    if (!confirm('Delete this entire category?')) return;
-    const newSkills = [...content.skills];
-    newSkills.splice(index, 1);
-    setContent({ ...content, skills: newSkills });
-    setHasChanges(true);
-  };
-
-  const updateSkillItem = (catIndex: number, skillIndex: number, field: keyof SkillItem, value: any) => {
-    const newSkills = [...content.skills];
-    newSkills[catIndex].items[skillIndex] = { ...newSkills[catIndex].items[skillIndex], [field]: value };
-    setContent({ ...content, skills: newSkills });
-    setHasChanges(true);
-  };
-
-  const addSkillItem = (catIndex: number) => {
-    const newSkills = [...content.skills];
-    newSkills[catIndex].items.push({ name: 'New Skill', proficiency: 50 });
-    setContent({ ...content, skills: newSkills });
-    setHasChanges(true);
-  };
-
-  const deleteSkillItem = (catIndex: number, skillIndex: number) => {
-    if (!confirm('Are you sure?')) return;
-    const newSkills = [...content.skills];
-    newSkills[catIndex].items.splice(skillIndex, 1);
-    setContent({ ...content, skills: newSkills });
-    setHasChanges(true);
-  };
-
-  const updateUI = (section: string, key: string, value: any) => {
-    if (!content.ui) return;
-    const newUI = { ...content.ui };
-    // @ts-ignore
-    if (!newUI[section]) newUI[section] = {};
-    // @ts-ignore
-    newUI[section][key] = value;
-    setContent({ ...content, ui: newUI });
-    setHasChanges(true);
-  };
-
-  const updateNavLink = (index: number, field: 'href' | 'label', value: string) => {
-    if (!content.ui) return;
-    const newNavLinks = [...content.ui.navLinks];
-    newNavLinks[index] = { ...newNavLinks[index], [field]: value };
-    setContent({ ...content, ui: { ...content.ui, navLinks: newNavLinks } });
-    setHasChanges(true);
-  };
 
 
   return (
-    <div className="relative min-h-screen pb-24">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">System Settings</h1>
-          <p className="text-muted-foreground">Manage your portfolio content and configuration.</p>
+    <div className="min-h-screen pb-32 bg-[#020617] text-gray-200 font-sans selection:bg-blue-500/30 selection:text-white">
+
+      {/* --- TOP BAR --- */}
+      <div className="sticky top-0 z-50 bg-[#020617]/90 backdrop-blur-md border-b border-white/5 h-16 px-6 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-900/20">
+            <Settings className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-sm font-bold text-white tracking-wide">CMS Dashboard</h1>
+            <p className="text-[10px] text-gray-500 font-mono">v2.0 • Production</p>
+          </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="glass-button text-sm px-4 py-2 h-auto"
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Logout
-        </button>
+
+        <div className="flex items-center gap-4">
+          {hasChanges && (
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 mr-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Unsaved</span>
+            </div>
+          )}
+          <button
+            onClick={handleSave}
+            disabled={!hasChanges || isSaving}
+            className={cn(
+              "flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-lg",
+              hasChanges
+                ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20"
+                : "bg-white/5 text-white/30 cursor-not-allowed"
+            )}
+          >
+            {isSaving ? <span className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" /> : <Save className="w-4 h-4" />}
+            Publish
+          </button>
+          <button onClick={() => { document.cookie = 'admin_access=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; router.push('/'); }}
+            className="p-2 text-gray-500 hover:text-white transition-colors">
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-8">
-        <TabsList className="bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md inline-flex">
-          <TabsTrigger value="profile" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
-            <User className="w-4 h-4 mr-2" /> Profile
-          </TabsTrigger>
-          <TabsTrigger value="projects" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
-            <Briefcase className="w-4 h-4 mr-2" /> Projects
-          </TabsTrigger>
-          <TabsTrigger value="skills" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
-            <Code2 className="w-4 h-4 mr-2" /> Skills
-          </TabsTrigger>
-          <TabsTrigger value="config" className="rounded-full px-6 data-[state=active]:bg-white/10 data-[state=active]:text-foreground">
-            <Settings className="w-4 h-4 mr-2" /> Configuration
-          </TabsTrigger>
-        </TabsList>
+      {/* --- MAINFRAME GRID --- */}
+      <div className="container mx-auto px-6 py-8 max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        {/* Profile Tab */}
-        <TabsContent value="profile" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* User Info Panel */}
-            <div className="glass-panel p-8 space-y-6">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-400" /> Identity
-              </h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Full Name</label>
-                  <input
-                    className="glass-input"
-                    value={content.user?.name || ''}
-                    onChange={(e) => updateProfile('name', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Location</label>
-                  <input
-                    className="glass-input"
-                    value={content.user?.location || ''}
-                    onChange={(e) => updateProfile('location', e.target.value)}
-                    placeholder="e.g. Tel Aviv, Israel"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Taglines (Typewriter Effect)</label>
-                  <div className="space-y-2">
-                    {(content.user?.taglines || []).map((tagline, index) => (
-                      <div key={index} className="flex gap-2">
-                        <input
-                          className="glass-input"
-                          value={tagline}
-                          onChange={(e) => {
-                            const newTaglines = [...(content.user?.taglines || [])];
-                            newTaglines[index] = e.target.value;
-                            updateProfile('taglines', newTaglines);
-                          }}
-                          placeholder={`Phrase ${index + 1}`}
-                        />
-                        <button
-                          onClick={() => {
-                            const newTaglines = [...(content.user?.taglines || [])];
-                            newTaglines.splice(index, 1);
-                            updateProfile('taglines', newTaglines);
-                          }}
-                          className="glass-button text-red-400 hover:bg-red-500/10 px-3"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const newTaglines = [...(content.user?.taglines || [])];
-                        newTaglines.push('');
-                        updateProfile('taglines', newTaglines);
-                      }}
-                      className="glass-button text-xs px-3 py-2 w-full flex items-center justify-center gap-2 text-blue-300 hover:text-blue-200"
-                    >
-                      <Plus className="w-3 h-3" /> Add Tagline
-                    </button>
+        {/* SIDEBAR NAVIGATION */}
+        <div className="lg:col-span-2 space-y-6 sticky top-24 self-start">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-transparent flex flex-col items-start h-auto p-0 space-y-1 w-full">
+              {[
+                { id: 'general', icon: User, label: 'Profile' },
+                { id: 'experience', icon: Briefcase, label: 'Experience' },
+                { id: 'education', icon: GraduationCap, label: 'Education' },
+                { id: 'projects', icon: FolderGit2, label: 'Projects' },
+                { id: 'skills', icon: Wrench, label: 'Skills' },
+                { id: 'settings', icon: Settings, label: 'Settings' },
+              ].map((tab) => (
+                <TabsTrigger key={tab.id} value={tab.id} className="w-full justify-start px-4 py-3 rounded-xl data-[state=active]:bg-white/10 data-[state=active]:text-white text-gray-500 transition-all hover:bg-white/5 font-medium flex items-center gap-3 text-sm group">
+                  <tab.icon className="w-4 h-4 opacity-50 group-data-[state=active]:opacity-100 group-data-[state=active]:text-indigo-400" />
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* CONTENT AREA */}
+        <div className="lg:col-span-10 min-h-[80vh]">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+            {/* ================= PROFILE TAB ================= */}
+            <TabsContent value="general" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Profile Card */}
+                <div className="md:col-span-1 bg-[#15171F] border border-white/5 rounded-2xl p-6 flex flex-col items-center text-center space-y-4">
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#1E2029] shadow-2xl group cursor-pointer">
+                    <Image src={content.user?.profileImage || '/placeholder.jpg'} alt="Profile" fill className="object-cover transition-opacity group-hover:opacity-50" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+                      <span className="text-xs font-bold uppercase">Change</span>
+                    </div>
+                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={async (e) => {
+                      const f = e.target.files?.[0]; if (f) { const url = await handleFileUpload(f); if (url) updateField(['user', 'profileImage'], url); }
+                    }} />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Intro</label>
-                  <textarea
-                    className="glass-input min-h-[100px] resize-none"
-                    value={content.user?.intro || ''}
-                    onChange={(e) => updateProfile('intro', e.target.value)}
-                  />
-                </div>
-                {/* Profile Image Upload */}
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Profile Image</label>
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden border border-white/10 bg-white/5">
-                      {content.user?.profileImage ? (
-                        <Image
-                          src={content.user.profileImage}
-                          alt="Profile"
-                          fill
-                          className={`object-cover ${cn(
-                            content.user.imagePosition === 'top' ? 'object-top' :
-                              content.user.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-                          )}`}
-                        />
-                      ) : (
-                        <User className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
-                      )}
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex gap-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          id="profile-image-upload"
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = await handleFileUpload(file);
-                              if (url) updateProfile('profileImage', url);
-                            }
-                          }}
-                        />
-                        <label
-                          htmlFor="profile-image-upload"
-                          className="glass-button text-sm px-4 py-2 cursor-pointer flex items-center justify-center gap-2 w-fit"
-                        >
-                          <Upload className="w-4 h-4" />
-                          Upload New Photo
-                        </label>
-                        <select
-                          className="glass-input w-auto py-1 px-3 text-sm"
-                          value={content.user?.imagePosition || 'center'}
-                          onChange={(e) => updateProfile('imagePosition', e.target.value)}
-                        >
-                          <option value="center">Center</option>
-                          <option value="top">Top</option>
-                          <option value="bottom">Bottom</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Links Panel */}
-            <div className="glass-panel p-8 space-y-6">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <LayoutGrid className="w-5 h-5 text-purple-400" /> Connections
-              </h3>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub URL</label>
-                  <input
-                    className="glass-input"
-                    value={content.user?.github || ''}
-                    onChange={(e) => updateProfile('github', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">LinkedIn URL</label>
-                  <input
-                    className="glass-input"
-                    value={content.user?.linkedin || ''}
-                    onChange={(e) => updateProfile('linkedin', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* About & Bio Panel - Full Width */}
-            <div className="glass-panel p-8 space-y-6 md:col-span-2">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-green-400" /> Biography
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Full Bio</label>
-                  <textarea
-                    className="glass-input min-h-[150px]"
-                    value={content.about?.bio || ''}
-                    onChange={(e) => updateAbout('bio', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Experience</label>
-                  <textarea
-                    className="glass-input min-h-[100px]"
-                    value={content.about?.experience || ''}
-                    onChange={(e) => updateAbout('experience', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Education</label>
-                  <input
-                    className="glass-input"
-                    value={content.about?.education || ''}
-                    onChange={(e) => updateAbout('education', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">CS & Math Background</label>
-                  <textarea
-                    className="glass-input min-h-[80px]"
-                    value={content.about?.csMathBackground || ''}
-                    onChange={(e) => updateAbout('csMathBackground', e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-
-        {/* Projects Tab */}
-        <TabsContent value="projects" className="space-y-6">
-          <div className="flex justify-end">
-            <button onClick={addProject} className="glass-button text-sm px-4 py-2 h-auto">
-              <Plus className="w-4 h-4 mr-2" /> Add Project
-            </button>
-          </div>
-          <div className="grid grid-cols-1 gap-6">
-            {content.projects.map((project) => (
-              <div key={project.id} className="glass-panel p-6 relative group">
-                <button
-                  onClick={() => deleteProject(project.id)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Title</label>
-                      <input
-                        className="glass-input font-bold text-lg"
-                        value={project.title}
-                        onChange={(e) => updateProject(project.id, 'title', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Description</label>
-                      <textarea
-                        className="glass-input min-h-[100px]"
-                        value={project.description}
-                        onChange={(e) => updateProject(project.id, 'description', e.target.value)}
-                      />
-                    </div>
-
-                    {/* Project Image Upload */}
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Project Image</label>
-                      <div className="flex items-start gap-4">
-                        <div className="relative w-24 h-16 rounded-lg overflow-hidden border border-white/10 bg-white/5 shrink-0">
-                          {project.imageUrl ? (
-                            <Image
-                              src={project.imageUrl}
-                              alt={project.title}
-                              fill
-                              className={`object-cover ${cn(
-                                project.imagePosition === 'top' ? 'object-top' :
-                                  project.imagePosition === 'bottom' ? 'object-bottom' : 'object-center'
-                              )}`}
-                            />
-                          ) : (
-                            <ImageIcon className="w-8 h-8 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/20" />
-                          )}
-                        </div>
-                        <div className="flex-1 space-y-2">
-                          <div className="flex gap-2">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              id={`file-${project.id}`}
-                              onChange={async (e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  const url = await handleFileUpload(file);
-                                  if (url) updateProject(project.id, 'imageUrl', url);
-                                }
-                              }}
-                            />
-                            <label
-                              htmlFor={`file-${project.id}`}
-                              className="glass-button text-xs px-3 py-2 cursor-pointer flex items-center justify-center gap-2 w-fit"
-                            >
-                              <Upload className="w-3 h-3" />
-                              {project.imageUrl ? 'Change' : 'Upload'}
-                            </label>
-                            <select
-                              className="glass-input w-auto py-1 px-2 text-xs h-auto"
-                              value={project.imagePosition || 'center'}
-                              onChange={(e) => updateProject(project.id, 'imagePosition', e.target.value)}
-                            >
-                              <option value="center">Center</option>
-                              <option value="top">Top</option>
-                              <option value="bottom">Bottom</option>
-                            </select>
-                          </div>
-                          <input
-                            className="glass-input text-xs py-1 px-2 h-8"
-                            placeholder="Or paste URL..."
-                            value={project.imageUrl || ''}
-                            onChange={(e) => updateProject(project.id, 'imageUrl', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Tags (comma separated)</label>
-                      <input
-                        className="glass-input"
-                        value={project.tags.join(', ')}
-                        onChange={(e) => updateProject(project.id, 'tags', e.target.value.split(',').map(s => s.trim()))}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub Link</label>
-                        <input
-                          className="glass-input"
-                          value={project.githubLink || ''}
-                          onChange={(e) => updateProject(project.id, 'githubLink', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Demo Link</label>
-                        <input
-                          className="glass-input"
-                          value={project.demoLink || ''}
-                          onChange={(e) => updateProject(project.id, 'demoLink', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* Skills Tab */}
-        <TabsContent value="skills" className="space-y-6">
-          <div className="flex justify-end">
-            <button onClick={addCategory} className="glass-button text-sm px-4 py-2 h-auto">
-              <Plus className="w-4 h-4 mr-2" /> Add Category
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {content.skills.map((category, catIndex) => (
-              <div key={catIndex} className="glass-panel p-6 space-y-4 relative group">
-                <button
-                  onClick={() => deleteCategory(catIndex)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors opacity-0 group-hover:opacity-100 z-10"
-                  title="Delete Category"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-
-                <div className="border-b border-white/10 pb-4 pr-10">
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold block mb-2">Category Name</label>
-                  <input
-                    className="glass-input font-bold text-lg bg-transparent border-transparent px-0 py-0 focus:bg-white/5 focus:px-3 focus:py-2"
-                    value={category.category}
-                    onChange={(e) => updateCategoryName(catIndex, e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  {category.items.map((skill, skillIndex) => (
-                    <div key={skillIndex} className="flex items-center gap-3 group/item">
-                      <input
-                        className="glass-input py-2"
-                        value={skill.name}
-                        onChange={(e) => updateSkillItem(catIndex, skillIndex, 'name', e.target.value)}
-                        placeholder="Skill Name"
-                      />
-                      <input
-                        type="number"
-                        className="glass-input py-2 w-20 text-center"
-                        value={skill.proficiency}
-                        onChange={(e) => updateSkillItem(catIndex, skillIndex, 'proficiency', parseInt(e.target.value))}
-                        min="0" max="100"
-                      />
-                      <button
-                        onClick={() => deleteSkillItem(catIndex, skillIndex)}
-                        className="p-2 text-red-400 hover:bg-red-500/10 rounded-full transition-colors opacity-0 group-hover/item:opacity-100"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-
-                  <button
-                    onClick={() => addSkillItem(catIndex)}
-                    className="w-full py-2 mt-2 rounded-xl border border-dashed border-white/20 text-white/40 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all text-sm flex items-center justify-center gap-2"
-                  >
-                    <Plus className="w-4 h-4" /> Add Skill
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* Configuration Tab */}
-        <TabsContent value="config" className="space-y-8">
-          {content.ui && (
-            <>
-              {/* Navigation */}
-              <div className="glass-panel p-8 space-y-6">
-                <h3 className="text-xl font-semibold flex items-center gap-2">
-                  <LayoutGrid className="w-5 h-5 text-yellow-400" /> Navigation
-                </h3>
-                <div className="space-y-4">
-                  {content.ui.navLinks.map((link, index) => (
-                    <div key={index} className="grid grid-cols-2 gap-4">
-                      <input
-                        className="glass-input"
-                        value={link.label}
-                        onChange={(e) => updateNavLink(index, 'label', e.target.value)}
-                        placeholder="Label"
-                      />
-                      <input
-                        className="glass-input font-mono text-sm"
-                        value={link.href}
-                        onChange={(e) => updateNavLink(index, 'href', e.target.value)}
-                        placeholder="Path"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Pages Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Home Page Config */}
-                <div className="glass-panel p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Home Page</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Project Button</label>
-                      <input className="glass-input" value={content.ui.home.buttonProjects} onChange={(e) => updateUI('home', 'buttonProjects', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Contact Button</label>
-                      <input className="glass-input" value={content.ui.home.buttonContact} onChange={(e) => updateUI('home', 'buttonContact', e.target.value)} />
-                    </div>
+                  <div className="w-full space-y-2">
+                    <InputGroup label="Display Name" value={content.user?.name} onChange={(v: string) => updateField(['user', 'name'], v)} />
+                    <InputGroup label="Tagline (Main)" value={content.user?.tagline} onChange={(v: string) => updateField(['user', 'tagline'], v)} />
                   </div>
                 </div>
 
-                {/* About Page Config */}
-                <div className="glass-panel p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">About Page</h3>
+                {/* Status & Location */}
+                <div className="md:col-span-2 bg-[#15171F] border border-white/5 rounded-2xl p-6 space-y-6">
+                  <h3 className="text-sm font-bold text-white border-b border-white/5 pb-2">Status & Contact</h3>
                   <div className="grid grid-cols-2 gap-4">
+                    <InputGroup label="Email" value={content.user?.email} onChange={(v: string) => updateField(['user', 'email'], v)} />
+                    <InputGroup label="Location" value={content.user?.location} onChange={(v: string) => updateField(['user', 'location'], v)} />
+                    <InputGroup label="Current Status" value={content.user?.status} onChange={(v: string) => updateField(['user', 'status'], v)} placeholder="e.g. Open to Work" />
                     <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Bio Title</label>
-                      <input className="glass-input" value={content.ui.about.sectionBio} onChange={(e) => updateUI('about', 'sectionBio', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Exp. Title</label>
-                      <input className="glass-input" value={content.ui.about.sectionExperience} onChange={(e) => updateUI('about', 'sectionExperience', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Edu. Title</label>
-                      <input className="glass-input" value={content.ui.about.sectionEducation} onChange={(e) => updateUI('about', 'sectionEducation', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">CS Title</label>
-                      <input className="glass-input" value={content.ui.about.sectionCS} onChange={(e) => updateUI('about', 'sectionCS', e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="pt-2 border-t border-white/10">
-                    <label className="text-xs text-muted-foreground mb-2 block">Value Labels</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <input className="glass-input text-xs" value={content.ui.about.locationLabel} onChange={(e) => updateUI('about', 'locationLabel', e.target.value)} />
-                      <input className="glass-input text-xs" value={content.ui.about.experienceLabel} onChange={(e) => updateUI('about', 'experienceLabel', e.target.value)} />
-                      <input className="glass-input text-xs" value={content.ui.about.emailLabel} onChange={(e) => updateUI('about', 'emailLabel', e.target.value)} />
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-1.5">Status Color</label>
+                      <select
+                        className="w-full bg-[#0F1117] border border-white/10 rounded-lg px-4 py-2.5 text-gray-200 text-sm outline-none focus:border-indigo-500"
+                        value={content.user?.statusColor || 'emerald'}
+                        onChange={(e) => updateField(['user', 'statusColor'], e.target.value)}
+                      >
+                        <option value="emerald">Emerald (Green)</option>
+                        <option value="blue">Blue</option>
+                        <option value="amber">Amber (Yellow)</option>
+                        <option value="red">Red</option>
+                      </select>
                     </div>
                   </div>
-                </div>
-
-                {/* Projects Page Config */}
-                <div className="glass-panel p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Projects Page</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
-                      <input className="glass-input" value={content.ui.projects.title} onChange={(e) => updateUI('projects', 'title', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Filter Heading</label>
-                      <input className="glass-input" value={content.ui.projects.filterTitle} onChange={(e) => updateUI('projects', 'filterTitle', e.target.value)} />
-                    </div>
-                    <div>
-                      <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">No Results Msg</label>
-                      <input className="glass-input" value={content.ui.projects.noResults} onChange={(e) => updateUI('projects', 'noResults', e.target.value)} />
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest block">Typewriter Phrases</label>
+                    <div className="grid grid-cols-1 gap-2">
+                      {(content.user?.taglines || []).map((t, i) => (
+                        <div key={i} className="flex gap-2">
+                          <input className="w-full bg-[#0F1117] border border-white/5 rounded px-3 py-2 text-sm" value={t}
+                            onChange={(e) => { const n = [...(content.user?.taglines || [])]; n[i] = e.target.value; updateField(['user', 'taglines'], n); }} />
+                          <button onClick={() => { const n = [...(content.user?.taglines || [])]; n.splice(i, 1); updateField(['user', 'taglines'], n); }}
+                            className="text-gray-500 hover:text-red-400 p-2"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      ))}
+                      <button onClick={() => updateField(['user', 'taglines'], [...(content.user?.taglines || []), 'New Phrase'])}
+                        className="text-xs text-indigo-400 font-medium hover:text-indigo-300 py-1">+ Add Phrase</button>
                     </div>
                   </div>
                 </div>
-
-                {/* Skills Page Config */}
-                <div className="glass-panel p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Skills Page</h3>
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
-                    <input className="glass-input" value={content.ui.skills.title} onChange={(e) => updateUI('skills', 'title', e.target.value)} />
-                  </div>
-                </div>
-
-                {/* Contact Page Config */}
-                <div className="glass-panel p-6 space-y-4 md:col-span-2">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Contact Page</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Page Title</label>
-                        <input className="glass-input" value={content.ui.contact.title} onChange={(e) => updateUI('contact', 'title', e.target.value)} />
-                      </div>
-                      <div>
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Form Title</label>
-                        <input className="glass-input" value={content.ui.contact.formTitle} onChange={(e) => updateUI('contact', 'formTitle', e.target.value)} />
-                      </div>
-                      <div>
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Info Title</label>
-                        <input className="glass-input" value={content.ui.contact.infoTitle} onChange={(e) => updateUI('contact', 'infoTitle', e.target.value)} />
-                      </div>
-                      <div>
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Info Text</label>
-                        <textarea className="glass-input min-h-[60px]" value={content.ui.contact.infoText} onChange={(e) => updateUI('contact', 'infoText', e.target.value)} />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Name Label</label>
-                          <input className="glass-input" value={content.ui.contact.nameLabel} onChange={(e) => updateUI('contact', 'nameLabel', e.target.value)} />
-                        </div>
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Email Label</label>
-                          <input className="glass-input" value={content.ui.contact.emailLabel} onChange={(e) => updateUI('contact', 'emailLabel', e.target.value)} />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Message Label</label>
-                        <input className="glass-input" value={content.ui.contact.messageLabel} onChange={(e) => updateUI('contact', 'messageLabel', e.target.value)} />
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">LinkedIn Label</label>
-                          <input className="glass-input" value={content.ui.contact.linkedinText} onChange={(e) => updateUI('contact', 'linkedinText', e.target.value)} />
-                        </div>
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">GitHub Label</label>
-                          <input className="glass-input" value={content.ui.contact.githubText} onChange={(e) => updateUI('contact', 'githubText', e.target.value)} />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Email Link</label>
-                          <input className="glass-input" value={content.ui.contact.emailText} onChange={(e) => updateUI('contact', 'emailText', e.target.value)} />
-                        </div>
-                        <div>
-                          <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Submit Button</label>
-                          <input className="glass-input" value={content.ui.contact.submitButton} onChange={(e) => updateUI('contact', 'submitButton', e.target.value)} />
-                        </div>
-                      </div>
-                      <div className="space-y-2 pt-2 border-t border-white/10">
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Resume Prompt</label>
-                        <input className="glass-input" value={content.ui.contact.resumePrompt} onChange={(e) => updateUI('contact', 'resumePrompt', e.target.value)} />
-                        <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mt-2">Download Button</label>
-                        <input className="glass-input" value={content.ui.contact.downloadResume} onChange={(e) => updateUI('contact', 'downloadResume', e.target.value)} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer Config */}
-                <div className="glass-panel p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Footer</h3>
-                  <div>
-                    <label className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">Rights Text</label>
-                    <input className="glass-input" value={content.ui.footer.rightsText} onChange={(e) => updateUI('footer', 'rightsText', e.target.value)} />
-                  </div>
-                </div>
-
               </div>
-            </>
-          )}
-        </TabsContent>
-      </Tabs>
 
-      {/* Floating Save Bar */}
-      <AnimatePresence>
-        {hasChanges && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
-          >
-            <div className="glass-panel px-6 py-3 flex items-center gap-4 bg-black/80 backdrop-blur-2xl border-white/20">
-              <span className="text-sm font-medium text-white">Unsaved changes</span>
-              <div className="h-4 w-px bg-white/20" />
-              <button
-                onClick={() => {
-                  setContent(initialContent);
-                  setHasChanges(false);
-                }}
-                className="text-sm text-white/60 hover:text-white transition-colors"
-              >
-                Reset
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="bg-white text-black px-4 py-1.5 rounded-full text-sm font-bold hover:scale-105 active:scale-95 transition-all"
-              >
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              {/* Bio Section */}
+              <div className="bg-[#15171F] border border-white/5 rounded-2xl p-6">
+                <InputGroup label="Biography" value={content.about?.bio} onChange={(v: string) => updateField(['about', 'bio'], v)} type="textarea" className="h-full" />
+              </div>
+            </TabsContent>
 
-      {/* Toast Notification */}
+            {/* ================= EXPERIENCE TAB ================= */}
+            <TabsContent value="experience">
+              <DynamicListEditor<ExperienceItem>
+                title="Work Experience"
+                description="Manage your professional timeline."
+                items={content.about?.experience || []}
+                onUpdate={(items) => updateField(['about', 'experience'], items)}
+                createNew={() => ({ id: Date.now().toString(), role: "New Role", company: "Company", period: "2024", description: "" })}
+                renderItem={(item, i, onEdit, onDelete) => (
+                  <div className="bg-[#0F1117] border border-white/5 rounded-lg p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
+                    <div>
+                      <h4 className="text-white font-medium">{item.role} <span className="text-gray-500">@ {item.company}</span></h4>
+                      <p className="text-xs text-gray-500 mt-1">{item.period}</p>
+                    </div>
+                    <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                      <button onClick={onEdit} className="p-2 hover:bg-white/10 rounded-md text-blue-400"><Wrench className="w-4 h-4" /></button>
+                      <button onClick={onDelete} className="p-2 hover:bg-white/10 rounded-md text-red-400"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                )}
+                renderEditForm={(item, onSave, onCancel) => (
+                  <ExperienceEditForm item={item} onSave={onSave} onCancel={onCancel} />
+                )}
+              />
+            </TabsContent>
+
+            {/* ================= EDUCATION TAB ================= */}
+            <TabsContent value="education">
+              <DynamicListEditor<EducationItem>
+                title="Education"
+                description="Academic background and degrees."
+                items={content.about?.education || []}
+                onUpdate={(items) => updateField(['about', 'education'], items)}
+                createNew={() => ({ id: Date.now().toString(), degree: "Degree Name", institution: "University", year: "2024", description: "" })}
+                renderItem={(item, i, onEdit, onDelete) => (
+                  <div className="bg-[#0F1117] border border-white/5 rounded-lg p-4 flex justify-between items-center group hover:border-white/10 transition-colors">
+                    <div>
+                      <h4 className="text-white font-medium">{item.degree}</h4>
+                      <p className="text-xs text-gray-500 mt-1">{item.institution}, {item.year}</p>
+                    </div>
+                    <div className="flex gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                      <button onClick={onEdit} className="p-2 hover:bg-white/10 rounded-md text-blue-400"><Wrench className="w-4 h-4" /></button>
+                      <button onClick={onDelete} className="p-2 hover:bg-white/10 rounded-md text-red-400"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                )}
+                renderEditForm={(item, onSave, onCancel) => (
+                  <EducationEditForm item={item} onSave={onSave} onCancel={onCancel} />
+                )}
+              />
+              <div className="mt-8 bg-[#15171F] border border-white/5 rounded-xl p-6">
+                <InputGroup label="CS & Math Background (Legacy Support)" value={content.about?.csMathBackground} onChange={(v: string) => updateField(['about', 'csMathBackground'], v)} type="textarea" />
+              </div>
+            </TabsContent>
+
+            {/* ================= PROJECTS TAB (Simplified for brevity, similar pattern) ================= */}
+            <TabsContent value="projects">
+              {/* Re-using previous Project logic but styled better - for now simplifying to direct mapping */}
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-bold text-white">Project Showcase</h3>
+                  <button onClick={() => {
+                    const p: Project = { id: Date.now().toString(), title: "New Project", description: "", tags: [], imageUrl: "", githubLink: "", demoLink: "" };
+                    updateField(['projects'], [p, ...content.projects]);
+                  }} className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg">+ Add Project</button>
+                </div>
+                {content.projects.map((p, i) => (
+                  <div key={p.id || i} className="bg-[#15171F] border border-white/5 rounded-xl p-6 relative">
+                    <button onClick={() => {
+                      if (confirm('Delete?')) updateField(['projects'], content.projects.filter(x => x.id !== p.id));
+                    }} className="absolute top-4 right-4 text-gray-600 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="md:col-span-1 space-y-2">
+                        <div className="aspect-video bg-black rounded-lg border border-white/10 relative overflow-hidden">
+                          {p.imageUrl && <Image src={p.imageUrl} alt="" fill className="object-cover" />}
+                        </div>
+                        <label className="block text-center text-xs text-blue-400 cursor-pointer">
+                          Change Image
+                          <input type="file" className="hidden" onChange={async e => {
+                            const f = e.target.files?.[0]; if (f) {
+                              const url = await handleFileUpload(f); if (url) {
+                                const newP = [...content.projects]; newP[i] = { ...p, imageUrl: url }; updateField(['projects'], newP);
+                              }
+                            }
+                          }} />
+                        </label>
+                      </div>
+                      <div className="md:col-span-3 space-y-4">
+                        <InputGroup label="Title" value={p.title} onChange={(v: string) => { const newP = [...content.projects]; newP[i].title = v; updateField(['projects'], newP); }} />
+                        <InputGroup label="Description" value={p.description} type="textarea" onChange={(v: string) => { const newP = [...content.projects]; newP[i].description = v; updateField(['projects'], newP); }} />
+                        <InputGroup label="Tags (comma separated)" value={p.tags.join(', ')} onChange={(v: string) => { const newP = [...content.projects]; newP[i].tags = v.split(',').map(s => s.trim()); updateField(['projects'], newP); }} />
+                        <div className="grid grid-cols-2 gap-4">
+                          <InputGroup label="GitHub Link" value={p.githubLink} onChange={(v: string) => { const newP = [...content.projects]; newP[i].githubLink = v; updateField(['projects'], newP); }} />
+                          <InputGroup label="Demo Link" value={p.demoLink} onChange={(v: string) => { const newP = [...content.projects]; newP[i].demoLink = v; updateField(['projects'], newP); }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+
+            {/* ================= SKILLS TAB ================= */}
+            <TabsContent value="skills">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {content.skills.map((cat, cIdx) => (
+                  <div key={cIdx} className="bg-[#15171F] border border-white/5 rounded-xl p-6 relative">
+                    <button onClick={() => { if (confirm('Delete Category?')) { const n = [...content.skills]; n.splice(cIdx, 1); updateField(['skills'], n); } }}
+                      className="absolute top-4 right-4 text-gray-600 hover:text-red-400"><Trash2 className="w-4 h-4" /></button>
+                    <InputGroup label="Category Name" value={cat.category} onChange={(v: string) => { const n = [...content.skills]; n[cIdx].category = v; updateField(['skills'], n); }} />
+
+                    <div className="mt-4 space-y-2">
+                      {cat.items.map((item, iIdx) => (
+                        <div key={iIdx} className="flex gap-2 items-center">
+                          <input className="flex-1 bg-transparent border-b border-white/10 text-sm py-1" value={item.name}
+                            onChange={(e) => { const n = [...content.skills]; n[cIdx].items[iIdx].name = e.target.value; updateField(['skills'], n); }} />
+                          <input className="w-12 bg-transparent border-b border-white/10 text-sm py-1 text-right" type="number" value={item.proficiency}
+                            onChange={(e) => { const n = [...content.skills]; n[cIdx].items[iIdx].proficiency = parseInt(e.target.value); updateField(['skills'], n); }} />
+                          <span className="text-gray-600 text-xs">%</span>
+                          <button onClick={() => { const n = [...content.skills]; n[cIdx].items.splice(iIdx, 1); updateField(['skills'], n); }} className="text-gray-600 hover:text-red-400"><X className="w-3 h-3" /></button>
+                        </div>
+                      ))}
+                      <button onClick={() => { const n = [...content.skills]; n[cIdx].items.push({ name: 'New Skill', proficiency: 50 }); updateField(['skills'], n); }}
+                        className="text-xs text-indigo-400 mt-2">+ Add Item</button>
+                    </div>
+                  </div>
+                ))}
+                <button onClick={() => updateField(['skills'], [...content.skills, { category: "New Category", items: [] }])}
+                  className="border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center h-full min-h-[200px] text-gray-500 hover:text-white hover:border-white/30 transition-all">
+                  + New Category
+                </button>
+              </div>
+            </TabsContent>
+
+            {/* ================= SETTINGS TAB ================= */}
+            <TabsContent value="settings">
+              <div className="bg-[#15171F] border border-white/5 rounded-xl p-8 max-w-2xl">
+                <h3 className="text-lg font-bold text-white mb-6">Global Section Titles</h3>
+                <div className="space-y-4">
+                  <InputGroup label="About Section Title" value={content.sectionTitles?.about} onChange={(v: string) => updateField(['sectionTitles', 'about'], v)} />
+                  <InputGroup label="Projects Section Title" value={content.sectionTitles?.projects} onChange={(v: string) => updateField(['sectionTitles', 'projects'], v)} />
+                  <InputGroup label="Skills Section Title" value={content.sectionTitles?.skills} onChange={(v: string) => updateField(['sectionTitles', 'skills'], v)} />
+                  <InputGroup label="Contact Section Title" value={content.sectionTitles?.contact} onChange={(v: string) => updateField(['sectionTitles', 'contact'], v)} />
+                </div>
+
+                <h3 className="text-lg font-bold text-white mt-8 mb-6">SEO Metadata</h3>
+                <div className="space-y-4">
+                  <InputGroup label="Site Title" value={content.metadata?.title} onChange={(v: string) => updateField(['metadata', 'title'], v)} />
+                  <InputGroup label="Site Description" value={content.metadata?.description} type="textarea" onChange={(v: string) => updateField(['metadata', 'description'], v)} />
+                </div>
+              </div>
+            </TabsContent>
+
+          </Tabs>
+        </div>
+      </div>
+
+      {/* Floating Alert */}
       <AnimatePresence>
         {alert && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className={cn(
-              "fixed bottom-8 right-8 z-50 px-6 py-4 rounded-2xl backdrop-blur-xl border shadow-2xl flex items-center gap-3",
-              alert.type === 'success'
-                ? "bg-green-500/20 border-green-500/30 text-green-200"
-                : "bg-red-500/20 border-red-500/30 text-red-200"
-            )}
+            initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }}
+            className={cn("fixed bottom-8 right-8 px-6 py-4 rounded-xl shadow-2xl border flex items-center gap-3 z-50",
+              alert.type === 'success' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-red-500/10 border-red-500/20 text-red-400")}
           >
-            {alert.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
-            <span className="font-medium">{alert.message}</span>
+            {alert.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+            <span className="font-bold text-xs uppercase tracking-wide">{alert.message}</span>
           </motion.div>
         )}
       </AnimatePresence>
-    </div >
+    </div>
   );
 }

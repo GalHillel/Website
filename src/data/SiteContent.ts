@@ -1,5 +1,3 @@
-// @/data/SiteContent.ts
-
 export interface UserContent {
   name: string;
   email: string;
@@ -11,13 +9,38 @@ export interface UserContent {
   intro?: string;
   imagePosition?: 'top' | 'center' | 'bottom';
   location?: string;
+  status?: string;
+  statusColor?: string;
+  socialLinks?: {
+    twitter?: string;
+    github?: string;
+    linkedin?: string;
+    instagram?: string;
+  };
+}
+
+export interface ExperienceItem {
+  id: string;
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+  technologies?: string[];
+}
+
+export interface EducationItem {
+  id: string;
+  degree: string;
+  institution: string;
+  year: string;
+  description?: string;
 }
 
 export interface AboutContent {
   bio: string;
-  education: string;
-  csMathBackground: string;
-  experience?: string;
+  education: EducationItem[];
+  experience: ExperienceItem[];
+  csMathBackground?: string;
 }
 
 export interface HeroContent {
@@ -54,10 +77,15 @@ export interface SiteMetadata {
   description: string;
 }
 
+export interface SectionTitles {
+  projects: string;
+  skills: string;
+  contact: string;
+  about: string;
+}
+
 
 export interface PageUI {
-  title?: string;
-  subtitle?: string;
   [key: string]: string | undefined;
 }
 
@@ -84,6 +112,7 @@ export interface SiteUI {
   };
   skills: {
     title: string;
+    sectionTitles?: SectionTitles;
   };
   contact: {
     title: string;
@@ -111,6 +140,7 @@ export interface SiteContent {
   about: AboutContent | null;
   projects: Project[];
   skills: SkillCategory[];
+  sectionTitles: SectionTitles;
   resumeUrl: string;
   metadata: SiteMetadata;
   ui: SiteUI;
