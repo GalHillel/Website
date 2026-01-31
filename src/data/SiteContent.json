@@ -52,6 +52,28 @@
   },
   "projects": [
     {
+      "id": "1769883709108",
+      "title": "OurGlass - Personal Finance & Wealth Tracker",
+      "description": "A comprehensive, mobile-first PWA (Progressive Web App) designed for couples to track net worth, investments, and expenses in real-time. The application combines advanced financial analytics with gamification elements (streaks, ranks) to encourage consistent saving habits. Features a \"Glassmorphism\" UI design and a secure multi-tenancy architecture.",
+      "tags": [
+        "Next.js",
+        "TypeScript",
+        "React",
+        "TailwindCSS",
+        "FramerMotion",
+        "ShadcnUI",
+        "Supabase",
+        "PostgreSQL",
+        "Vercel",
+        "PWA",
+        "FinnhubAPI",
+        "ExchangeRateAPI"
+      ],
+      "imageUrl": "/uploads/1769884317577-908303889-OurGlass.png",
+      "githubLink": "https://github.com/GalHillel/OurGlass",
+      "demoLink": "https://our-glass-kbzzgiyos-gals-projects-e1a37b26.vercel.app/"
+    },
+    {
       "id": "1764167342094",
       "title": "EventUs - Android Events Management App",
       "description": "A scalable event management system. Developed backend REST APIs using NestJS with role-based auth. Designed MongoDB schemas for performance. Fully containerized the environment using Docker for consistent deployment.",
